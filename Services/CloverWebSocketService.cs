@@ -616,13 +616,21 @@ public class CloverWebSocketService : BackgroundService
                 : new List<object>();
 
             // Crear PayIntent según protocolo Clover (igual que TypeScript)
+            // IMPORTANTE: order va AQUI dentro de payIntent, no afuera
             var payIntent = new
             {
                 action = "com.clover.intent.action.PAY",
                 amount = (long)(amount * 100), // Convertir a centavos
                 tipAmount = (long)(tipAmount * 100),
                 taxAmount = 0,
-                orderId = (string?)null,
+                orderId = orderItems.Count > 0 ? $"order_{Guid.NewGuid():N}" : (string?)null,
+                order = orderItems.Count > 0 ? new
+                {
+                    id = $"order_{Guid.NewGuid():N}",
+                    lineItems = orderItems,
+                    taxAmount = 0L,
+                    total = (long)(amount * 100)
+                } : null,
                 paymentId = (string?)null,
                 employeeId = (string?)null,
                 transactionType = "PAYMENT",
@@ -670,23 +678,12 @@ public class CloverWebSocketService : BackgroundService
                 }
             };
 
-            // Crear la orden con los items (requerido por Clover per documentación)
-            // La orden se muestra en la pantalla del terminal
-            var order = new
-            {
-                id = $"order_{Guid.NewGuid():N}",
-                lineItems = orderItems.Count > 0 ? orderItems : (object?)null,
-                taxAmount = 0L,
-                total = (long)(amount * 100)
-            };
-
             // Crear el payload interno con el método y datos
             var innerPayload = new
             {
                 id,
                 method = "TX_START",
                 payIntent,
-                order,
                 requestInfo = "SALE"
             };
 

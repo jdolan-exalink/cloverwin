@@ -1800,3 +1800,80 @@ System.Threading.Tasks.TaskCanceledException: A task was canceled.
 2026-01-17 19:12:56 [INF] 📬 Received message type: FINISH_CANCEL, ID: 727
 2026-01-17 19:12:56 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"728","idempotencyKey":null,"lastFragment":null,"met...
 2026-01-17 19:12:56 [INF] 📬 Received message type: UI_STATE, ID: 728
+2026-01-17 19:21:25 [INF] CloverBridge starting...
+2026-01-17 19:21:25 [INF] Starting in tray mode
+2026-01-17 19:21:25 [INF] Configuration loaded from D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\config.json
+2026-01-17 19:21:25 [INF] Folders created/verified
+2026-01-17 19:21:25 [INF] CloverWebSocketService starting
+2026-01-17 19:21:25 [INF] Connecting to Clover at wss://10.1.1.53:12345/remote_pay
+2026-01-17 19:21:25 [INF] Connection state changed to "Connecting"
+2026-01-17 19:21:25 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-17 19:21:25 [INF] TransactionQueueService started
+2026-01-17 19:21:25 [INF] InboxWatcher started, monitoring: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX
+2026-01-17 19:21:25 [INF] Found 0 existing files in inbox
+2026-01-17 19:21:25 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-17 19:21:25 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-17 19:21:26 [INF] Hosting environment: Production
+2026-01-17 19:21:26 [INF] Content root path: D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64
+2026-01-17 19:21:26 [INF] TrayApplicationContext initialized
+2026-01-17 19:21:26 [WRN] SSL certificate validation failed: "RemoteCertificateChainErrors"
+2026-01-17 19:21:26 [INF] Connection state changed to "Connected"
+2026-01-17 19:21:26 [INF] Tray tooltip updated: CloverBridge - Conectado
+2026-01-17 19:21:26 [INF] Connected to Clover
+2026-01-17 19:21:26 [INF] Initiating pairing request. AuthToken present: true
+2026-01-17 19:21:26 [INF] Connection state changed to "PairingRequired"
+2026-01-17 19:21:26 [INF] Tray tooltip updated: CloverBridge - Pairing requerido
+2026-01-17 19:21:26 [INF] 📤 Sending PAIRING_REQUEST: {"method":"PAIRING_REQUEST","payload":"{\u0022method\u0022:\u0022PAIRING_REQUEST\u0022,\u0022serialNumber\u0022:\u0022CB-001\u0022,\u0022name\u0022:\u0022ERP Bridge\u0022,\u0022authenticationToken\u0022:\u0022f9b47428-82c4-4ac3-856e-12738f2cc965\u0022}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":1}
+2026-01-17 19:21:26 [INF] Pairing request sent successfully - waiting for terminal response
+2026-01-17 19:21:26 [INF] 📨 Raw message received: {"directed":false,"id":"789","method":"PAIRING_RESPONSE","packageName":"com.clover.remote_protocol_broadcast.app","payload":"{\"applicationName\":\"/remote_pay\",\"authenticationToken\":\"c29d5460-e93...
+2026-01-17 19:21:26 [INF] 📬 Received message type: PAIRING_RESPONSE, ID: 789
+2026-01-17 19:21:26 [INF] 🔐 Processing PAIRING_RESPONSE message
+2026-01-17 19:21:26 [INF] 📨 Received PAIRING_RESPONSE from terminal
+2026-01-17 19:21:26 [INF] 📊 Pairing state: PAIRED
+2026-01-17 19:21:26 [INF] ✅ Received auth token from pairing (***b31e)
+2026-01-17 19:21:26 [INF] Configuration saved to D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\config.json
+2026-01-17 19:21:26 [INF] ✅ Pairing completed successfully!
+2026-01-17 19:21:26 [INF] Connection state changed to "Paired"
+2026-01-17 19:21:26 [INF] Tray tooltip updated: CloverBridge - Pareado
+2026-01-17 19:21:43 [INF] Transaction file created: 3b731604-ac4c-4a3f-b094-e8723adc48d6 Invoice=FB-12345-12345678 Amount=50.00
+2026-01-17 19:21:43 [INF] Transaction written to OUTBOX: 3b731604-ac4c-4a3f-b094-e8723adc48d6 FB-12345-12345678 Status="Pending"
+2026-01-17 19:21:43 [INF] Connection state changed to "Busy"
+2026-01-17 19:21:43 [INF] Tray tooltip updated: CloverBridge - Desconocido
+2026-01-17 19:21:43 [INF] Sending SALE transaction with 2 items, amount: 5000 centavos
+2026-01-17 19:21:44 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"790","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-17 19:21:44 [INF] 📬 Received message type: ACK, ID: 790
+2026-01-17 19:21:44 [INF] ✅ Received ACK for message 790
+2026-01-17 19:21:44 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"729","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-17 19:21:44 [INF] 📬 Received message type: TX_START_RESPONSE, ID: 729
+2026-01-17 19:21:44 [INF] 💳 Processing transaction response
+2026-01-17 19:21:44 [INF] 🔍 DEBUG: Handling transaction response - Method: TX_START_RESPONSE, Message ID: 729, Payload type: JsonElement
+2026-01-17 19:21:44 [INF] 📨 No matching handler for ID 729 but have 1 pending - using last pending
+2026-01-17 19:21:44 [INF] Connection state changed to "Paired"
+2026-01-17 19:21:44 [INF] Tray tooltip updated: CloverBridge - Pareado
+2026-01-17 19:21:44 [INF] Transaction written to OUTBOX: 3b731604-ac4c-4a3f-b094-e8723adc48d6 FB-12345-12345678 Status="Completed"
+2026-01-17 19:21:44 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"730","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-17 19:21:44 [INF] 📬 Received message type: UI_STATE, ID: 730
+2026-01-17 19:21:46 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"731","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-17 19:21:46 [INF] 📬 Received message type: TX_STATE, ID: 731
+2026-01-17 19:21:46 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"732","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-17 19:21:46 [INF] 📬 Received message type: UI_STATE, ID: 732
+2026-01-17 19:21:46 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"733","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-17 19:21:46 [INF] 📬 Received message type: UI_STATE, ID: 733
+2026-01-17 19:21:46 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"734","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-17 19:21:46 [INF] 📬 Received message type: UI_STATE, ID: 734
+2026-01-17 19:21:46 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"735","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-17 19:21:46 [INF] 📬 Received message type: UI_STATE, ID: 735
+2026-01-17 19:22:01 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"736","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-17 19:22:01 [INF] 📬 Received message type: UI_STATE, ID: 736
+2026-01-17 19:22:01 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"737","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-17 19:22:01 [INF] 📬 Received message type: UI_STATE, ID: 737
+2026-01-17 19:22:01 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"738","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-17 19:22:01 [INF] 📬 Received message type: FINISH_CANCEL, ID: 738
+2026-01-17 19:22:01 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"739","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-17 19:22:01 [INF] 📬 Received message type: UI_STATE, ID: 739
+2026-01-17 19:23:50 [INF] User requested application shutdown
+2026-01-17 19:23:50 [INF] Application is shutting down...
+2026-01-17 19:23:55 [ERR] Error processing transaction
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at CloverBridge.Services.TransactionQueueService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\TransactionQueueService.cs:line 46
+2026-01-17 19:23:55 [INF] TransactionQueueService stopped

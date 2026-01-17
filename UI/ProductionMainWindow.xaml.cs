@@ -190,17 +190,27 @@ public partial class ProductionMainWindow : Window
     {
         // Obtener el estado real de la transacción
         var statusStr = "Unknown";
-        if (data.TryGetProperty("status", out var statusProp) && statusProp.ValueKind == JsonValueKind.String)
+        
+        // Intentar leer status primero (el campo que contiene el estado real)
+        if (data.TryGetProperty("status", out var statusProp))
         {
-            statusStr = statusProp.GetString() ?? "Unknown";
-        }
-        else if (data.TryGetProperty("success", out var suc) && suc.GetBoolean())
-        {
-            statusStr = "Completed";
+            statusStr = statusProp.ValueKind == JsonValueKind.String 
+                ? statusProp.GetString() ?? "Unknown"
+                : statusProp.ToString();
+            LogSystem($"DEBUG: Leido status desde JSON: '{statusStr}'");
         }
         else
         {
-            statusStr = "Failed";
+            LogSystem($"DEBUG: Campo 'status' no encontrado en JSON");
+            // Fallback a success si status no existe
+            if (data.TryGetProperty("success", out var suc) && suc.GetBoolean())
+            {
+                statusStr = "Completed";
+            }
+            else
+            {
+                statusStr = "Failed";
+            }
         }
 
         // Mapear estado a emoji y descripción
