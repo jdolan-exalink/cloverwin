@@ -1,0 +1,46 @@
+2026-01-16 00:00:53 [INF] CloverBridge starting...
+2026-01-16 00:00:53 [INF] Starting in console mode
+2026-01-16 00:00:53 [INF] Configuration loaded from D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\config.json
+2026-01-16 00:00:53 [INF] Folders created/verified
+2026-01-16 00:00:54 [INF] CloverWebSocketService starting
+2026-01-16 00:00:54 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 00:00:54 [INF] Connection state changed to "Connecting"
+2026-01-16 00:00:54 [INF] TransactionQueueService started
+2026-01-16 00:00:54 [INF] InboxWatcher started, monitoring: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX
+2026-01-16 00:00:54 [INF] Found 0 existing files in inbox
+2026-01-16 00:00:54 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-16 00:00:54 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-16 00:00:54 [INF] Hosting environment: Production
+2026-01-16 00:00:54 [INF] Content root path: D:\DEVs\Clover2
+2026-01-16 00:00:54 [INF] Connection state changed to "Connected"
+2026-01-16 00:00:54 [INF] Connected to Clover
+2026-01-16 00:00:54 [INF] Initiating pairing request. AuthToken present: false
+2026-01-16 00:00:54 [INF] Connection state changed to "PairingRequired"
+2026-01-16 00:00:54 [INF] 📤 Sending PAIRING_REQUEST: {"method":"PAIRING_REQUEST","payload":"{\u0022method\u0022:\u0022PAIRING_REQUEST\u0022,\u0022serialNumber\u0022:\u0022CB-001\u0022,\u0022name\u0022:\u0022ERP Bridge\u0022,\u0022authenticationToken\u0022:null}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":1}
+2026-01-16 00:00:54 [INF] Pairing request sent successfully - waiting for terminal response
+2026-01-16 00:01:09 [INF] 📨 Raw message received: {"directed":false,"id":"649","method":"PAIRING_CODE","packageName":"com.clover.remote_protocol_broadcast.app","payload":"{\"method\":\"PAIRING_CODE\",\"pairingCode\":\"8265\"}","remotePayCompatibility...
+2026-01-16 00:01:09 [INF] 📬 Received message type: PAIRING_CODE, ID: 649
+2026-01-16 00:01:09 [INF] 🔑 Processing PAIRING_CODE message
+2026-01-16 00:01:09 [INF] 🔢 Received PAIRING_CODE from terminal
+2026-01-16 00:01:09 [INF] 🔢 PAIRING CODE: 8265
+2026-01-16 00:01:09 [WRN] ⏱️ No response from terminal after 15s - using fallback mode
+2026-01-16 00:01:14 [WRN] Auto-completing pairing (fallback mode)
+2026-01-16 00:01:14 [INF] Configuration saved to D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\config.json
+2026-01-16 00:01:14 [INF] Connection state changed to "Paired"
+2026-01-16 00:01:14 [INF] 📨 Raw message received: {"directed":false,"id":"652","method":"PAIRING_RESPONSE","packageName":"com.clover.remote_protocol_broadcast.app","payload":"{\"applicationName\":\"/remote_pay\",\"authenticationToken\":\"b6dced8f-002...
+2026-01-16 00:01:14 [INF] 📬 Received message type: PAIRING_RESPONSE, ID: 652
+2026-01-16 00:01:14 [INF] 🔐 Processing PAIRING_RESPONSE message
+2026-01-16 00:01:14 [INF] 📨 Received PAIRING_RESPONSE from terminal
+2026-01-16 00:01:14 [INF] 📊 Pairing state: PAIRED
+2026-01-16 00:01:14 [INF] ✅ Received auth token from pairing (***f53f)
+2026-01-16 00:01:14 [INF] Configuration saved to D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\config.json
+2026-01-16 00:01:14 [INF] ✅ Pairing completed successfully!
+2026-01-16 00:03:10 [INF] New file detected: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX\qr_20260116_000310_f3c5baa52a7748bf9ea881bb0a039e30.json
+2026-01-16 00:03:11 [INF] Processing file: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX\qr_20260116_000310_f3c5baa52a7748bf9ea881bb0a039e30.json
+2026-01-16 00:03:11 [INF] Response written: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\OUTBOX\RES_2026-01-16_00-03-11_c82d933b-65a2-48e8-a2f1-a4a8ea08403e.json
+2026-01-16 00:03:11 [ERR] Error archiving file: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX\qr_20260116_000310_f3c5baa52a7748bf9ea881bb0a039e30.json
+System.IO.FileNotFoundException: Could not find file 'D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX\qr_20260116_000310_f3c5baa52a7748bf9ea881bb0a039e30.json'.
+File name: 'D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX\qr_20260116_000310_f3c5baa52a7748bf9ea881bb0a039e30.json'
+   at System.IO.File.Move(String sourceFileName, String destFileName, Boolean overwrite)
+   at CloverBridge.Services.InboxWatcherService.MoveToArchiveAsync(String filePath, Boolean success) in D:\DEVs\Clover2\windows\Services\InboxWatcherService.cs:line 181
+2026-01-16 00:03:11 [INF] File processed successfully: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX\qr_20260116_000310_f3c5baa52a7748bf9ea881bb0a039e30.json

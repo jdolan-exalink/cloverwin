@@ -1,0 +1,176 @@
+2026-01-15 23:48:20 [INF] CloverBridge starting...
+2026-01-15 23:48:20 [INF] Starting in console mode
+2026-01-15 23:48:20 [INF] Configuration loaded from D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\config.json
+2026-01-15 23:48:20 [INF] Folders created/verified
+2026-01-15 23:48:20 [INF] CloverWebSocketService starting
+2026-01-15 23:48:20 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-15 23:48:20 [INF] Connection state changed to "Connecting"
+2026-01-15 23:48:20 [INF] TransactionQueueService started
+2026-01-15 23:48:20 [INF] InboxWatcher started, monitoring: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX
+2026-01-15 23:48:20 [INF] Found 0 existing files in inbox
+2026-01-15 23:48:20 [ERR] Error starting API server
+System.Net.HttpListenerException (183): Failed to listen on prefix 'http://127.0.0.1:3777/' because it conflicts with an existing registration on the machine.
+   at System.Net.HttpListener.AddPrefixCore(String registeredPrefix)
+   at System.Net.HttpListener.AddAllPrefixes()
+   at System.Net.HttpListener.Start()
+   at CloverBridge.Services.ApiService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Clover2\windows\Services\ApiService.cs:line 45
+2026-01-15 23:48:20 [ERR] Hosting failed to start
+System.ObjectDisposedException: Cannot access a disposed object.
+Object name: 'System.Net.HttpListener'.
+   at System.Net.HttpListener.Stop()
+   at CloverBridge.Services.ApiService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Clover2\windows\Services\ApiService.cs:line 68
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__15_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-01-15 23:48:20 [FTL] Application terminated unexpectedly
+System.ObjectDisposedException: Cannot access a disposed object.
+Object name: 'System.Net.HttpListener'.
+   at System.Net.HttpListener.Stop()
+   at CloverBridge.Services.ApiService.Dispose() in D:\DEVs\Clover2\windows\Services\ApiService.cs:line 331
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.DisposeAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Hosting.Internal.Host.<DisposeAsync>g__DisposeAsync|21_0(Object o)
+   at Microsoft.Extensions.Hosting.Internal.Host.DisposeAsync()
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at CloverBridge.Program.RunAsConsoleAsync() in D:\DEVs\Clover2\windows\Program.cs:line 142
+   at CloverBridge.Program.Main(String[] args) in D:\DEVs\Clover2\windows\Program.cs:line 43
+2026-01-15 23:49:47 [INF] CloverBridge starting...
+2026-01-15 23:49:47 [INF] Starting in console mode
+2026-01-15 23:49:48 [INF] Configuration loaded from D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\config.json
+2026-01-15 23:49:48 [INF] Folders created/verified
+2026-01-15 23:49:48 [INF] CloverWebSocketService starting
+2026-01-15 23:49:48 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-15 23:49:48 [INF] Connection state changed to "Connecting"
+2026-01-15 23:49:48 [INF] TransactionQueueService started
+2026-01-15 23:49:48 [INF] InboxWatcher started, monitoring: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX
+2026-01-15 23:49:48 [INF] Found 0 existing files in inbox
+2026-01-15 23:49:48 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-15 23:49:48 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-15 23:49:48 [INF] Hosting environment: Production
+2026-01-15 23:49:48 [INF] Content root path: D:\DEVs\Clover2
+2026-01-15 23:49:48 [INF] Connection state changed to "Connected"
+2026-01-15 23:49:48 [INF] Connected to Clover
+2026-01-15 23:49:48 [INF] Using existing auth token
+2026-01-15 23:49:48 [INF] Connection state changed to "Paired"
+2026-01-15 23:50:48 [INF] CloverBridge starting...
+2026-01-15 23:50:48 [INF] Starting in console mode
+2026-01-15 23:50:48 [INF] Configuration loaded from D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\config.json
+2026-01-15 23:50:48 [INF] Folders created/verified
+2026-01-15 23:50:48 [INF] CloverWebSocketService starting
+2026-01-15 23:50:48 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-15 23:50:48 [INF] Connection state changed to "Connecting"
+2026-01-15 23:50:48 [INF] TransactionQueueService started
+2026-01-15 23:50:48 [INF] InboxWatcher started, monitoring: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX
+2026-01-15 23:50:48 [INF] Found 0 existing files in inbox
+2026-01-15 23:50:48 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-15 23:50:48 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-15 23:50:48 [INF] Hosting environment: Production
+2026-01-15 23:50:48 [INF] Content root path: D:\DEVs\Clover2
+2026-01-15 23:50:48 [INF] Connection state changed to "Connected"
+2026-01-15 23:50:48 [INF] Connected to Clover
+2026-01-15 23:50:48 [INF] Using existing auth token
+2026-01-15 23:50:48 [INF] Connection state changed to "Paired"
+2026-01-15 23:51:08 [INF] API Request: POST /api/transaction/sale
+2026-01-15 23:51:08 [INF] Connection state changed to "Busy"
+2026-01-15 23:51:08 [INF] 📤 Sending SALE transaction: {"method":"TX_START","payload":"{\u0022id\u0022:\u00221\u0022,\u0022method\u0022:\u0022TX_START\u0022,\u0022payIntent\u0022:{\u0022action\u0022:\u0022com.clover.intent.action.PAY\u0022,\u0022amount\u0022:500,\u0022tipAmount\u0022:0,\u0022taxAmount\u0022:0,\u0022orderId\u0022:null,\u0022paymentId\u0022:null,\u0022employeeId\u0022:null,\u0022transactionType\u0022:\u0022PAYMENT\u0022,\u0022taxableAmountRateList\u0022:null,\u0022isDisableCashBack\u0022:false,\u0022isTesting\u0022:false,\u0022voiceAuthCode\u0022:null,\u0022postalCode\u0022:null,\u0022streetAddress\u0022:null,\u0022isCardNotPresent\u0022:false,\u0022cardNotPresent\u0022:false,\u0022transactionNo\u0022:null,\u0022isForceSwipePinEntry\u0022:false,\u0022disableRestartTransactionWhenFailed\u0022:false,\u0022externalPaymentId\u0022:\u0022TESTPAGO-7130\u0022,\u0022externalReferenceId\u0022:null,\u0022vaultedCard\u0022:null,\u0022allowOfflinePayment\u0022:true,\u0022approveOfflinePaymentWithoutPrompt\u0022:true,\u0022requiresRemoteConfirmation\u0022:true,\u0022applicationTracking\u0022:null,\u0022allowPartialAuth\u0022:false,\u0022germanInfo\u0022:null,\u0022remotePrint\u0022:false,\u0022transactionSettings\u0022:{\u0022cloverShouldHandleReceipts\u0022:false,\u0022disableCashBack\u0022:false,\u0022forcePinEntryOnSwipe\u0022:false,\u0022disableRestartTransactionOnFailure\u0022:false,\u0022allowOfflinePayment\u0022:true,\u0022approveOfflinePaymentWithoutPrompt\u0022:true,\u0022forceOfflinePayment\u0022:false,\u0022signatureThreshold\u0022:null,\u0022signatureEntryLocation\u0022:null,\u0022tipMode\u0022:\u0022NO_TIP\u0022,\u0022tippableAmount\u0022:null,\u0022disableReceiptSelection\u0022:false,\u0022disableDuplicateCheck\u0022:false,\u0022autoAcceptPaymentConfirmations\u0022:true,\u0022autoAcceptSignature\u0022:true,\u0022regionalExtras\u0022:null,\u0022cardEntryMethods\u0022:null,\u0022tipSuggestions\u0022:null}},\u0022order\u0022:null,\u0022requestInfo\u0022:\u0022SALE\u0022}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":2,"directed":true,"packageName":"com.clover.remote_protocol_broadcast.app"}
+2026-01-15 23:51:08 [INF] 📨 Raw message received: {"directed":false,"id":"642","method":"TX_START_RESPONSE","packageName":"com.clover.remote_protocol_broadcast.app","payload":"{\"millis\":0,\"result\":false}","remotePayCompatibilityVersion":1,"remote...
+2026-01-15 23:51:08 [INF] 📬 Received message type: TX_START_RESPONSE, ID: 642
+2026-01-15 23:51:08 [INF] 💳 Processing transaction response
+2026-01-15 23:51:08 [INF] 🔍 DEBUG: Handling transaction response - Method: TX_START_RESPONSE, ID: 642, Payload type: JsonElement
+2026-01-15 23:51:08 [INF] 📨 Transaction response without matching handler - ID: 642, Pending: 1
+2026-01-15 23:52:08 [INF] CloverBridge starting...
+2026-01-15 23:52:08 [INF] Starting in console mode
+2026-01-15 23:52:08 [INF] Configuration loaded from D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\config.json
+2026-01-15 23:52:08 [INF] Folders created/verified
+2026-01-15 23:52:08 [INF] CloverWebSocketService starting
+2026-01-15 23:52:08 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-15 23:52:08 [INF] Connection state changed to "Connecting"
+2026-01-15 23:52:08 [INF] TransactionQueueService started
+2026-01-15 23:52:08 [INF] InboxWatcher started, monitoring: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX
+2026-01-15 23:52:08 [INF] Found 0 existing files in inbox
+2026-01-15 23:52:09 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-15 23:52:09 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-15 23:52:09 [INF] Hosting environment: Production
+2026-01-15 23:52:09 [INF] Content root path: D:\DEVs\Clover2
+2026-01-15 23:52:09 [INF] Connection state changed to "Connected"
+2026-01-15 23:52:09 [INF] Connected to Clover
+2026-01-15 23:52:09 [INF] Using existing auth token
+2026-01-15 23:52:09 [INF] Connection state changed to "Paired"
+2026-01-15 23:52:26 [INF] API Request: POST /api/transaction/sale
+2026-01-15 23:52:26 [INF] Connection state changed to "Busy"
+2026-01-15 23:52:26 [INF] 📤 Sending SALE transaction: {"method":"TX_START","payload":"{\u0022id\u0022:\u00221\u0022,\u0022method\u0022:\u0022TX_START\u0022,\u0022payIntent\u0022:{\u0022action\u0022:\u0022com.clover.intent.action.PAY\u0022,\u0022amount\u0022:500,\u0022tipAmount\u0022:0,\u0022taxAmount\u0022:0,\u0022orderId\u0022:null,\u0022paymentId\u0022:null,\u0022employeeId\u0022:null,\u0022transactionType\u0022:\u0022PAYMENT\u0022,\u0022taxableAmountRateList\u0022:null,\u0022isDisableCashBack\u0022:false,\u0022isTesting\u0022:false,\u0022voiceAuthCode\u0022:null,\u0022postalCode\u0022:null,\u0022streetAddress\u0022:null,\u0022isCardNotPresent\u0022:false,\u0022cardNotPresent\u0022:false,\u0022transactionNo\u0022:null,\u0022isForceSwipePinEntry\u0022:false,\u0022disableRestartTransactionWhenFailed\u0022:false,\u0022externalPaymentId\u0022:\u0022TEST-3183\u0022,\u0022externalReferenceId\u0022:null,\u0022vaultedCard\u0022:null,\u0022allowOfflinePayment\u0022:true,\u0022approveOfflinePaymentWithoutPrompt\u0022:true,\u0022requiresRemoteConfirmation\u0022:true,\u0022applicationTracking\u0022:null,\u0022allowPartialAuth\u0022:false,\u0022germanInfo\u0022:null,\u0022remotePrint\u0022:false,\u0022transactionSettings\u0022:{\u0022cloverShouldHandleReceipts\u0022:false,\u0022disableCashBack\u0022:false,\u0022forcePinEntryOnSwipe\u0022:false,\u0022disableRestartTransactionOnFailure\u0022:false,\u0022allowOfflinePayment\u0022:true,\u0022approveOfflinePaymentWithoutPrompt\u0022:true,\u0022forceOfflinePayment\u0022:false,\u0022signatureThreshold\u0022:null,\u0022signatureEntryLocation\u0022:null,\u0022tipMode\u0022:\u0022NO_TIP\u0022,\u0022tippableAmount\u0022:null,\u0022disableReceiptSelection\u0022:false,\u0022disableDuplicateCheck\u0022:false,\u0022autoAcceptPaymentConfirmations\u0022:true,\u0022autoAcceptSignature\u0022:true,\u0022regionalExtras\u0022:null,\u0022cardEntryMethods\u0022:null,\u0022tipSuggestions\u0022:null}},\u0022order\u0022:null,\u0022requestInfo\u0022:\u0022SALE\u0022}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":2,"directed":true,"packageName":"com.clover.remote_protocol_broadcast.app"}
+2026-01-15 23:52:26 [INF] 📨 Raw message received: {"directed":false,"id":"643","method":"TX_START_RESPONSE","packageName":"com.clover.remote_protocol_broadcast.app","payload":"{\"millis\":0,\"result\":false}","remotePayCompatibilityVersion":1,"remote...
+2026-01-15 23:52:26 [INF] 📬 Received message type: TX_START_RESPONSE, ID: 643
+2026-01-15 23:52:26 [INF] 💳 Processing transaction response
+2026-01-15 23:52:26 [INF] 🔍 DEBUG: Handling transaction response - Method: TX_START_RESPONSE, Message ID: 643, Payload type: JsonElement
+2026-01-15 23:52:26 [INF] 📨 No matching handler for ID 643 but have 1 pending - using last pending
+2026-01-15 23:52:26 [INF] Connection state changed to "Paired"
+2026-01-15 23:53:04 [INF] API Request: POST /api/transaction/sale
+2026-01-15 23:53:04 [INF] Connection state changed to "Busy"
+2026-01-15 23:53:04 [INF] 📤 Sending SALE transaction: {"method":"TX_START","payload":"{\u0022id\u0022:\u00222\u0022,\u0022method\u0022:\u0022TX_START\u0022,\u0022payIntent\u0022:{\u0022action\u0022:\u0022com.clover.intent.action.PAY\u0022,\u0022amount\u0022:2599,\u0022tipAmount\u0022:0,\u0022taxAmount\u0022:0,\u0022orderId\u0022:null,\u0022paymentId\u0022:null,\u0022employeeId\u0022:null,\u0022transactionType\u0022:\u0022PAYMENT\u0022,\u0022taxableAmountRateList\u0022:null,\u0022isDisableCashBack\u0022:false,\u0022isTesting\u0022:false,\u0022voiceAuthCode\u0022:null,\u0022postalCode\u0022:null,\u0022streetAddress\u0022:null,\u0022isCardNotPresent\u0022:false,\u0022cardNotPresent\u0022:false,\u0022transactionNo\u0022:null,\u0022isForceSwipePinEntry\u0022:false,\u0022disableRestartTransactionWhenFailed\u0022:false,\u0022externalPaymentId\u0022:\u0022FINAL-TEST-235304\u0022,\u0022externalReferenceId\u0022:null,\u0022vaultedCard\u0022:null,\u0022allowOfflinePayment\u0022:true,\u0022approveOfflinePaymentWithoutPrompt\u0022:true,\u0022requiresRemoteConfirmation\u0022:true,\u0022applicationTracking\u0022:null,\u0022allowPartialAuth\u0022:false,\u0022germanInfo\u0022:null,\u0022remotePrint\u0022:false,\u0022transactionSettings\u0022:{\u0022cloverShouldHandleReceipts\u0022:false,\u0022disableCashBack\u0022:false,\u0022forcePinEntryOnSwipe\u0022:false,\u0022disableRestartTransactionOnFailure\u0022:false,\u0022allowOfflinePayment\u0022:true,\u0022approveOfflinePaymentWithoutPrompt\u0022:true,\u0022forceOfflinePayment\u0022:false,\u0022signatureThreshold\u0022:null,\u0022signatureEntryLocation\u0022:null,\u0022tipMode\u0022:\u0022NO_TIP\u0022,\u0022tippableAmount\u0022:null,\u0022disableReceiptSelection\u0022:false,\u0022disableDuplicateCheck\u0022:false,\u0022autoAcceptPaymentConfirmations\u0022:true,\u0022autoAcceptSignature\u0022:true,\u0022regionalExtras\u0022:null,\u0022cardEntryMethods\u0022:null,\u0022tipSuggestions\u0022:null}},\u0022order\u0022:null,\u0022requestInfo\u0022:\u0022SALE\u0022}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":2,"directed":true,"packageName":"com.clover.remote_protocol_broadcast.app"}
+2026-01-15 23:53:04 [INF] 📨 Raw message received: {"directed":false,"id":"644","method":"TX_START_RESPONSE","packageName":"com.clover.remote_protocol_broadcast.app","payload":"{\"millis\":0,\"result\":false}","remotePayCompatibilityVersion":1,"remote...
+2026-01-15 23:53:04 [INF] 📬 Received message type: TX_START_RESPONSE, ID: 644
+2026-01-15 23:53:04 [INF] 💳 Processing transaction response
+2026-01-15 23:53:04 [INF] 🔍 DEBUG: Handling transaction response - Method: TX_START_RESPONSE, Message ID: 644, Payload type: JsonElement
+2026-01-15 23:53:04 [INF] 📨 No matching handler for ID 644 but have 1 pending - using last pending
+2026-01-15 23:53:04 [INF] Connection state changed to "Paired"
+2026-01-15 23:54:19 [INF] CloverBridge starting...
+2026-01-15 23:54:19 [INF] Starting in tray mode
+2026-01-15 23:54:19 [INF] Configuration loaded from D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\config.json
+2026-01-15 23:54:19 [INF] Folders created/verified
+2026-01-15 23:54:19 [INF] CloverWebSocketService starting
+2026-01-15 23:54:19 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-15 23:54:19 [INF] Connection state changed to "Connecting"
+2026-01-15 23:54:19 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-15 23:54:19 [INF] TransactionQueueService started
+2026-01-15 23:54:19 [INF] InboxWatcher started, monitoring: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX
+2026-01-15 23:54:19 [INF] Found 0 existing files in inbox
+2026-01-15 23:54:19 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-15 23:54:19 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-15 23:54:19 [INF] Hosting environment: Production
+2026-01-15 23:54:19 [INF] Content root path: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64
+2026-01-15 23:54:19 [INF] TrayApplicationContext initialized
+2026-01-15 23:54:19 [INF] Connection state changed to "Connected"
+2026-01-15 23:54:19 [INF] Tray tooltip updated: CloverBridge - Conectado
+2026-01-15 23:54:19 [INF] Connected to Clover
+2026-01-15 23:54:19 [INF] Using existing auth token
+2026-01-15 23:54:19 [INF] Connection state changed to "Paired"
+2026-01-15 23:54:19 [INF] Tray tooltip updated: CloverBridge - Pareado
+2026-01-15 23:54:22 [INF] ⚙️ Configuración cargada:
+2026-01-15 23:54:22 [INF] Host: 10.1.1.53:12345
+2026-01-15 23:54:22 [INF] Secure: False
+2026-01-15 23:54:22 [INF] Remote App ID: clover-bridge
+2026-01-15 23:54:22 [INF] Estado de conexión: Pareado
+2026-01-15 23:54:22 [INF] Pairing completado exitosamente!
+2026-01-15 23:54:22 [INF] CloverBridge UI iniciado
+2026-01-15 23:54:25 [INF] Generando QR por $1000...
+2026-01-15 23:54:25 [INF] New file detected: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX\qr_20260115_235425_0053f9dd2af24de3ad1b683a51734bf7.json
+2026-01-15 23:54:25 [INF] Solicitud QR creada: qr_20260115_235425_0053f9dd2af24de3ad1b683a51734bf7.json
+2026-01-15 23:54:25 [INF] 📁 Guardada en: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX
+2026-01-15 23:54:26 [INF] Processing file: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX\qr_20260115_235425_0053f9dd2af24de3ad1b683a51734bf7.json
+2026-01-15 23:54:26 [INF] Response written: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\OUTBOX\RES_2026-01-15_23-54-26_55570577-5035-4ddb-874f-16cdacf5d884.json
+2026-01-15 23:54:26 [INF] File archived: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\ARCHIVE\processed\qr_20260115_235425_0053f9dd2af24de3ad1b683a51734bf7.json
+2026-01-15 23:54:26 [INF] File processed successfully: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX\qr_20260115_235425_0053f9dd2af24de3ad1b683a51734bf7.json
+2026-01-15 23:58:01 [INF] CloverBridge starting...
+2026-01-15 23:58:01 [INF] Starting in console mode
+2026-01-15 23:58:01 [INF] Configuration loaded from D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\config.json
+2026-01-15 23:58:01 [INF] Folders created/verified
+2026-01-15 23:58:01 [INF] CloverWebSocketService starting
+2026-01-15 23:58:01 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-15 23:58:01 [INF] Connection state changed to "Connecting"
+2026-01-15 23:58:01 [INF] TransactionQueueService started
+2026-01-15 23:58:01 [INF] InboxWatcher started, monitoring: D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\INBOX
+2026-01-15 23:58:01 [INF] Found 0 existing files in inbox
+2026-01-15 23:58:01 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-15 23:58:01 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-15 23:58:01 [INF] Hosting environment: Production
+2026-01-15 23:58:01 [INF] Content root path: D:\DEVs\Clover2
+2026-01-15 23:58:01 [INF] Connection state changed to "Connected"
+2026-01-15 23:58:01 [INF] Connected to Clover
+2026-01-15 23:58:01 [INF] Initiating pairing request. AuthToken present: false
+2026-01-15 23:58:01 [INF] Connection state changed to "PairingRequired"
+2026-01-15 23:58:01 [INF] 📤 Sending PAIRING_REQUEST: {"method":"PAIRING_REQUEST","payload":"{\u0022method\u0022:\u0022PAIRING_REQUEST\u0022,\u0022serialNumber\u0022:\u0022CB-001\u0022,\u0022name\u0022:\u0022ERP Bridge\u0022,\u0022authenticationToken\u0022:null}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":1}
+2026-01-15 23:58:01 [INF] Pairing request sent successfully - waiting for terminal response
+2026-01-15 23:58:16 [WRN] ⏱️ No response from terminal after 15s - using fallback mode
+2026-01-15 23:58:21 [WRN] Auto-completing pairing (fallback mode)
+2026-01-15 23:58:21 [INF] Configuration saved to D:\DEVs\Clover2\windows\bin\Release\net8.0-windows\win-x64\config.json
+2026-01-15 23:58:21 [INF] Connection state changed to "Paired"

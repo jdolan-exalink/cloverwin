@@ -1,0 +1,439 @@
+<Window x:Class="CloverBridge.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CloverBridge - Testing Dashboard"
+        Height="680"
+        Width="1100"
+        WindowStartupLocation="CenterScreen"
+        Background="#1e1e1e"
+        MinWidth="800"
+        MinHeight="500"
+        Closing="Window_Closing">
+
+    <Window.Resources>
+        <!-- Estilos modernos -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="#252526"/>
+            <Setter Property="BorderBrush" Value="#3c3c3c"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="10"/>
+        </Style>
+
+        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#00a4ef"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#0e639c"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#1177bb"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Background" Value="#3c3c3c"/>
+                    <Setter Property="Foreground" Value="#666666"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#2d2d30"/>
+            <Setter Property="Foreground" Value="#cccccc"/>
+            <Setter Property="BorderBrush" Value="#3c3c3c"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
+        </Style>
+
+        <Style x:Key="StatusBadge" TargetType="Border">
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="Margin" Value="5,0"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2d2d30" Padding="10,8">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo y Título -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image Source="cloverwin.png" 
+                           Width="36" 
+                           Height="36" 
+                           Margin="0,0,10,0" 
+                           RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="CloverBridge" 
+                                  FontSize="17" 
+                                  FontWeight="Bold"
+                                  Foreground="#00a4ef"/>
+                        <TextBlock x:Name="VersionTextBlock"
+                                  FontSize="9"
+                                  Foreground="#666666"
+                                  Margin="0,1,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Estado de Conexión -->
+                <StackPanel Grid.Column="1" 
+                           Orientation="Horizontal" 
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center">
+                    <Border x:Name="ConnectionStatusBadge" Style="{StaticResource StatusBadge}">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse x:Name="ConnectionStatusDot" Width="8" Height="8" Margin="0,0,6,0"/>
+                            <TextBlock x:Name="ConnectionStatusText" 
+                                      Text="Disconnected" 
+                                      FontSize="12"
+                                      FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- Botones de Acción -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                    <Button x:Name="PairingButton" 
+                           Content="Pairing" 
+                           Style="{StaticResource ButtonStyle}"
+                           Margin="5,0"
+                           Click="PairingButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Contenido Principal -->
+        <Grid Grid.Row="1" Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Panel Izquierdo - Testing -->
+            <Border Grid.Column="0" Style="{StaticResource CardStyle}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="🧪 Testing Suite" Style="{StaticResource HeaderTextStyle}"/>
+
+                        <!-- Nueva Venta de Prueba -->
+                        <GroupBox Header="💳 Nueva Venta de Prueba" Foreground="#cccccc" Margin="0,10">
+                            <StackPanel Margin="10">
+                                <TextBlock Text="Monto:" Foreground="#999999" Margin="0,5"/>
+                                <TextBox x:Name="SaleAmountTextBox" 
+                                        Style="{StaticResource TextBoxStyle}"
+                                        Text="50.00"/>
+
+                                <TextBlock Text="External ID:" Foreground="#999999" Margin="0,10,0,5"/>
+                                <TextBox x:Name="ExternalIdTextBox" 
+                                        Style="{StaticResource TextBoxStyle}"/>
+
+                                <Button x:Name="SendSaleButton"
+                                       Content="✅ Enviar Venta de Prueba ($50)"
+                                       Style="{StaticResource ButtonStyle}"
+                                       Margin="0,10"
+                                       Click="SendSaleButton_Click"
+                                       FontWeight="Bold"/>
+                                
+                                <TextBlock Text="Esto enviará una transacción de prueba a la terminal Clover." 
+                                          Foreground="#999999" 
+                                          Margin="0,10,0,0"
+                                          FontSize="11"/>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- Panel Derecho - Logs y Respuestas -->
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="📊 Log de Actividad" Style="{StaticResource HeaderTextStyle}"/>
+
+                    <TabControl Grid.Row="1" 
+                               Background="Transparent"
+                               BorderThickness="0">
+                        <TabControl.Resources>
+                            <Style TargetType="TabItem">
+                                <Setter Property="Background" Value="#2d2d30"/>
+                                <Setter Property="Foreground" Value="#cccccc"/>
+                                <Setter Property="Padding" Value="10,5"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="TabItem">
+                                            <Border Background="{TemplateBinding Background}"
+                                                   BorderThickness="1,1,1,0"
+                                                   BorderBrush="#3c3c3c"
+                                                   CornerRadius="4,4,0,0"
+                                                   Margin="2,0">
+                                                <ContentPresenter ContentSource="Header"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                Margin="{TemplateBinding Padding}"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="#0e639c"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TabControl.Resources>
+
+                        <TabItem Header="Respuestas">
+                            <Border Background="#2d2d30" CornerRadius="0,0,4,4">
+                                <Grid Margin="10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+                                        <TextBox x:Name="ResponseLogTextBox"
+                                                Style="{StaticResource TextBoxStyle}"
+                                                IsReadOnly="True"
+                                                TextWrapping="Wrap"
+                                                VerticalScrollBarVisibility="Auto"
+                                                MinHeight="400"
+                                                FontSize="11"/>
+                                    </ScrollViewer>
+
+                                    <Button Grid.Row="1"
+                                           x:Name="ClearResponseButton"
+                                           Content="Limpiar"
+                                           Style="{StaticResource ButtonStyle}"
+                                           HorizontalAlignment="Right"
+                                           Margin="0,10,0,0"
+                                           Click="ClearResponseButton_Click"/>
+                                </Grid>
+                            </Border>
+                        </TabItem>
+
+                        <TabItem Header="Sistema">
+                            <Border Background="#2d2d30" CornerRadius="0,0,4,4">
+                                <Grid Margin="10">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+                                        <TextBox x:Name="SystemLogTextBox"
+                                                Style="{StaticResource TextBoxStyle}"
+                                                IsReadOnly="True"
+                                                TextWrapping="Wrap"
+                                                VerticalScrollBarVisibility="Auto"
+                                                MinHeight="400"
+                                                FontSize="11"/>
+                                    </ScrollViewer>
+
+                                    <Button Grid.Row="1"
+                                           x:Name="ClearSystemButton"
+                                           Content="Limpiar"
+                                           Style="{StaticResource ButtonStyle}"
+                                           HorizontalAlignment="Right"
+                                           Margin="0,10,0,0"
+                                           Click="ClearSystemButton_Click"/>
+                                </Grid>
+                            </Border>
+                        </TabItem>
+
+                        <TabItem Header="Configuración">
+                            <Border Background="#2d2d30" CornerRadius="0,0,4,4">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="10">
+                                    <StackPanel>
+                                        <TextBlock Text="Configuración de Clover" 
+                                                  FontWeight="Bold" 
+                                                  Foreground="#00a4ef" 
+                                                  Margin="0,0,0,10"/>
+                                        
+                                        <TextBlock Text="Host (IP del Terminal):" Foreground="#999999" Margin="0,5"/>
+                                        <TextBox x:Name="HostTextBox" Style="{StaticResource TextBoxStyle}"/>
+
+                                        <TextBlock Text="Puerto:" Foreground="#999999" Margin="0,10,0,5"/>
+                                        <TextBox x:Name="PortTextBox" Style="{StaticResource TextBoxStyle}"/>
+
+                                        <TextBlock Text="Remote Application ID:" Foreground="#999999" Margin="0,10,0,5"/>
+                                        <TextBox x:Name="MerchantIdTextBox" Style="{StaticResource TextBoxStyle}"/>
+
+                                        <TextBlock Text="Serial Number:" Foreground="#999999" Margin="0,10,0,5"/>
+                                        <TextBox x:Name="DeviceIdTextBox" Style="{StaticResource TextBoxStyle}"/>
+
+                                        <TextBlock Text="Auth Token:" Foreground="#999999" Margin="0,10,0,5"/>
+                                        <TextBox x:Name="TokenTextBox" Style="{StaticResource TextBoxStyle}"/>
+
+                                        <CheckBox x:Name="SecureCheckBox" 
+                                                 Content="Usar conexión segura (wss://)" 
+                                                 Foreground="#cccccc"
+                                                 Margin="0,15"/>
+
+                                        <Button x:Name="SaveConfigButton"
+                                               Content="Guardar Configuración y Reintentar"
+                                               Style="{StaticResource ButtonStyle}"
+                                               Margin="0,15,0,0"
+                                               Click="SaveConfigButton_Click"/>
+
+                                        <Button x:Name="OpenConfigFolderButton"
+                                               Content="Abrir Carpeta de Configuración"
+                                               Style="{StaticResource ButtonStyle}"
+                                               Margin="0,10,0,0"
+                                               Click="OpenConfigFolderButton_Click"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Border>
+                        </TabItem>
+                    </TabControl>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="#2d2d30" Padding="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock x:Name="FooterStatusText" 
+                              Text="Listo" 
+                              Foreground="#00a4ef"
+                              VerticalAlignment="Center"
+                              Margin="5,0"/>
+                </StackPanel>
+
+                <TextBlock Grid.Column="1" 
+                          Text="CloverBridge © 2026" 
+                          Foreground="#666666"
+                          VerticalAlignment="Center"
+                          Margin="5,0"/>
+            </Grid>
+        </Border>
+
+        <!-- Popup de Pairing -->
+        <Grid x:Name="PairingPopup" 
+              Grid.RowSpan="3" 
+              Background="#B0000000" 
+              Visibility="Collapsed"
+              MouseLeftButtonDown="PairingPopup_MouseDown">
+            <Border Background="#2d2d30"
+                    BorderBrush="#667eea"
+                    BorderThickness="2"
+                    CornerRadius="12"
+                    Width="450"
+                    Height="350"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Padding="30"
+                    MouseLeftButtonDown="PairingPopupContent_MouseDown">
+                <StackPanel>
+                    <!-- Título -->
+                    <TextBlock Text="🔑 Integrar Terminal"
+                              FontSize="24"
+                              FontWeight="Bold"
+                              Foreground="#667eea"
+                              HorizontalAlignment="Center"
+                              Margin="0,0,0,20"/>
+
+                    <!-- Instrucciones -->
+                    <TextBlock Text="Ingresa este código en tu Clover:"
+                              FontSize="14"
+                              Foreground="#999999"
+                              HorizontalAlignment="Center"
+                              TextAlignment="Center"
+                              Margin="0,0,0,20"/>
+
+                    <!-- Código de Pairing -->
+                    <Border Background="#1e1e1e"
+                            BorderBrush="#667eea"
+                            BorderThickness="2"
+                            CornerRadius="8"
+                            Padding="20"
+                            Margin="0,0,0,20">
+                        <TextBlock x:Name="PopupPairingCode"
+                                  Text="------"
+                                  FontSize="48"
+                                  FontWeight="Bold"
+                                  FontFamily="Consolas"
+                                  Foreground="#00ff88"
+                                  HorizontalAlignment="Center"
+                                  TextAlignment="Center"/>
+                    </Border>
+
+                    <!-- Estado -->
+                    <TextBlock x:Name="PopupPairingStatus"
+                              Text="Esperando respuesta del terminal..."
+                              FontSize="13"
+                              Foreground="#999999"
+                              HorizontalAlignment="Center"
+                              TextAlignment="Center"
+                              TextWrapping="Wrap"
+                              Margin="0,0,0,20"/>
+
+                    <!-- Botones -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="10"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0"
+                               Content="Reintentar"
+                               Style="{StaticResource ButtonStyle}"
+                               Background="#f59e0b"
+                               Click="RetryPairingButton_Click"/>
+
+                        <Button Grid.Column="2"
+                               Content="Cancelar"
+                               Style="{StaticResource ButtonStyle}"
+                               Background="#ef4444"
+                               Click="ClosePairingPopup_Click"/>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

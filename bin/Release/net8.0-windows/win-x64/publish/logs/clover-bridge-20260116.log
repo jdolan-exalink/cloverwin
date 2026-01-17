@@ -1,0 +1,1584 @@
+2026-01-16 07:28:58 [INF] CloverBridge starting...
+2026-01-16 07:28:58 [INF] Starting in console mode
+2026-01-16 07:28:58 [INF] Creating default configuration
+2026-01-16 07:28:58 [INF] Configuration saved to D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 07:28:58 [INF] Folders created/verified
+2026-01-16 07:28:58 [INF] CloverWebSocketService starting
+2026-01-16 07:28:58 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 07:28:58 [INF] Connection state changed to "Connecting"
+2026-01-16 07:28:58 [INF] TransactionQueueService started
+2026-01-16 07:28:58 [INF] InboxWatcher started, monitoring: D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\INBOX
+2026-01-16 07:28:58 [INF] Found 0 existing files in inbox
+2026-01-16 07:28:58 [ERR] Error starting API server
+System.Net.HttpListenerException (183): Failed to listen on prefix 'http://127.0.0.1:3777/' because it conflicts with an existing registration on the machine.
+   at System.Net.HttpListener.AddPrefixCore(String registeredPrefix)
+   at System.Net.HttpListener.AddAllPrefixes()
+   at System.Net.HttpListener.Start()
+   at CloverBridge.Services.ApiService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\ApiService.cs:line 45
+2026-01-16 07:28:58 [ERR] Hosting failed to start
+System.ObjectDisposedException: Cannot access a disposed object.
+Object name: 'System.Net.HttpListener'.
+   at System.Net.HttpListener.Stop()
+   at CloverBridge.Services.ApiService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\ApiService.cs:line 68
+   at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__15_1(IHostedService service, CancellationToken token)
+   at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
+2026-01-16 07:28:58 [FTL] Application terminated unexpectedly
+System.ObjectDisposedException: Cannot access a disposed object.
+Object name: 'System.Net.HttpListener'.
+   at System.Net.HttpListener.Stop()
+   at CloverBridge.Services.ApiService.Dispose() in D:\DEVs\Cloverwin\Services\ApiService.cs:line 331
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngineScope.DisposeAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.Extensions.Hosting.Internal.Host.<DisposeAsync>g__DisposeAsync|21_0(Object o)
+   at Microsoft.Extensions.Hosting.Internal.Host.DisposeAsync()
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at CloverBridge.Program.RunAsConsoleAsync() in D:\DEVs\Cloverwin\Program.cs:line 141
+   at CloverBridge.Program.Main(String[] args) in D:\DEVs\Cloverwin\Program.cs:line 43
+2026-01-16 07:34:31 [INF] CloverBridge starting...
+2026-01-16 07:34:31 [INF] Starting in console mode
+2026-01-16 07:34:31 [INF] Configuration loaded from D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 07:34:31 [INF] Folders created/verified
+2026-01-16 07:34:31 [INF] CloverWebSocketService starting
+2026-01-16 07:34:31 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 07:34:31 [INF] Connection state changed to "Connecting"
+2026-01-16 07:34:31 [INF] TransactionQueueService started
+2026-01-16 07:34:31 [INF] InboxWatcher started, monitoring: D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\INBOX
+2026-01-16 07:34:31 [INF] Found 0 existing files in inbox
+2026-01-16 07:34:31 [WRN] Port 3777 is already in use (attempt 1/3). Retrying in 2 seconds...
+2026-01-16 07:34:31 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-16 07:34:31 [INF] Hosting environment: Production
+2026-01-16 07:34:31 [INF] Content root path: D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish
+2026-01-16 07:34:31 [INF] Connection state changed to "Connected"
+2026-01-16 07:34:31 [INF] Connected to Clover
+2026-01-16 07:34:31 [INF] Initiating pairing request. AuthToken present: false
+2026-01-16 07:34:31 [INF] Connection state changed to "PairingRequired"
+2026-01-16 07:34:31 [INF] 📤 Sending PAIRING_REQUEST: {"method":"PAIRING_REQUEST","payload":"{\u0022method\u0022:\u0022PAIRING_REQUEST\u0022,\u0022serialNumber\u0022:\u0022CB-001\u0022,\u0022name\u0022:\u0022ERP Bridge\u0022,\u0022authenticationToken\u0022:null}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":1}
+2026-01-16 07:34:31 [INF] Pairing request sent successfully - waiting for terminal response
+2026-01-16 07:34:33 [WRN] Port 3777 is already in use (attempt 2/3). Retrying in 2 seconds...
+2026-01-16 08:16:08 [INF] CloverBridge starting...
+2026-01-16 08:16:08 [INF] Starting in tray mode
+2026-01-16 08:16:08 [INF] Configuration loaded from D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 08:16:08 [INF] Folders created/verified
+2026-01-16 08:16:08 [INF] CloverWebSocketService starting
+2026-01-16 08:16:08 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 08:16:08 [INF] Connection state changed to "Connecting"
+2026-01-16 08:16:08 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 08:16:08 [INF] TransactionQueueService started
+2026-01-16 08:16:08 [INF] InboxWatcher started, monitoring: D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\INBOX
+2026-01-16 08:16:08 [INF] Found 0 existing files in inbox
+2026-01-16 08:16:08 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-16 08:16:08 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-16 08:16:08 [INF] Hosting environment: Production
+2026-01-16 08:16:08 [INF] Content root path: D:\DEVs\Cloverwin
+2026-01-16 08:16:08 [INF] TrayApplicationContext initialized
+2026-01-16 08:16:08 [INF] Connection state changed to "Connected"
+2026-01-16 08:16:08 [INF] Tray tooltip updated: CloverBridge - Conectado
+2026-01-16 08:16:08 [INF] Connected to Clover
+2026-01-16 08:16:08 [INF] Initiating pairing request. AuthToken present: false
+2026-01-16 08:16:08 [INF] Connection state changed to "PairingRequired"
+2026-01-16 08:16:08 [INF] Tray tooltip updated: CloverBridge - Pairing requerido
+2026-01-16 08:16:08 [INF] 📤 Sending PAIRING_REQUEST: {"method":"PAIRING_REQUEST","payload":"{\u0022method\u0022:\u0022PAIRING_REQUEST\u0022,\u0022serialNumber\u0022:\u0022CB-001\u0022,\u0022name\u0022:\u0022ERP Bridge\u0022,\u0022authenticationToken\u0022:null}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":1}
+2026-01-16 08:16:08 [INF] Pairing request sent successfully - waiting for terminal response
+2026-01-16 08:16:23 [WRN] ⏱️ No response from terminal after 15s - using fallback mode
+2026-01-16 08:16:23 [INF] Pairing code received in tray: 965418
+2026-01-16 08:25:59 [INF] CloverBridge starting...
+2026-01-16 08:25:59 [INF] Starting in tray mode
+2026-01-16 08:25:59 [INF] Configuration loaded from D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 08:25:59 [INF] Folders created/verified
+2026-01-16 08:25:59 [INF] CloverWebSocketService starting
+2026-01-16 08:25:59 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 08:25:59 [INF] Connection state changed to "Connecting"
+2026-01-16 08:25:59 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 08:25:59 [INF] TransactionQueueService started
+2026-01-16 08:25:59 [INF] InboxWatcher started, monitoring: D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\INBOX
+2026-01-16 08:25:59 [INF] Found 0 existing files in inbox
+2026-01-16 08:25:59 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-16 08:25:59 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-16 08:25:59 [INF] Hosting environment: Production
+2026-01-16 08:25:59 [INF] Content root path: D:\DEVs\Cloverwin
+2026-01-16 08:25:59 [INF] TrayApplicationContext initialized
+2026-01-16 08:26:00 [INF] Connection state changed to "Connected"
+2026-01-16 08:26:00 [INF] Tray tooltip updated: CloverBridge - Conectado
+2026-01-16 08:26:00 [INF] Connected to Clover
+2026-01-16 08:26:00 [INF] Initiating pairing request. AuthToken present: false
+2026-01-16 08:26:00 [INF] Connection state changed to "PairingRequired"
+2026-01-16 08:26:00 [INF] Tray tooltip updated: CloverBridge - Pairing requerido
+2026-01-16 08:26:00 [INF] 📤 Sending PAIRING_REQUEST: {"method":"PAIRING_REQUEST","payload":"{\u0022method\u0022:\u0022PAIRING_REQUEST\u0022,\u0022serialNumber\u0022:\u0022CB-001\u0022,\u0022name\u0022:\u0022ERP Bridge\u0022,\u0022authenticationToken\u0022:null}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":1}
+2026-01-16 08:26:00 [INF] Pairing request sent successfully - waiting for terminal response
+2026-01-16 08:26:15 [WRN] ⏱️ No response from terminal after 15s - using fallback mode
+2026-01-16 08:26:15 [INF] Pairing code received in tray: 440980
+2026-01-16 08:37:28 [INF] CloverBridge starting...
+2026-01-16 08:37:28 [INF] Starting in tray mode
+2026-01-16 08:37:28 [INF] Configuration loaded from D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 08:37:28 [INF] Folders created/verified
+2026-01-16 08:37:28 [INF] CloverWebSocketService starting
+2026-01-16 08:37:28 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 08:37:28 [INF] Connection state changed to "Connecting"
+2026-01-16 08:37:28 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 08:37:28 [INF] TransactionQueueService started
+2026-01-16 08:37:28 [INF] InboxWatcher started, monitoring: D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\INBOX
+2026-01-16 08:37:28 [INF] Found 0 existing files in inbox
+2026-01-16 08:37:28 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-16 08:37:28 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-16 08:37:28 [INF] Hosting environment: Production
+2026-01-16 08:37:28 [INF] Content root path: D:\DEVs\Cloverwin
+2026-01-16 08:37:28 [INF] TrayApplicationContext initialized
+2026-01-16 08:37:29 [INF] Connection state changed to "Connected"
+2026-01-16 08:37:29 [INF] Tray tooltip updated: CloverBridge - Conectado
+2026-01-16 08:37:29 [INF] Connected to Clover
+2026-01-16 08:37:29 [INF] Initiating pairing request. AuthToken present: false
+2026-01-16 08:37:29 [INF] Connection state changed to "PairingRequired"
+2026-01-16 08:37:29 [INF] Tray tooltip updated: CloverBridge - Pairing requerido
+2026-01-16 08:37:29 [INF] 📤 Sending PAIRING_REQUEST: {"method":"PAIRING_REQUEST","payload":"{\u0022method\u0022:\u0022PAIRING_REQUEST\u0022,\u0022serialNumber\u0022:\u0022CB-001\u0022,\u0022name\u0022:\u0022ERP Bridge\u0022,\u0022authenticationToken\u0022:null}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":1}
+2026-01-16 08:37:29 [INF] Pairing request sent successfully - waiting for terminal response
+2026-01-16 08:37:44 [WRN] ⏱️ No response from terminal after 15s - using fallback mode
+2026-01-16 08:37:44 [INF] Pairing code received in tray: 277044
+2026-01-16 08:37:44 [INF] 📨 Raw message received: {"directed":false,"id":"674","method":"PAIRING_CODE","packageName":"com.clover.remote_protocol_broadcast.app","payload":"{\"method\":\"PAIRING_CODE\",\"pairingCode\":\"0367\"}","remotePayCompatibility...
+2026-01-16 08:37:44 [INF] 📬 Received message type: PAIRING_CODE, ID: 674
+2026-01-16 08:37:44 [INF] 🔑 Processing PAIRING_CODE message
+2026-01-16 08:37:44 [INF] 🔢 Received PAIRING_CODE from terminal
+2026-01-16 08:37:44 [INF] 🔢 PAIRING CODE: 0367
+2026-01-16 08:37:44 [INF] Pairing code received in tray: 0367
+2026-01-16 08:37:49 [INF] 📨 Raw message received: {"directed":false,"id":"677","method":"PAIRING_RESPONSE","packageName":"com.clover.remote_protocol_broadcast.app","payload":"{\"applicationName\":\"/remote_pay\",\"authenticationToken\":\"7ddf7266-6da...
+2026-01-16 08:37:49 [INF] 📬 Received message type: PAIRING_RESPONSE, ID: 677
+2026-01-16 08:37:49 [INF] 🔐 Processing PAIRING_RESPONSE message
+2026-01-16 08:37:49 [INF] 📨 Received PAIRING_RESPONSE from terminal
+2026-01-16 08:37:49 [INF] 📊 Pairing state: PAIRED
+2026-01-16 08:37:49 [INF] ✅ Received auth token from pairing (***ec01)
+2026-01-16 08:37:49 [INF] Configuration saved to D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 08:37:49 [INF] ✅ Pairing completed successfully!
+2026-01-16 08:37:49 [INF] Connection state changed to "Paired"
+2026-01-16 08:37:49 [INF] Tray tooltip updated: CloverBridge - Pareado
+2026-01-16 08:42:55 [INF] CloverBridge starting...
+2026-01-16 08:42:55 [INF] Starting in tray mode
+2026-01-16 08:42:55 [INF] Configuration loaded from D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 08:42:55 [INF] Folders created/verified
+2026-01-16 08:42:55 [INF] CloverWebSocketService starting
+2026-01-16 08:42:55 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 08:42:55 [INF] Connection state changed to "Connecting"
+2026-01-16 08:42:55 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 08:42:55 [INF] TransactionQueueService started
+2026-01-16 08:42:55 [INF] InboxWatcher started, monitoring: D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\INBOX
+2026-01-16 08:42:55 [INF] Found 0 existing files in inbox
+2026-01-16 08:42:55 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-16 08:42:55 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-16 08:42:55 [INF] Hosting environment: Production
+2026-01-16 08:42:55 [INF] Content root path: D:\DEVs\Cloverwin
+2026-01-16 08:42:55 [INF] TrayApplicationContext initialized
+2026-01-16 08:42:55 [INF] Connection state changed to "Connected"
+2026-01-16 08:42:55 [INF] Tray tooltip updated: CloverBridge - Conectado
+2026-01-16 08:42:55 [INF] Connected to Clover
+2026-01-16 08:42:55 [INF] Initiating pairing request. AuthToken present: true
+2026-01-16 08:42:55 [INF] Connection state changed to "PairingRequired"
+2026-01-16 08:42:55 [INF] Tray tooltip updated: CloverBridge - Pairing requerido
+2026-01-16 08:42:55 [INF] 📤 Sending PAIRING_REQUEST: {"method":"PAIRING_REQUEST","payload":"{\u0022method\u0022:\u0022PAIRING_REQUEST\u0022,\u0022serialNumber\u0022:\u0022CB-001\u0022,\u0022name\u0022:\u0022ERP Bridge\u0022,\u0022authenticationToken\u0022:\u00227ddf7266-6da1-43b3-8c6b-911afff9ec01\u0022}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":1}
+2026-01-16 08:42:55 [INF] Pairing request sent successfully - waiting for terminal response
+2026-01-16 08:42:55 [INF] 📨 Raw message received: {"directed":false,"id":"678","method":"PAIRING_RESPONSE","packageName":"com.clover.remote_protocol_broadcast.app","payload":"{\"applicationName\":\"/remote_pay\",\"authenticationToken\":\"c50754b9-a82...
+2026-01-16 08:42:55 [INF] 📬 Received message type: PAIRING_RESPONSE, ID: 678
+2026-01-16 08:42:55 [INF] 🔐 Processing PAIRING_RESPONSE message
+2026-01-16 08:42:55 [INF] 📨 Received PAIRING_RESPONSE from terminal
+2026-01-16 08:42:55 [INF] 📊 Pairing state: PAIRED
+2026-01-16 08:42:55 [INF] ✅ Received auth token from pairing (***e2ad)
+2026-01-16 08:42:55 [INF] Configuration saved to D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 08:42:55 [INF] ✅ Pairing completed successfully!
+2026-01-16 08:42:55 [INF] Connection state changed to "Paired"
+2026-01-16 08:42:55 [INF] Tray tooltip updated: CloverBridge - Pareado
+2026-01-16 09:05:57 [INF] CloverBridge starting...
+2026-01-16 09:05:57 [INF] Starting in tray mode
+2026-01-16 09:05:57 [INF] Configuration loaded from D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 09:05:57 [INF] Folders created/verified
+2026-01-16 09:05:57 [INF] CloverWebSocketService starting
+2026-01-16 09:05:57 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:05:57 [INF] Connection state changed to "Connecting"
+2026-01-16 09:05:57 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:05:57 [INF] TransactionQueueService started
+2026-01-16 09:05:57 [INF] InboxWatcher started, monitoring: D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\INBOX
+2026-01-16 09:05:57 [INF] Found 0 existing files in inbox
+2026-01-16 09:05:57 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-16 09:05:57 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-16 09:05:57 [INF] Hosting environment: Production
+2026-01-16 09:05:57 [INF] Content root path: D:\DEVs\Cloverwin
+2026-01-16 09:05:57 [INF] TrayApplicationContext initialized
+2026-01-16 09:05:58 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:05:58 [INF] Connection state changed to "Error"
+2026-01-16 09:05:58 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:05:58 [INF] Reconnect attempt 1/10
+2026-01-16 09:06:03 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:06:03 [INF] Connection state changed to "Connecting"
+2026-01-16 09:06:03 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:06:04 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:06:04 [INF] Connection state changed to "Error"
+2026-01-16 09:06:04 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:06:04 [INF] Reconnect attempt 2/10
+2026-01-16 09:06:09 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:06:09 [INF] Connection state changed to "Connecting"
+2026-01-16 09:06:09 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:06:11 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:06:11 [INF] Connection state changed to "Error"
+2026-01-16 09:06:11 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:06:11 [INF] Reconnect attempt 3/10
+2026-01-16 09:06:16 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:06:16 [INF] Connection state changed to "Connecting"
+2026-01-16 09:06:16 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:06:16 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:06:16 [INF] Connection state changed to "Error"
+2026-01-16 09:06:16 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:06:16 [INF] Reconnect attempt 4/10
+2026-01-16 09:06:21 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:06:21 [INF] Connection state changed to "Connecting"
+2026-01-16 09:06:21 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:06:23 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:06:23 [INF] Connection state changed to "Error"
+2026-01-16 09:06:23 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:06:23 [INF] Reconnect attempt 5/10
+2026-01-16 09:06:28 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:06:28 [INF] Connection state changed to "Connecting"
+2026-01-16 09:06:28 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:06:28 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:06:28 [INF] Connection state changed to "Error"
+2026-01-16 09:06:28 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:06:28 [INF] Reconnect attempt 6/10
+2026-01-16 09:06:33 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:06:33 [INF] Connection state changed to "Connecting"
+2026-01-16 09:06:33 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:06:34 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:06:34 [INF] Connection state changed to "Error"
+2026-01-16 09:06:34 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:06:34 [INF] Reconnect attempt 7/10
+2026-01-16 09:06:39 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:06:39 [INF] Connection state changed to "Connecting"
+2026-01-16 09:06:39 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:06:40 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:06:40 [INF] Connection state changed to "Error"
+2026-01-16 09:06:40 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:06:40 [INF] Reconnect attempt 8/10
+2026-01-16 09:06:45 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:06:45 [INF] Connection state changed to "Connecting"
+2026-01-16 09:06:45 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:06:46 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:06:46 [INF] Connection state changed to "Error"
+2026-01-16 09:06:46 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:06:46 [INF] Reconnect attempt 9/10
+2026-01-16 09:06:51 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:06:51 [INF] Connection state changed to "Connecting"
+2026-01-16 09:06:51 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:06:52 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:06:52 [INF] Connection state changed to "Error"
+2026-01-16 09:06:52 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:06:52 [INF] Reconnect attempt 10/10
+2026-01-16 09:06:57 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:06:57 [INF] Connection state changed to "Connecting"
+2026-01-16 09:06:57 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:06:58 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:06:58 [INF] Connection state changed to "Error"
+2026-01-16 09:06:58 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:06:58 [WRN] Max reconnect attempts reached, waiting longer...
+2026-01-16 09:07:58 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:07:58 [INF] Connection state changed to "Connecting"
+2026-01-16 09:07:58 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:07:59 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:07:59 [INF] Connection state changed to "Error"
+2026-01-16 09:07:59 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:07:59 [INF] Reconnect attempt 1/10
+2026-01-16 09:08:04 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:08:04 [INF] Connection state changed to "Connecting"
+2026-01-16 09:08:04 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:08:05 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:08:05 [INF] Connection state changed to "Error"
+2026-01-16 09:08:05 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:08:05 [INF] Reconnect attempt 2/10
+2026-01-16 09:08:10 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:08:10 [INF] Connection state changed to "Connecting"
+2026-01-16 09:08:10 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:08:12 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:08:12 [INF] Connection state changed to "Error"
+2026-01-16 09:08:12 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:08:12 [INF] Reconnect attempt 3/10
+2026-01-16 09:08:17 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:08:17 [INF] Connection state changed to "Connecting"
+2026-01-16 09:08:17 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:08:17 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:08:17 [INF] Connection state changed to "Error"
+2026-01-16 09:08:17 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:08:17 [INF] Reconnect attempt 4/10
+2026-01-16 09:08:22 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:08:22 [INF] Connection state changed to "Connecting"
+2026-01-16 09:08:22 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:08:24 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:08:24 [INF] Connection state changed to "Error"
+2026-01-16 09:08:24 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:08:24 [INF] Reconnect attempt 5/10
+2026-01-16 09:08:29 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:08:29 [INF] Connection state changed to "Connecting"
+2026-01-16 09:08:29 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:08:30 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:08:30 [INF] Connection state changed to "Error"
+2026-01-16 09:08:30 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:08:30 [INF] Reconnect attempt 6/10
+2026-01-16 09:08:35 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:08:35 [INF] Connection state changed to "Connecting"
+2026-01-16 09:08:35 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:08:36 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:08:36 [INF] Connection state changed to "Error"
+2026-01-16 09:08:36 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:08:36 [INF] Reconnect attempt 7/10
+2026-01-16 09:08:41 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:08:41 [INF] Connection state changed to "Connecting"
+2026-01-16 09:08:41 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:08:42 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:08:42 [INF] Connection state changed to "Error"
+2026-01-16 09:08:42 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:08:42 [INF] Reconnect attempt 8/10
+2026-01-16 09:08:47 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:08:47 [INF] Connection state changed to "Connecting"
+2026-01-16 09:08:47 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:08:48 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:08:48 [INF] Connection state changed to "Error"
+2026-01-16 09:08:48 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:08:48 [INF] Reconnect attempt 9/10
+2026-01-16 09:08:53 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:08:53 [INF] Connection state changed to "Connecting"
+2026-01-16 09:08:53 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:08:54 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:08:54 [INF] Connection state changed to "Error"
+2026-01-16 09:08:54 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:08:54 [INF] Reconnect attempt 10/10
+2026-01-16 09:08:59 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:08:59 [INF] Connection state changed to "Connecting"
+2026-01-16 09:08:59 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:09:00 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:09:00 [INF] Connection state changed to "Error"
+2026-01-16 09:09:00 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:09:00 [WRN] Max reconnect attempts reached, waiting longer...
+2026-01-16 09:10:00 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:10:00 [INF] Connection state changed to "Connecting"
+2026-01-16 09:10:00 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:10:01 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:10:01 [INF] Connection state changed to "Error"
+2026-01-16 09:10:01 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:10:01 [INF] Reconnect attempt 1/10
+2026-01-16 09:10:06 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:10:06 [INF] Connection state changed to "Connecting"
+2026-01-16 09:10:06 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:10:07 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:10:07 [INF] Connection state changed to "Error"
+2026-01-16 09:10:07 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:10:07 [INF] Reconnect attempt 2/10
+2026-01-16 09:10:12 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:10:12 [INF] Connection state changed to "Connecting"
+2026-01-16 09:10:12 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:10:13 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:10:13 [INF] Connection state changed to "Error"
+2026-01-16 09:10:13 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:10:13 [INF] Reconnect attempt 3/10
+2026-01-16 09:10:18 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:10:18 [INF] Connection state changed to "Connecting"
+2026-01-16 09:10:18 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:10:19 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:10:19 [INF] Connection state changed to "Error"
+2026-01-16 09:10:19 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:10:19 [INF] Reconnect attempt 4/10
+2026-01-16 09:10:24 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:10:24 [INF] Connection state changed to "Connecting"
+2026-01-16 09:10:24 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:10:25 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:10:25 [INF] Connection state changed to "Error"
+2026-01-16 09:10:25 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:10:25 [INF] Reconnect attempt 5/10
+2026-01-16 09:10:30 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:10:30 [INF] Connection state changed to "Connecting"
+2026-01-16 09:10:30 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:10:31 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:10:31 [INF] Connection state changed to "Error"
+2026-01-16 09:10:31 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:10:31 [INF] Reconnect attempt 6/10
+2026-01-16 09:10:36 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:10:36 [INF] Connection state changed to "Connecting"
+2026-01-16 09:10:36 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:10:37 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:10:37 [INF] Connection state changed to "Error"
+2026-01-16 09:10:37 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:10:37 [INF] Reconnect attempt 7/10
+2026-01-16 09:10:42 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:10:42 [INF] Connection state changed to "Connecting"
+2026-01-16 09:10:42 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:10:43 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:10:43 [INF] Connection state changed to "Error"
+2026-01-16 09:10:43 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:10:43 [INF] Reconnect attempt 8/10
+2026-01-16 09:10:48 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:10:48 [INF] Connection state changed to "Connecting"
+2026-01-16 09:10:48 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:10:49 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:10:49 [INF] Connection state changed to "Error"
+2026-01-16 09:10:49 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:10:49 [INF] Reconnect attempt 9/10
+2026-01-16 09:10:54 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:10:54 [INF] Connection state changed to "Connecting"
+2026-01-16 09:10:54 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:10:55 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:10:55 [INF] Connection state changed to "Error"
+2026-01-16 09:10:55 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:10:55 [INF] Reconnect attempt 10/10
+2026-01-16 09:11:00 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:11:00 [INF] Connection state changed to "Connecting"
+2026-01-16 09:11:00 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:11:01 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:11:01 [INF] Connection state changed to "Error"
+2026-01-16 09:11:01 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:11:01 [WRN] Max reconnect attempts reached, waiting longer...
+2026-01-16 09:12:01 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:12:01 [INF] Connection state changed to "Connecting"
+2026-01-16 09:12:01 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:12:02 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:12:02 [INF] Connection state changed to "Error"
+2026-01-16 09:12:02 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:12:02 [INF] Reconnect attempt 1/10
+2026-01-16 09:12:07 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:12:07 [INF] Connection state changed to "Connecting"
+2026-01-16 09:12:07 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:12:08 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:12:08 [INF] Connection state changed to "Error"
+2026-01-16 09:12:08 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:12:08 [INF] Reconnect attempt 2/10
+2026-01-16 09:12:13 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:12:13 [INF] Connection state changed to "Connecting"
+2026-01-16 09:12:13 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:12:14 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:12:14 [INF] Connection state changed to "Error"
+2026-01-16 09:12:14 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:12:14 [INF] Reconnect attempt 3/10
+2026-01-16 09:12:19 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:12:19 [INF] Connection state changed to "Connecting"
+2026-01-16 09:12:19 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:12:20 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:12:20 [INF] Connection state changed to "Error"
+2026-01-16 09:12:20 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:12:20 [INF] Reconnect attempt 4/10
+2026-01-16 09:12:25 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:12:25 [INF] Connection state changed to "Connecting"
+2026-01-16 09:12:25 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:12:26 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:12:26 [INF] Connection state changed to "Error"
+2026-01-16 09:12:26 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:12:26 [INF] Reconnect attempt 5/10
+2026-01-16 09:12:31 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:12:31 [INF] Connection state changed to "Connecting"
+2026-01-16 09:12:31 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:12:32 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:12:32 [INF] Connection state changed to "Error"
+2026-01-16 09:12:32 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:12:32 [INF] Reconnect attempt 6/10
+2026-01-16 09:12:37 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:12:37 [INF] Connection state changed to "Connecting"
+2026-01-16 09:12:37 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:12:38 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:12:38 [INF] Connection state changed to "Error"
+2026-01-16 09:12:38 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:12:38 [INF] Reconnect attempt 7/10
+2026-01-16 09:12:43 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:12:43 [INF] Connection state changed to "Connecting"
+2026-01-16 09:12:43 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:12:44 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:12:44 [INF] Connection state changed to "Error"
+2026-01-16 09:12:44 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:12:44 [INF] Reconnect attempt 8/10
+2026-01-16 09:12:49 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:12:49 [INF] Connection state changed to "Connecting"
+2026-01-16 09:12:49 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:12:50 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:12:50 [INF] Connection state changed to "Error"
+2026-01-16 09:12:50 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:12:50 [INF] Reconnect attempt 9/10
+2026-01-16 09:12:55 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:12:55 [INF] Connection state changed to "Connecting"
+2026-01-16 09:12:55 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:12:56 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:12:56 [INF] Connection state changed to "Error"
+2026-01-16 09:12:56 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:12:56 [INF] Reconnect attempt 10/10
+2026-01-16 09:13:01 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:13:01 [INF] Connection state changed to "Connecting"
+2026-01-16 09:13:01 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:13:02 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:13:02 [INF] Connection state changed to "Error"
+2026-01-16 09:13:02 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:13:02 [WRN] Max reconnect attempts reached, waiting longer...
+2026-01-16 09:14:02 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:14:02 [INF] Connection state changed to "Connecting"
+2026-01-16 09:14:02 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:14:03 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:14:03 [INF] Connection state changed to "Error"
+2026-01-16 09:14:03 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:14:03 [INF] Reconnect attempt 1/10
+2026-01-16 09:14:08 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:14:08 [INF] Connection state changed to "Connecting"
+2026-01-16 09:14:08 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:14:09 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:14:09 [INF] Connection state changed to "Error"
+2026-01-16 09:14:09 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:14:09 [INF] Reconnect attempt 2/10
+2026-01-16 09:14:14 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:14:14 [INF] Connection state changed to "Connecting"
+2026-01-16 09:14:14 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:14:15 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:14:15 [INF] Connection state changed to "Error"
+2026-01-16 09:14:15 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:14:15 [INF] Reconnect attempt 3/10
+2026-01-16 09:14:20 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:14:20 [INF] Connection state changed to "Connecting"
+2026-01-16 09:14:20 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:14:21 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:14:21 [INF] Connection state changed to "Error"
+2026-01-16 09:14:21 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:14:21 [INF] Reconnect attempt 4/10
+2026-01-16 09:14:26 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:14:26 [INF] Connection state changed to "Connecting"
+2026-01-16 09:14:26 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:14:27 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:14:27 [INF] Connection state changed to "Error"
+2026-01-16 09:14:27 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:14:27 [INF] Reconnect attempt 5/10
+2026-01-16 09:14:32 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:14:32 [INF] Connection state changed to "Connecting"
+2026-01-16 09:14:32 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:14:33 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:14:33 [INF] Connection state changed to "Error"
+2026-01-16 09:14:33 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:14:33 [INF] Reconnect attempt 6/10
+2026-01-16 09:14:38 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:14:38 [INF] Connection state changed to "Connecting"
+2026-01-16 09:14:38 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:14:40 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:14:40 [INF] Connection state changed to "Error"
+2026-01-16 09:14:40 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:14:40 [INF] Reconnect attempt 7/10
+2026-01-16 09:14:45 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:14:45 [INF] Connection state changed to "Connecting"
+2026-01-16 09:14:45 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:14:46 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:14:46 [INF] Connection state changed to "Error"
+2026-01-16 09:14:46 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:14:46 [INF] Reconnect attempt 8/10
+2026-01-16 09:14:51 [INF] Connecting to Clover at ws://10.1.1.53:12345/remote_pay
+2026-01-16 09:14:51 [INF] Connection state changed to "Connecting"
+2026-01-16 09:14:51 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:14:51 [ERR] Error in WebSocket connection
+System.Net.WebSockets.WebSocketException (0x80004005): Unable to connect to the remote server
+ ---> System.Net.Http.HttpRequestException: An error occurred while sending the request.
+ ---> System.Net.Http.HttpIOException: The response ended prematurely. (ResponseEnded)
+   at System.Net.Http.HttpConnection.FillAsync(Boolean async)
+   at System.Net.Http.HttpConnection.<FillForHeadersAsync>g__ReadUntilEndOfHeaderAsync|84_0(Boolean async)
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.WebSocketHandle.ConnectAsync(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken, ClientWebSocketOptions options)
+   at System.Net.WebSockets.ClientWebSocket.ConnectAsyncCore(Uri uri, HttpMessageInvoker invoker, CancellationToken cancellationToken)
+   at CloverBridge.Services.CloverWebSocketService.ConnectAsync(CancellationToken cancellationToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 111
+   at CloverBridge.Services.CloverWebSocketService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\CloverWebSocketService.cs:line 54
+2026-01-16 09:14:51 [INF] Connection state changed to "Error"
+2026-01-16 09:14:51 [INF] Tray tooltip updated: CloverBridge - Error
+2026-01-16 09:14:51 [INF] Reconnect attempt 9/10
+2026-01-16 09:14:53 [INF] Configuration saved to D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 09:14:54 [INF] Connection state changed to "Disconnected"
+2026-01-16 09:14:54 [INF] Tray tooltip updated: CloverBridge - Desconectado
+2026-01-16 09:14:55 [INF] Connecting to Clover at wss://10.1.1.53:12345/remote_pay
+2026-01-16 09:14:55 [INF] Connection state changed to "Connecting"
+2026-01-16 09:14:55 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:14:56 [WRN] SSL certificate validation failed: "RemoteCertificateChainErrors"
+2026-01-16 09:14:56 [INF] Connection state changed to "Connected"
+2026-01-16 09:14:56 [INF] Tray tooltip updated: CloverBridge - Conectado
+2026-01-16 09:14:56 [INF] Connected to Clover
+2026-01-16 09:14:56 [INF] Initiating pairing request. AuthToken present: true
+2026-01-16 09:14:56 [INF] Connection state changed to "PairingRequired"
+2026-01-16 09:14:56 [INF] Tray tooltip updated: CloverBridge - Pairing requerido
+2026-01-16 09:14:56 [INF] 📤 Sending PAIRING_REQUEST: {"method":"PAIRING_REQUEST","payload":"{\u0022method\u0022:\u0022PAIRING_REQUEST\u0022,\u0022serialNumber\u0022:\u0022CB-001\u0022,\u0022name\u0022:\u0022ERP Bridge\u0022,\u0022authenticationToken\u0022:\u0022c50754b9-a826-4be0-87c8-73c61d75e2ad\u0022}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":1}
+2026-01-16 09:14:56 [INF] Pairing request sent successfully - waiting for terminal response
+2026-01-16 09:14:56 [INF] Connecting to Clover at wss://10.1.1.53:12345/remote_pay
+2026-01-16 09:14:56 [INF] Connection state changed to "Connecting"
+2026-01-16 09:14:56 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:14:56 [WRN] SSL certificate validation failed: "RemoteCertificateChainErrors"
+2026-01-16 09:14:56 [INF] Connection state changed to "Connected"
+2026-01-16 09:14:56 [INF] Tray tooltip updated: CloverBridge - Conectado
+2026-01-16 09:14:56 [INF] Connected to Clover
+2026-01-16 09:14:56 [INF] Initiating pairing request. AuthToken present: true
+2026-01-16 09:14:56 [INF] Connection state changed to "PairingRequired"
+2026-01-16 09:14:56 [INF] Tray tooltip updated: CloverBridge - Pairing requerido
+2026-01-16 09:14:56 [INF] 📤 Sending PAIRING_REQUEST: {"method":"PAIRING_REQUEST","payload":"{\u0022method\u0022:\u0022PAIRING_REQUEST\u0022,\u0022serialNumber\u0022:\u0022CB-001\u0022,\u0022name\u0022:\u0022ERP Bridge\u0022,\u0022authenticationToken\u0022:\u0022c50754b9-a826-4be0-87c8-73c61d75e2ad\u0022}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":1}
+2026-01-16 09:14:56 [INF] Pairing request sent successfully - waiting for terminal response
+2026-01-16 09:15:00 [INF] 📨 Raw message received: {"directed":false,"id":"766","method":"PAIRING_CODE","packageName":"com.clover.remote_protocol_broadcast.app","payload":"{\"method\":\"PAIRING_CODE\",\"pairingCode\":\"4670\"}","remotePayCompatibility...
+2026-01-16 09:15:00 [INF] 📬 Received message type: PAIRING_CODE, ID: 766
+2026-01-16 09:15:00 [INF] 🔑 Processing PAIRING_CODE message
+2026-01-16 09:15:00 [INF] 🔢 Received PAIRING_CODE from terminal
+2026-01-16 09:15:00 [INF] 🔢 PAIRING CODE: 4670
+2026-01-16 09:15:00 [INF] Pairing code received in tray: 4670
+2026-01-16 09:15:04 [INF] 📨 Raw message received: {"directed":false,"id":"769","method":"PAIRING_RESPONSE","packageName":"com.clover.remote_protocol_broadcast.app","payload":"{\"applicationName\":\"/remote_pay\",\"authenticationToken\":\"72445113-904...
+2026-01-16 09:15:04 [INF] 📬 Received message type: PAIRING_RESPONSE, ID: 769
+2026-01-16 09:15:04 [INF] 🔐 Processing PAIRING_RESPONSE message
+2026-01-16 09:15:04 [INF] 📨 Received PAIRING_RESPONSE from terminal
+2026-01-16 09:15:04 [INF] 📊 Pairing state: PAIRED
+2026-01-16 09:15:04 [INF] ✅ Received auth token from pairing (***f166)
+2026-01-16 09:15:04 [INF] Configuration saved to D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 09:15:04 [INF] ✅ Pairing completed successfully!
+2026-01-16 09:15:04 [INF] Connection state changed to "Paired"
+2026-01-16 09:15:04 [INF] Tray tooltip updated: CloverBridge - Pareado
+2026-01-16 09:29:36 [INF] Connection state changed to "Busy"
+2026-01-16 09:29:36 [INF] Tray tooltip updated: CloverBridge - Desconocido
+2026-01-16 09:29:36 [INF] 📤 Sending SALE transaction: {"method":"TX_START","payload":"{\u0022id\u0022:\u00221\u0022,\u0022method\u0022:\u0022TX_START\u0022,\u0022payIntent\u0022:{\u0022action\u0022:\u0022com.clover.intent.action.PAY\u0022,\u0022amount\u0022:500000,\u0022tipAmount\u0022:0,\u0022taxAmount\u0022:0,\u0022orderId\u0022:null,\u0022paymentId\u0022:null,\u0022employeeId\u0022:null,\u0022transactionType\u0022:\u0022PAYMENT\u0022,\u0022taxableAmountRateList\u0022:null,\u0022isDisableCashBack\u0022:false,\u0022isTesting\u0022:false,\u0022voiceAuthCode\u0022:null,\u0022postalCode\u0022:null,\u0022streetAddress\u0022:null,\u0022isCardNotPresent\u0022:false,\u0022cardNotPresent\u0022:false,\u0022transactionNo\u0022:null,\u0022isForceSwipePinEntry\u0022:false,\u0022disableRestartTransactionWhenFailed\u0022:false,\u0022externalPaymentId\u0022:\u0022TXN-20260116091411\u0022,\u0022externalReferenceId\u0022:null,\u0022vaultedCard\u0022:null,\u0022allowOfflinePayment\u0022:true,\u0022approveOfflinePaymentWithoutPrompt\u0022:true,\u0022requiresRemoteConfirmation\u0022:true,\u0022applicationTracking\u0022:null,\u0022allowPartialAuth\u0022:false,\u0022germanInfo\u0022:null,\u0022remotePrint\u0022:false,\u0022transactionSettings\u0022:{\u0022cloverShouldHandleReceipts\u0022:false,\u0022disableCashBack\u0022:false,\u0022forcePinEntryOnSwipe\u0022:false,\u0022disableRestartTransactionOnFailure\u0022:false,\u0022allowOfflinePayment\u0022:true,\u0022approveOfflinePaymentWithoutPrompt\u0022:true,\u0022forceOfflinePayment\u0022:false,\u0022signatureThreshold\u0022:null,\u0022signatureEntryLocation\u0022:null,\u0022tipMode\u0022:\u0022NO_TIP\u0022,\u0022tippableAmount\u0022:null,\u0022disableReceiptSelection\u0022:false,\u0022disableDuplicateCheck\u0022:false,\u0022autoAcceptPaymentConfirmations\u0022:true,\u0022autoAcceptSignature\u0022:true,\u0022regionalExtras\u0022:null,\u0022cardEntryMethods\u0022:null,\u0022tipSuggestions\u0022:null}},\u0022order\u0022:null,\u0022requestInfo\u0022:\u0022SALE\u0022}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":2,"directed":true,"packageName":"com.clover.remote_protocol_broadcast.app"}
+2026-01-16 09:29:37 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"770","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:37 [INF] 📬 Received message type: ACK, ID: 770
+2026-01-16 09:29:37 [INF] ✅ Received ACK for message 770
+2026-01-16 09:29:37 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"647","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:37 [INF] 📬 Received message type: TX_START_RESPONSE, ID: 647
+2026-01-16 09:29:37 [INF] 💳 Processing transaction response
+2026-01-16 09:29:37 [INF] 🔍 DEBUG: Handling transaction response - Method: TX_START_RESPONSE, Message ID: 647, Payload type: JsonElement
+2026-01-16 09:29:37 [INF] 📨 No matching handler for ID 647 but have 1 pending - using last pending
+2026-01-16 09:29:37 [INF] Connection state changed to "Paired"
+2026-01-16 09:29:37 [INF] Tray tooltip updated: CloverBridge - Pareado
+2026-01-16 09:29:37 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"648","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:37 [INF] 📬 Received message type: UI_STATE, ID: 648
+2026-01-16 09:29:37 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"649","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:37 [INF] 📬 Received message type: TX_STATE, ID: 649
+2026-01-16 09:29:38 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"650","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:38 [INF] 📬 Received message type: UI_STATE, ID: 650
+2026-01-16 09:29:38 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"651","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:38 [INF] 📬 Received message type: UI_STATE, ID: 651
+2026-01-16 09:29:38 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"652","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:38 [INF] 📬 Received message type: UI_STATE, ID: 652
+2026-01-16 09:29:38 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"653","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:38 [INF] 📬 Received message type: UI_STATE, ID: 653
+2026-01-16 09:29:48 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"654","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:48 [INF] 📬 Received message type: UI_STATE, ID: 654
+2026-01-16 09:29:48 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"655","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:48 [INF] 📬 Received message type: UI_STATE, ID: 655
+2026-01-16 09:29:49 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"656","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:49 [INF] 📬 Received message type: FINISH_CANCEL, ID: 656
+2026-01-16 09:29:49 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"657","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:49 [INF] 📬 Received message type: UI_STATE, ID: 657
+2026-01-16 09:29:50 [INF] Connection state changed to "Busy"
+2026-01-16 09:29:50 [INF] Tray tooltip updated: CloverBridge - Desconocido
+2026-01-16 09:29:50 [INF] 📤 Sending SALE transaction: {"method":"TX_START","payload":"{\u0022id\u0022:\u00222\u0022,\u0022method\u0022:\u0022TX_START\u0022,\u0022payIntent\u0022:{\u0022action\u0022:\u0022com.clover.intent.action.PAY\u0022,\u0022amount\u0022:5000,\u0022tipAmount\u0022:0,\u0022taxAmount\u0022:0,\u0022orderId\u0022:null,\u0022paymentId\u0022:null,\u0022employeeId\u0022:null,\u0022transactionType\u0022:\u0022PAYMENT\u0022,\u0022taxableAmountRateList\u0022:null,\u0022isDisableCashBack\u0022:false,\u0022isTesting\u0022:false,\u0022voiceAuthCode\u0022:null,\u0022postalCode\u0022:null,\u0022streetAddress\u0022:null,\u0022isCardNotPresent\u0022:false,\u0022cardNotPresent\u0022:false,\u0022transactionNo\u0022:null,\u0022isForceSwipePinEntry\u0022:false,\u0022disableRestartTransactionWhenFailed\u0022:false,\u0022externalPaymentId\u0022:\u0022TXN-20260116092937\u0022,\u0022externalReferenceId\u0022:null,\u0022vaultedCard\u0022:null,\u0022allowOfflinePayment\u0022:true,\u0022approveOfflinePaymentWithoutPrompt\u0022:true,\u0022requiresRemoteConfirmation\u0022:true,\u0022applicationTracking\u0022:null,\u0022allowPartialAuth\u0022:false,\u0022germanInfo\u0022:null,\u0022remotePrint\u0022:false,\u0022transactionSettings\u0022:{\u0022cloverShouldHandleReceipts\u0022:false,\u0022disableCashBack\u0022:false,\u0022forcePinEntryOnSwipe\u0022:false,\u0022disableRestartTransactionOnFailure\u0022:false,\u0022allowOfflinePayment\u0022:true,\u0022approveOfflinePaymentWithoutPrompt\u0022:true,\u0022forceOfflinePayment\u0022:false,\u0022signatureThreshold\u0022:null,\u0022signatureEntryLocation\u0022:null,\u0022tipMode\u0022:\u0022NO_TIP\u0022,\u0022tippableAmount\u0022:null,\u0022disableReceiptSelection\u0022:false,\u0022disableDuplicateCheck\u0022:false,\u0022autoAcceptPaymentConfirmations\u0022:true,\u0022autoAcceptSignature\u0022:true,\u0022regionalExtras\u0022:null,\u0022cardEntryMethods\u0022:null,\u0022tipSuggestions\u0022:null}},\u0022order\u0022:null,\u0022requestInfo\u0022:\u0022SALE\u0022}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":2,"directed":true,"packageName":"com.clover.remote_protocol_broadcast.app"}
+2026-01-16 09:29:50 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"771","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:50 [INF] 📬 Received message type: ACK, ID: 771
+2026-01-16 09:29:50 [INF] ✅ Received ACK for message 771
+2026-01-16 09:29:51 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"658","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:51 [INF] 📬 Received message type: TX_START_RESPONSE, ID: 658
+2026-01-16 09:29:51 [INF] 💳 Processing transaction response
+2026-01-16 09:29:51 [INF] 🔍 DEBUG: Handling transaction response - Method: TX_START_RESPONSE, Message ID: 658, Payload type: JsonElement
+2026-01-16 09:29:51 [INF] 📨 No matching handler for ID 658 but have 1 pending - using last pending
+2026-01-16 09:29:51 [INF] Connection state changed to "Paired"
+2026-01-16 09:29:51 [INF] Tray tooltip updated: CloverBridge - Pareado
+2026-01-16 09:29:51 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"659","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:51 [INF] 📬 Received message type: UI_STATE, ID: 659
+2026-01-16 09:29:51 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"660","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:51 [INF] 📬 Received message type: TX_STATE, ID: 660
+2026-01-16 09:29:51 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"661","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:51 [INF] 📬 Received message type: UI_STATE, ID: 661
+2026-01-16 09:29:51 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"662","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:51 [INF] 📬 Received message type: UI_STATE, ID: 662
+2026-01-16 09:29:51 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"663","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:51 [INF] 📬 Received message type: UI_STATE, ID: 663
+2026-01-16 09:29:52 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"664","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:29:52 [INF] 📬 Received message type: UI_STATE, ID: 664
+2026-01-16 09:30:03 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"665","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:30:03 [INF] 📬 Received message type: UI_STATE, ID: 665
+2026-01-16 09:30:03 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"666","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:30:03 [INF] 📬 Received message type: UI_STATE, ID: 666
+2026-01-16 09:30:03 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"667","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:30:03 [INF] 📬 Received message type: FINISH_CANCEL, ID: 667
+2026-01-16 09:30:03 [INF] 📨 Raw message received: {"asyncInfo":null,"attachment":null,"attachmentEncoding":null,"attachmentUri":null,"authentication":null,"directed":false,"fragmentIndex":null,"id":"668","idempotencyKey":null,"lastFragment":null,"met...
+2026-01-16 09:30:03 [INF] 📬 Received message type: UI_STATE, ID: 668
+2026-01-16 09:34:26 [INF] CloverBridge starting...
+2026-01-16 09:34:26 [INF] Starting in tray mode
+2026-01-16 09:34:26 [INF] Configuration loaded from D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 09:34:26 [INF] Folders created/verified
+2026-01-16 09:34:26 [INF] CloverWebSocketService starting
+2026-01-16 09:34:26 [INF] Connecting to Clover at wss://10.1.1.53:12345/remote_pay
+2026-01-16 09:34:26 [INF] Connection state changed to "Connecting"
+2026-01-16 09:34:26 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 09:34:26 [INF] TransactionQueueService started
+2026-01-16 09:34:26 [INF] InboxWatcher started, monitoring: D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\INBOX
+2026-01-16 09:34:26 [INF] Found 0 existing files in inbox
+2026-01-16 09:34:26 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-16 09:34:26 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-16 09:34:26 [INF] Hosting environment: Production
+2026-01-16 09:34:26 [INF] Content root path: D:\DEVs\Cloverwin
+2026-01-16 09:34:26 [INF] TrayApplicationContext initialized
+2026-01-16 09:34:27 [WRN] SSL certificate validation failed: "RemoteCertificateChainErrors"
+2026-01-16 09:34:27 [INF] Connection state changed to "Connected"
+2026-01-16 09:34:27 [INF] Tray tooltip updated: CloverBridge - Conectado
+2026-01-16 09:34:27 [INF] Connected to Clover
+2026-01-16 09:34:27 [INF] Initiating pairing request. AuthToken present: true
+2026-01-16 09:34:27 [INF] Connection state changed to "PairingRequired"
+2026-01-16 09:34:27 [INF] Tray tooltip updated: CloverBridge - Pairing requerido
+2026-01-16 09:34:27 [INF] 📤 Sending PAIRING_REQUEST: {"method":"PAIRING_REQUEST","payload":"{\u0022method\u0022:\u0022PAIRING_REQUEST\u0022,\u0022serialNumber\u0022:\u0022CB-001\u0022,\u0022name\u0022:\u0022ERP Bridge\u0022,\u0022authenticationToken\u0022:\u002272445113-9048-4cc3-a7ee-5c0827ddf166\u0022}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":1}
+2026-01-16 09:34:27 [INF] Pairing request sent successfully - waiting for terminal response
+2026-01-16 09:34:27 [INF] 📨 Raw message received: {"directed":false,"id":"772","method":"PAIRING_RESPONSE","packageName":"com.clover.remote_protocol_broadcast.app","payload":"{\"applicationName\":\"/remote_pay\",\"authenticationToken\":\"6a04bc39-61c...
+2026-01-16 09:34:27 [INF] 📬 Received message type: PAIRING_RESPONSE, ID: 772
+2026-01-16 09:34:27 [INF] 🔐 Processing PAIRING_RESPONSE message
+2026-01-16 09:34:27 [INF] 📨 Received PAIRING_RESPONSE from terminal
+2026-01-16 09:34:27 [INF] 📊 Pairing state: PAIRED
+2026-01-16 09:34:27 [INF] ✅ Received auth token from pairing (***c8b3)
+2026-01-16 09:34:27 [INF] Configuration saved to D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 09:34:27 [INF] ✅ Pairing completed successfully!
+2026-01-16 09:34:27 [INF] Connection state changed to "Paired"
+2026-01-16 09:34:27 [INF] Tray tooltip updated: CloverBridge - Pareado
+2026-01-16 13:55:36 [INF] CloverBridge starting...
+2026-01-16 13:55:36 [INF] Starting in tray mode
+2026-01-16 13:55:36 [INF] Configuration loaded from D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 13:55:36 [INF] Folders created/verified
+2026-01-16 13:55:36 [INF] CloverWebSocketService starting
+2026-01-16 13:55:36 [INF] Connecting to Clover at wss://10.1.1.53:12345/remote_pay
+2026-01-16 13:55:36 [INF] Connection state changed to "Connecting"
+2026-01-16 13:55:36 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 13:55:36 [INF] TransactionQueueService started
+2026-01-16 13:55:36 [INF] InboxWatcher started, monitoring: D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\INBOX
+2026-01-16 13:55:36 [INF] Found 0 existing files in inbox
+2026-01-16 13:55:36 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-16 13:55:36 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-16 13:55:36 [INF] Hosting environment: Production
+2026-01-16 13:55:36 [INF] Content root path: D:\DEVs\Cloverwin
+2026-01-16 13:55:36 [INF] TrayApplicationContext initialized
+2026-01-16 13:55:37 [WRN] SSL certificate validation failed: "RemoteCertificateChainErrors"
+2026-01-16 13:55:37 [INF] Connection state changed to "Connected"
+2026-01-16 13:55:37 [INF] Tray tooltip updated: CloverBridge - Conectado
+2026-01-16 13:55:37 [INF] Connected to Clover
+2026-01-16 13:55:37 [INF] Initiating pairing request. AuthToken present: true
+2026-01-16 13:55:37 [INF] Connection state changed to "PairingRequired"
+2026-01-16 13:55:37 [INF] Tray tooltip updated: CloverBridge - Pairing requerido
+2026-01-16 13:55:37 [INF] 📤 Sending PAIRING_REQUEST: {"method":"PAIRING_REQUEST","payload":"{\u0022method\u0022:\u0022PAIRING_REQUEST\u0022,\u0022serialNumber\u0022:\u0022CB-001\u0022,\u0022name\u0022:\u0022ERP Bridge\u0022,\u0022authenticationToken\u0022:\u00226a04bc39-61c9-458b-87c1-8fd0a47bc8b3\u0022}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":1}
+2026-01-16 13:55:37 [INF] Pairing request sent successfully - waiting for terminal response
+2026-01-16 13:55:37 [INF] 📨 Raw message received: {"directed":false,"id":"773","method":"PAIRING_RESPONSE","packageName":"com.clover.remote_protocol_broadcast.app","payload":"{\"applicationName\":\"/remote_pay\",\"authenticationToken\":\"05c50f45-917...
+2026-01-16 13:55:37 [INF] 📬 Received message type: PAIRING_RESPONSE, ID: 773
+2026-01-16 13:55:37 [INF] 🔐 Processing PAIRING_RESPONSE message
+2026-01-16 13:55:37 [INF] 📨 Received PAIRING_RESPONSE from terminal
+2026-01-16 13:55:37 [INF] 📊 Pairing state: PAIRED
+2026-01-16 13:55:37 [INF] ✅ Received auth token from pairing (***bece)
+2026-01-16 13:55:37 [INF] Configuration saved to D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 13:55:37 [INF] ✅ Pairing completed successfully!
+2026-01-16 13:55:37 [INF] Connection state changed to "Paired"
+2026-01-16 13:55:37 [INF] Tray tooltip updated: CloverBridge - Pareado
+2026-01-16 17:44:28 [INF] CloverBridge starting...
+2026-01-16 17:44:28 [INF] Starting in tray mode
+2026-01-16 17:44:28 [INF] Configuration loaded from D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 17:44:28 [INF] Folders created/verified
+2026-01-16 17:44:28 [INF] CloverWebSocketService starting
+2026-01-16 17:44:28 [INF] Connecting to Clover at wss://10.1.1.53:12345/remote_pay
+2026-01-16 17:44:28 [INF] Connection state changed to "Connecting"
+2026-01-16 17:44:28 [INF] Tray tooltip updated: CloverBridge - Conectando...
+2026-01-16 17:44:28 [INF] TransactionQueueService started
+2026-01-16 17:44:28 [INF] InboxWatcher started, monitoring: D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\INBOX
+2026-01-16 17:44:28 [INF] Found 0 existing files in inbox
+2026-01-16 17:44:28 [INF] API Server started on http://127.0.0.1:3777/
+2026-01-16 17:44:28 [INF] Application started. Press Ctrl+C to shut down.
+2026-01-16 17:44:28 [INF] Hosting environment: Production
+2026-01-16 17:44:28 [INF] Content root path: D:\DEVs\Cloverwin
+2026-01-16 17:44:28 [INF] TrayApplicationContext initialized
+2026-01-16 17:44:29 [WRN] SSL certificate validation failed: "RemoteCertificateChainErrors"
+2026-01-16 17:44:29 [INF] Connection state changed to "Connected"
+2026-01-16 17:44:29 [INF] Tray tooltip updated: CloverBridge - Conectado
+2026-01-16 17:44:29 [INF] Connected to Clover
+2026-01-16 17:44:29 [INF] Initiating pairing request. AuthToken present: true
+2026-01-16 17:44:29 [INF] Connection state changed to "PairingRequired"
+2026-01-16 17:44:29 [INF] Tray tooltip updated: CloverBridge - Pairing requerido
+2026-01-16 17:44:29 [INF] 📤 Sending PAIRING_REQUEST: {"method":"PAIRING_REQUEST","payload":"{\u0022method\u0022:\u0022PAIRING_REQUEST\u0022,\u0022serialNumber\u0022:\u0022CB-001\u0022,\u0022name\u0022:\u0022ERP Bridge\u0022,\u0022authenticationToken\u0022:\u002205c50f45-9179-4d79-a590-e774505cbece\u0022}","remoteApplicationID":"clover-bridge","remoteSourceSDK":"CloverBridge-1.0.0","version":1}
+2026-01-16 17:44:29 [INF] Pairing request sent successfully - waiting for terminal response
+2026-01-16 17:44:29 [INF] 📨 Raw message received: {"directed":false,"id":"774","method":"PAIRING_RESPONSE","packageName":"com.clover.remote_protocol_broadcast.app","payload":"{\"applicationName\":\"/remote_pay\",\"authenticationToken\":\"70d5d23d-541...
+2026-01-16 17:44:29 [INF] 📬 Received message type: PAIRING_RESPONSE, ID: 774
+2026-01-16 17:44:29 [INF] 🔐 Processing PAIRING_RESPONSE message
+2026-01-16 17:44:29 [INF] 📨 Received PAIRING_RESPONSE from terminal
+2026-01-16 17:44:29 [INF] 📊 Pairing state: PAIRED
+2026-01-16 17:44:29 [INF] ✅ Received auth token from pairing (***942c)
+2026-01-16 17:44:29 [INF] Configuration saved to D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x64\publish\config.json
+2026-01-16 17:44:29 [INF] ✅ Pairing completed successfully!
+2026-01-16 17:44:29 [INF] Connection state changed to "Paired"
+2026-01-16 17:44:29 [INF] Tray tooltip updated: CloverBridge - Pareado
+2026-01-16 18:20:14 [INF] User requested application shutdown
+2026-01-16 18:20:14 [INF] Application is shutting down...
+2026-01-16 18:20:19 [ERR] Error processing transaction
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at CloverBridge.Services.TransactionQueueService.ExecuteAsync(CancellationToken stoppingToken) in D:\DEVs\Cloverwin\Services\TransactionQueueService.cs:line 46
+2026-01-16 18:20:19 [INF] TransactionQueueService stopped

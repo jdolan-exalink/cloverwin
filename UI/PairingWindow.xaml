@@ -1,0 +1,130 @@
+<Window x:Class="CloverBridge.UI.PairingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CloverBridge - Pairing"
+        Height="400"
+        Width="600"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#1e1e1e">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2d2d30" Padding="20">
+            <StackPanel>
+                <TextBlock Text="CloverBridge" 
+                          FontSize="24" 
+                          FontWeight="Bold"
+                          Foreground="#00a4ef"
+                          HorizontalAlignment="Center"/>
+                <TextBlock Text="Conexión con Terminal Clover" 
+                          FontSize="14"
+                          Foreground="#cccccc"
+                          HorizontalAlignment="Center"
+                          Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Content -->
+        <StackPanel Grid.Row="1" 
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    Margin="40">
+            
+            <!-- Estado -->
+            <TextBlock x:Name="StatusText"
+                      Text="Esperando código de pairing..."
+                      FontSize="16"
+                      Foreground="#cccccc"
+                      HorizontalAlignment="Center"
+                      Margin="0,0,0,30"/>
+
+            <!-- Código de Pairing -->
+            <Border x:Name="CodeBorder"
+                    BorderBrush="#00a4ef"
+                    BorderThickness="3"
+                    CornerRadius="10"
+                    Padding="40,30"
+                    Background="#252526"
+                    Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock Text="Ingrese este código en el terminal:"
+                              FontSize="14"
+                              Foreground="#cccccc"
+                              HorizontalAlignment="Center"
+                              Margin="0,0,0,20"/>
+                    
+                    <TextBlock x:Name="PairingCodeText"
+                              Text="------"
+                              FontSize="72"
+                              FontWeight="Bold"
+                              Foreground="#00a4ef"
+                              HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Instrucciones -->
+            <TextBlock x:Name="InstructionsText"
+                      TextWrapping="Wrap"
+                      FontSize="12"
+                      Foreground="#999999"
+                      HorizontalAlignment="Center"
+                      TextAlignment="Center"
+                      Margin="0,30,0,0"
+                      MaxWidth="400"
+                      Visibility="Collapsed">
+                <Run Text="1. En el terminal Clover, vaya a Ajustes"/>
+                <LineBreak/>
+                <Run Text="2. Seleccione 'Network Pay Display'"/>
+                <LineBreak/>
+                <Run Text="3. Ingrese el código mostrado arriba"/>
+                <LineBreak/>
+                <Run Text="4. Confirme el pairing"/>
+            </TextBlock>
+        </StackPanel>
+
+        <!-- Footer -->
+        <Border Grid.Row="2" Background="#2d2d30" Padding="15">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button x:Name="CloseButton"
+                       Content="Cerrar"
+                       Width="100"
+                       Height="35"
+                       Background="#3c3c3c"
+                       Foreground="#cccccc"
+                       BorderBrush="#555555"
+                       Click="CloseButton_Click"
+                       Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                               BorderBrush="{TemplateBinding BorderBrush}"
+                                               BorderThickness="1"
+                                               CornerRadius="3">
+                                            <ContentPresenter HorizontalAlignment="Center"
+                                                            VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#505050"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,25 @@
+{
+  "TotalPayments": 0,
+  "TotalPaymentsAmount": 0,
+  "TotalRefunds": 0,
+  "TotalRefundsAmount": 0,
+  "TotalErrors": 0,
+  "Transactions": [
+    {
+      "Timestamp": "2026-01-17 10:36:34",
+      "Type": "SALE",
+      "Amount": "$50,00",
+      "TransactionId": "TXN-20260117103607",
+      "Status": "\u2705 Exitoso",
+      "Message": "Transacci\u00F3n completada exitosamente"
+    },
+    {
+      "Timestamp": "2026-01-17 10:31:38",
+      "Type": "SALE",
+      "Amount": "$5000,00",
+      "TransactionId": "TXN-20260117103130",
+      "Status": "\u2705 Exitoso",
+      "Message": "Transacci\u00F3n completada exitosamente"
+    }
+  ]
+}
