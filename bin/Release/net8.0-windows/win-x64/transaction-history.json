@@ -6,6 +6,14 @@
   "TotalErrors": 0,
   "Transactions": [
     {
+      "Timestamp": "2026-01-17 19:12:43",
+      "Type": "SALE",
+      "Amount": "$50,00",
+      "TransactionId": "TXN-20260117191235",
+      "Status": "\u2705 Exitoso",
+      "Message": "Transacci\u00F3n completada exitosamente"
+    },
+    {
       "Timestamp": "2026-01-17 11:04:09",
       "Type": "SALE",
       "Amount": "$50,00",

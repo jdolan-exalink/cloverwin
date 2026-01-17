@@ -603,15 +603,17 @@ public class CloverWebSocketService : BackgroundService
             var config = _configService.GetConfig();
             var id = (++_messageId).ToString();
 
-            // Crear items de orden si están disponibles
-            var orderItems = items != null ? items.Select((item, idx) => new
-            {
-                id = $"item_{idx}",
-                name = item.ProductName,
-                price = (long)(item.UnitPrice * 100),
-                quantity = item.Quantity,
-                userDefinedData = new { sku = item.ProductId }
-            }).Cast<object>().ToList() : new List<object>();
+            // Crear items de orden si están disponibles (requerido por Clover para mostrar detalles)
+            var orderItems = items != null && items.Count > 0 
+                ? items.Select((item, idx) => new
+                {
+                    id = $"item_{idx}",
+                    name = item.ProductName ?? $"Item {idx + 1}",
+                    price = (long)(item.UnitPrice * 100),
+                    quantity = (long)item.Quantity,
+                    userDefinedData = new { sku = item.ProductId }
+                }).Cast<object>().ToList() 
+                : new List<object>();
 
             // Crear PayIntent según protocolo Clover (igual que TypeScript)
             var payIntent = new
@@ -668,12 +670,13 @@ public class CloverWebSocketService : BackgroundService
                 }
             };
 
-            // Crear la orden con los items
+            // Crear la orden con los items (requerido por Clover per documentación)
+            // La orden se muestra en la pantalla del terminal
             var order = new
             {
                 id = $"order_{Guid.NewGuid():N}",
-                lineItems = orderItems,
-                taxAmount = 0,
+                lineItems = orderItems.Count > 0 ? orderItems : (object?)null,
+                taxAmount = 0L,
                 total = (long)(amount * 100)
             };
 
@@ -700,15 +703,18 @@ public class CloverWebSocketService : BackgroundService
             };
 
             var json = JsonSerializer.Serialize(remoteMessage);
-            Log.Information("📤 Sending SALE transaction with {ItemCount} items: {Json}", orderItems.Count, json);
-            Console.WriteLine($"📤 SENDING SALE WITH {orderItems.Count} ITEMS TO TERMINAL");
+            Log.Information("Sending SALE transaction with {ItemCount} items, amount: {Amount} centavos", orderItems.Count, (long)(amount * 100));
+            Console.WriteLine($"ENVIANDO VENTA: ${amount:F2} con {orderItems.Count} articulos al terminal");
 
             if (items != null && items.Count > 0)
             {
+                var itemTotal = items.Sum(i => i.Quantity * i.UnitPrice);
                 foreach (var item in items)
                 {
-                    Console.WriteLine($"  📦 {item.ProductName}: {item.Quantity} × ${item.UnitPrice:F2} = ${(item.Quantity * item.UnitPrice):F2}");
+                    var itemSubtotal = item.Quantity * item.UnitPrice;
+                    Console.WriteLine($"  {item.ProductName}: {item.Quantity} x ${item.UnitPrice:F2} = ${itemSubtotal:F2}");
                 }
+                Console.WriteLine($"  Total: ${itemTotal:F2}");
             }
 
             // Crear TaskCompletionSource para esperar respuesta

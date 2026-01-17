@@ -1,5 +1,5 @@
 ﻿CloverBridge
-1.0.0.0
+
 
 winexe
 C#
@@ -12,7 +12,7 @@ TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR
 
 31592913250
 
-17-10840809
+15-29878441
 241-1801860715
 UI\MainWindow.xaml;UI\PairingWindow.xaml;UI\ProductionMainWindow.xaml;
 

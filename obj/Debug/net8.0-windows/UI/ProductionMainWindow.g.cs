@@ -364,7 +364,7 @@ namespace CloverBridge.UI {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/CloverBridge;V1.0.0.0;component/ui/productionmainwindow.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/CloverBridge;component/ui/productionmainwindow.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\UI\ProductionMainWindow.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

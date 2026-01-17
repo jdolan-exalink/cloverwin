@@ -536,16 +536,14 @@ public partial class ProductionMainWindow : Window
             var completedTask = await Task.WhenAny(responseTask, timeoutTask);
 
             CloverMessage? response = null;
-            bool timedOut = false;
 
             if (completedTask == timeoutTask)
             {
                 // Timeout alcanzado
-                timedOut = true;
-                LogSystem($"⏱️  TIMEOUT: Transacción no respondió en {transactionFile.PaymentInfo.TerminalTimeoutDefault}s");
+                LogSystem($"⏱️  TIMEOUT: Transaccion no respondio en {transactionFile.PaymentInfo.TerminalTimeoutDefault}s");
                 transactionFile.Status = TransactionStatus.Cancelled;
                 transactionFile.Result = "TIMEOUT";
-                transactionFile.Message = $"Timeout después de {transactionFile.PaymentInfo.TerminalTimeoutDefault} segundos";
+                transactionFile.Message = $"Timeout despues de {transactionFile.PaymentInfo.TerminalTimeoutDefault} segundos";
                 
                 if (transactionFile.PaymentInfo != null)
                 {
@@ -556,32 +554,59 @@ public partial class ProductionMainWindow : Window
             }
             else
             {
-                // Respuesta recibida
+                // Respuesta recibida - per Clover documentation
+                // La respuesta puede incluir challenges (OFFLINE_CHALLENGE, DUPLICATE_CHALLENGE)
+                // o resultados (COMPLETED, DECLINED, etc.)
                 response = await responseTask;
-                var success = response?.Method?.Contains("RESPONSE") == true;
-
-                if (success)
+                var method = response?.Method ?? "";
+                
+                // Verificar si fue aceptado/completado
+                if (method.Contains("RESPONSE") || method.Contains("APPROVED"))
                 {
                     transactionFile.Status = TransactionStatus.Completed;
                     transactionFile.Result = "COMPLETED";
-                    transactionFile.Message = "Transacción completada exitosamente";
+                    transactionFile.Message = "Transaccion completada exitosamente";
                     LogSystem($"✅ Pago aprobado");
                 }
-                else
+                else if (method.Contains("DECLINED") || method.Contains("FAIL"))
                 {
-                    // Verificar si fue cancelado en el terminal
+                    // Pago rechazado - puede ser por fondos insuficientes, tarjeta invalida, etc.
                     transactionFile.Status = TransactionStatus.Cancelled;
                     transactionFile.Result = "DECLINED";
-                    transactionFile.Message = "Pago rechazado o cancelado en terminal";
+                    transactionFile.Message = "Pago rechazado en terminal";
                     
                     if (transactionFile.PaymentInfo != null)
                     {
-                        transactionFile.PaymentInfo.CancelledReason = "Cancelado/Rechazado en terminal";
+                        transactionFile.PaymentInfo.CancelledReason = "Declined por payment gateway";
+                        transactionFile.PaymentInfo.CancelledTimestamp = DateTime.Now;
+                        transactionFile.PaymentInfo.CancelledBy = "Payment Gateway";
+                    }
+                    
+                    LogSystem($"❌ Pago rechazado");
+                }
+                else if (method.Contains("CANCEL") || method.Contains("ABORT"))
+                {
+                    // Usuario cancelo en terminal
+                    transactionFile.Status = TransactionStatus.Cancelled;
+                    transactionFile.Result = "USER_CANCELLED";
+                    transactionFile.Message = "Usuario cancelo el pago en terminal";
+                    
+                    if (transactionFile.PaymentInfo != null)
+                    {
+                        transactionFile.PaymentInfo.CancelledReason = "Cancelado por usuario";
                         transactionFile.PaymentInfo.CancelledTimestamp = DateTime.Now;
                         transactionFile.PaymentInfo.CancelledBy = "Usuario en terminal";
                     }
                     
-                    LogSystem($"❌ Pago rechazado o cancelado");
+                    LogSystem($"⏹️ Pago cancelado por usuario");
+                }
+                else
+                {
+                    // Estado desconocido
+                    transactionFile.Status = TransactionStatus.Cancelled;
+                    transactionFile.Result = "UNKNOWN";
+                    transactionFile.Message = $"Estado desconocido: {method}";
+                    LogSystem($"⚠️ Estado desconocido del pago: {method}");
                 }
             }
 
