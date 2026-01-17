@@ -117,3 +117,4 @@ D:\DEVs\Cloverwin\obj\Debug\net8.0-windows\refint\CloverBridge.dll
 D:\DEVs\Cloverwin\obj\Debug\net8.0-windows\CloverBridge.pdb
 D:\DEVs\Cloverwin\obj\Debug\net8.0-windows\CloverBridge.genruntimeconfig.cache
 D:\DEVs\Cloverwin\obj\Debug\net8.0-windows\ref\CloverBridge.dll
+D:\DEVs\Cloverwin\bin\Debug\net8.0-windows\cloverwin.png

@@ -188,13 +188,39 @@ public partial class ProductionMainWindow : Window
 
     private void AddTransaction(string type, JsonElement data)
     {
+        // Obtener el estado real de la transacción
+        var statusStr = "Unknown";
+        if (data.TryGetProperty("status", out var statusProp) && statusProp.ValueKind == JsonValueKind.String)
+        {
+            statusStr = statusProp.GetString() ?? "Unknown";
+        }
+        else if (data.TryGetProperty("success", out var suc) && suc.GetBoolean())
+        {
+            statusStr = "Completed";
+        }
+        else
+        {
+            statusStr = "Failed";
+        }
+
+        // Mapear estado a emoji y descripción
+        string statusDisplay = statusStr switch
+        {
+            "Completed" => "✅ Exitoso",
+            "Cancelled" => "⏹️ Cancelado",
+            "Timeout" => "⏱️ Timeout",
+            "Declined" => "❌ Rechazado",
+            "Failed" => "❌ Fallido",
+            _ => $"⚠️ {statusStr}"
+        };
+
         var record = new TransactionRecord
         {
             Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             Type = type,
             Amount = data.TryGetProperty("amount", out var amt) ? $"${amt.GetDecimal() / 100m:F2}" : "N/A",
             TransactionId = data.TryGetProperty("id", out var id) ? id.GetString() ?? "N/A" : "N/A",
-            Status = data.TryGetProperty("success", out var suc) && suc.GetBoolean() ? "✅ Exitoso" : "❌ Fallido",
+            Status = statusDisplay,
             Message = data.TryGetProperty("message", out var msg) ? msg.GetString() ?? "" : ""
         };
 
@@ -506,7 +532,7 @@ public partial class ProductionMainWindow : Window
             FooterStatusText.Text = "Procesando pago en terminal...";
 
             var timeoutTask = Task.Delay(TimeSpan.FromSeconds(transactionFile.PaymentInfo.TerminalTimeoutDefault));
-            var responseTask = _cloverService.SendSaleAsync(totalAmount, externalId, 0);
+            var responseTask = _cloverService.SendSaleAsync(totalAmount, externalId, 0, items);
             var completedTask = await Task.WhenAny(responseTask, timeoutTask);
 
             CloverMessage? response = null;

@@ -584,7 +584,7 @@ public class CloverWebSocketService : BackgroundService
     private int _messageId = 0;
     private readonly Dictionary<string, TaskCompletionSource<CloverMessage>> _pendingMessages = new();
 
-    public async Task<CloverMessage> SendSaleAsync(decimal amount, string externalId, decimal tipAmount = 0)
+    public async Task<CloverMessage> SendSaleAsync(decimal amount, string externalId, decimal tipAmount = 0, List<LineItem>? items = null)
     {
         if (_webSocket?.State != WebSocketState.Open)
         {
@@ -602,6 +602,16 @@ public class CloverWebSocketService : BackgroundService
         {
             var config = _configService.GetConfig();
             var id = (++_messageId).ToString();
+
+            // Crear items de orden si están disponibles
+            var orderItems = items != null ? items.Select((item, idx) => new
+            {
+                id = $"item_{idx}",
+                name = item.ProductName,
+                price = (long)(item.UnitPrice * 100),
+                quantity = item.Quantity,
+                userDefinedData = new { sku = item.ProductId }
+            }).Cast<object>().ToList() : new List<object>();
 
             // Crear PayIntent según protocolo Clover (igual que TypeScript)
             var payIntent = new
@@ -658,13 +668,22 @@ public class CloverWebSocketService : BackgroundService
                 }
             };
 
+            // Crear la orden con los items
+            var order = new
+            {
+                id = $"order_{Guid.NewGuid():N}",
+                lineItems = orderItems,
+                taxAmount = 0,
+                total = (long)(amount * 100)
+            };
+
             // Crear el payload interno con el método y datos
             var innerPayload = new
             {
                 id,
                 method = "TX_START",
                 payIntent,
-                order = (object?)null,
+                order,
                 requestInfo = "SALE"
             };
 
@@ -681,8 +700,16 @@ public class CloverWebSocketService : BackgroundService
             };
 
             var json = JsonSerializer.Serialize(remoteMessage);
-            Log.Information("📤 Sending SALE transaction: {Json}", json);
-            Console.WriteLine($"📤 SENDING SALE TO TERMINAL: {json}");
+            Log.Information("📤 Sending SALE transaction with {ItemCount} items: {Json}", orderItems.Count, json);
+            Console.WriteLine($"📤 SENDING SALE WITH {orderItems.Count} ITEMS TO TERMINAL");
+
+            if (items != null && items.Count > 0)
+            {
+                foreach (var item in items)
+                {
+                    Console.WriteLine($"  📦 {item.ProductName}: {item.Quantity} × ${item.UnitPrice:F2} = ${(item.Quantity * item.UnitPrice):F2}");
+                }
+            }
 
             // Crear TaskCompletionSource para esperar respuesta
             var tcs = new TaskCompletionSource<CloverMessage>();
