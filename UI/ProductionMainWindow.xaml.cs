@@ -326,10 +326,10 @@ public partial class ProductionMainWindow : Window
             
             // Sincronizar el token recibido con el campo de la interfaz
             var config = _configService.GetConfig();
-            if (!string.IsNullOrEmpty(config.Clover.AuthToken) && string.IsNullOrEmpty(TokenTextBox.Text))
+            if (!string.IsNullOrEmpty(config.Clover.AuthToken) && TokenTextBox.Text != config.Clover.AuthToken)
             {
                 TokenTextBox.Text = config.Clover.AuthToken;
-                Log.Information("Sync: Token sincronizado con la interfaz UI");
+                Log.Information("Sync: Token sincronizado con la interfaz UI (Token actualizado: {HasToken})", !string.IsNullOrEmpty(config.Clover.AuthToken));
             }
         }
         else if (state == ConnectionState.PairingRequired)
@@ -1230,6 +1230,9 @@ public partial class ProductionMainWindow : Window
         if (configWin.ShowDialog() == true)
         {
             LogSystem("✅ Configuración actualizada desde ventana externa");
+            // Refrescar los campos ocultos de la UI principal para que estén sincronizados
+            LoadConfiguration();
+            
             // Reiniciar conexión si es necesario
             Task.Run(async () => {
                 await _cloverService.DisconnectAsync();
@@ -1286,8 +1289,7 @@ public partial class ProductionMainWindow : Window
 
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
-        // Siempre guardar configuración antes de cerrar/ocultar
-        SaveConfiguration();
+        // ELIMINADO: SaveConfiguration() - Esto causaba regresiones al sobreescribir con datos obsoletos
         
         if (!ForceClose && !_isExiting)
         {
