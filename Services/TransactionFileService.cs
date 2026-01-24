@@ -245,10 +245,54 @@ public class TransactionFileService
     /// </summary>
     public void ProcessPaymentResult(TransactionFile transaction, TransactionResponse response)
     {
-        Log.Information("ProcessPaymentResult: Processing response - Success={Success}, PaymentId={PaymentId}",
-            response.Success, response.Payment?.Id ?? "N/A");
+        Log.Information("ProcessPaymentResult: Processing response - Provider={Provider}, Success={Success}, PaymentId={PaymentId}",
+            transaction.Provider, response.Success, response.Payment?.Id ?? "N/A");
 
-        // Determinar estado basado en la respuesta
+        // Caso Mercado Pago (QRMP)
+        if (transaction.Provider == "QRMP")
+        {
+            ProcessMpResult(transaction, response);
+            return;
+        }
+
+        // Caso Clover (Default)
+        ProcessCloverResult(transaction, response);
+    }
+
+    private void ProcessMpResult(TransactionFile transaction, TransactionResponse response)
+    {
+        TransactionStatus newStatus = response.Success ? TransactionStatus.Successful : TransactionStatus.Failed;
+        
+        if (response.Success && response.Payment != null)
+        {
+            transaction.PaymentInfo ??= new PaymentFileInfo();
+            transaction.PaymentInfo.TotalAmount = transaction.Amount;
+            transaction.PaymentInfo.Currency = transaction.Currency;
+            
+            // Llenar detalles de MP
+            transaction.PaymentInfo.Mp = new MpPaymentDetail
+            {
+                PaymentId = response.Payment.Id,
+                Status = response.Success ? "approved" : "failed",
+                StatusDetail = response.Reason,
+                DateApproved = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fff-03:00")
+            };
+            
+            transaction.TransactionId = response.Payment.Id; // Usar ID de MP como transactionId
+            transaction.AddLogEntry("MP_PAID", "Pago aprobado en Mercado Pago", $"ID: {response.Payment.Id}");
+        }
+        else
+        {
+            transaction.ErrorMessage = response.Message ?? "Pago rechazado o fallido en Mercado Pago";
+            transaction.AddLogEntry("MP_FAILED", "Pago no aprobado", response.Reason);
+        }
+
+        UpdateTransactionStatus(transaction, newStatus, transaction.ErrorMessage);
+    }
+
+    private void ProcessCloverResult(TransactionFile transaction, TransactionResponse response)
+    {
+        Log.Information("ProcessCloverResult: Processing Clover response");
         TransactionStatus newStatus;
         
         if (response.Success)

@@ -24,6 +24,53 @@ public class AppConfig
     [JsonPropertyName("transaction")]
     [YamlDotNet.Serialization.YamlMember(Alias = "TRANSACTION")]
     public TransactionConfig Transaction { get; set; } = new();
+
+    [JsonPropertyName("paymentProvider")]
+    [YamlDotNet.Serialization.YamlMember(Alias = "PAYMENT_PROVIDER")]
+    public string PaymentProvider { get; set; } = "CLOVER";
+
+    [JsonPropertyName("qrmp")]
+    [YamlDotNet.Serialization.YamlIgnore]
+    public QrmpConfig Qrmp { get; set; } = new();
+}
+
+public class QrmpConfig
+{
+    [JsonPropertyName("accessToken")]
+    [YamlDotNet.Serialization.YamlMember(Alias = "MP_ACCESS_TOKEN")]
+    public string AccessToken { get; set; } = "";
+
+    [JsonPropertyName("enabled")]
+    [YamlDotNet.Serialization.YamlMember(Alias = "ENABLED")]
+    public bool Enabled { get; set; } = true;
+
+    [JsonPropertyName("userId")]
+    [YamlDotNet.Serialization.YamlMember(Alias = "MP_USER_ID")]
+    public long UserId { get; set; }
+
+    [JsonPropertyName("externalStoreId")]
+    [YamlDotNet.Serialization.YamlMember(Alias = "STORE_EXTERNAL_ID")]
+    public string ExternalStoreId { get; set; } = "";
+
+    [JsonPropertyName("externalPosId")]
+    [YamlDotNet.Serialization.YamlMember(Alias = "POS_EXTERNAL_ID")]
+    public string ExternalPosId { get; set; } = "";
+
+    [JsonPropertyName("webhookUrl")]
+    [YamlDotNet.Serialization.YamlMember(Alias = "WEBHOOK_URL")]
+    public string WebhookUrl { get; set; } = "";
+
+    [JsonPropertyName("webhookSecret")]
+    [YamlDotNet.Serialization.YamlMember(Alias = "WEBHOOK_SECRET")]
+    public string WebhookSecret { get; set; } = "";
+
+    [JsonPropertyName("currency")]
+    [YamlDotNet.Serialization.YamlMember(Alias = "CURRENCY")]
+    public string Currency { get; set; } = "ARS";
+
+    [JsonPropertyName("orderTtl")]
+    [YamlDotNet.Serialization.YamlMember(Alias = "ORDER_TTL_SECONDS")]
+    public int OrderTtlSeconds { get; set; } = 300;
 }
 
 public class CloverConfig
@@ -31,6 +78,10 @@ public class CloverConfig
     [JsonPropertyName("host")]
     [YamlDotNet.Serialization.YamlMember(Alias = "IP")]
     public string Host { get; set; } = "10.1.1.53";
+
+    [JsonPropertyName("enabled")]
+    [YamlDotNet.Serialization.YamlMember(Alias = "ENABLED")]
+    public bool Enabled { get; set; } = true;
 
     [JsonPropertyName("port")]
     [YamlDotNet.Serialization.YamlMember(Alias = "PUERTO")]

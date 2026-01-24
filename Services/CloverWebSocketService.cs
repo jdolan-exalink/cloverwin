@@ -24,6 +24,7 @@ public class CloverWebSocketService : BackgroundService
     private int _reconnectAttempts = 0;
     private readonly SemaphoreSlim _connectionLock = new(1, 1);
     private bool _isConnecting = false;
+    private readonly ILogger _logger = Log.ForContext<CloverWebSocketService>();
     
     // Opciones de JSON serializador con convertidor personalizado
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -47,7 +48,7 @@ public class CloverWebSocketService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        Log.Information("CloverWebSocketService starting");
+        _logger.Information("CloverWebSocketService starting");
 
         while (!stoppingToken.IsCancellationRequested)
         {

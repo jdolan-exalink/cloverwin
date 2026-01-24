@@ -90,11 +90,15 @@ internal static class Program
         // Log general de la aplicación
         var generalLogPath = Path.Combine(logsPath, "clover-bridge-.log");
         
-        // Log específico de comunicación con terminal (más detallado)
-        var terminalLogPath = Path.Combine(logsPath, "terminal-communication-.log");
+        // Log específico de Clover
+        var cloverLogPath = Path.Combine(logsPath, "clover-.log");
+
+        // Log específico de Mercado Pago
+        var mpLogPath = Path.Combine(logsPath, "mp-.log");
 
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug() // Capturar todo, incluyendo Debug
+            .MinimumLevel.Debug()
+            .Enrich.FromLogContext()
             .WriteTo.Console(
                 outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u3}] {Message:lj}{NewLine}{Exception}"
             )
@@ -106,13 +110,30 @@ internal static class Program
                 restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information,
                 outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
             )
-            // Log detallado de terminal (Debug y superior) - para debugging
-            .WriteTo.File(
-                terminalLogPath,
-                rollingInterval: RollingInterval.Day,
-                retainedFileCountLimit: 14,
-                restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug,
-                outputTemplate: "═══════════════════════════════════════════════════════════════════{NewLine}[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] [{Level:u3}]{NewLine}{Message:lj}{NewLine}{Exception}"
+            // Log específico de Clover (filtrado por namespace o contenido)
+            .WriteTo.Logger(lc => lc
+                .Filter.ByIncludingOnly(evt => 
+                    evt.Properties.ContainsKey("SourceContext") && evt.Properties["SourceContext"].ToString().Contains("Clover") ||
+                    evt.RenderMessage().Contains("Clover", StringComparison.OrdinalIgnoreCase))
+                .WriteTo.File(
+                    cloverLogPath,
+                    rollingInterval: RollingInterval.Day,
+                    retainedFileCountLimit: 14,
+                    outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+                )
+            )
+            // Log específico de Mercado Pago (filtrado por namespace o contenido)
+            .WriteTo.Logger(lc => lc
+                .Filter.ByIncludingOnly(evt => 
+                    evt.Properties.ContainsKey("SourceContext") && evt.Properties["SourceContext"].ToString().Contains("MercadoPago") ||
+                    evt.RenderMessage().Contains("MP:", StringComparison.OrdinalIgnoreCase) ||
+                    evt.RenderMessage().Contains("Mercado Pago", StringComparison.OrdinalIgnoreCase))
+                .WriteTo.File(
+                    mpLogPath,
+                    rollingInterval: RollingInterval.Day,
+                    retainedFileCountLimit: 14,
+                    outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+                )
             )
             .WriteTo.Sink(new CloverBridge.Services.LogWindowSink())
             .CreateLogger();
@@ -143,6 +164,7 @@ internal static class Program
             services.AddSingleton<TransactionQueueService>();
             services.AddSingleton<InboxWatcherService>();
             services.AddSingleton<ApiService>();
+            services.AddSingleton<MercadoPagoService>();
 
             // Registrar como hosted services
             services.AddHostedService<CloverWebSocketService>(sp => sp.GetRequiredService<CloverWebSocketService>());
@@ -167,6 +189,7 @@ internal static class Program
             services.AddSingleton<TransactionQueueService>();
             services.AddSingleton<InboxWatcherService>();
             services.AddSingleton<ApiService>();
+            services.AddSingleton<MercadoPagoService>();
 
             services.AddHostedService<CloverWebSocketService>(sp => sp.GetRequiredService<CloverWebSocketService>());
             services.AddHostedService<TransactionQueueService>(sp => sp.GetRequiredService<TransactionQueueService>());
@@ -255,11 +278,12 @@ internal static class Program
         var configService = host.Services.GetRequiredService<ConfigurationService>();
         var queueService = host.Services.GetRequiredService<TransactionQueueService>();
         var inboxService = host.Services.GetRequiredService<InboxWatcherService>();
+        var mpService = host.Services.GetRequiredService<MercadoPagoService>();
 
         Log.Information("Services started, creating ProductionMainWindow...");
 
         // Crear ventana principal
-        var mainWindow = new ProductionMainWindow(cloverService, configService, queueService, inboxService);
+        var mainWindow = new ProductionMainWindow(cloverService, configService, queueService, inboxService, mpService);
         app.MainWindow = mainWindow;
         
         // Manejar cierre de aplicación para detener servicios

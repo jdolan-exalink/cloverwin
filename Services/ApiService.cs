@@ -20,16 +20,22 @@ public class ApiService : BackgroundService
     private readonly ConfigurationService _configService;
     private readonly CloverWebSocketService _cloverService;
     private readonly TransactionQueueService _queueService;
+    private readonly InboxWatcherService _inboxService;
+    private readonly MercadoPagoService _mpService;
     private HttpListener? _listener;
 
     public ApiService(
         ConfigurationService configService,
         CloverWebSocketService cloverService,
-        TransactionQueueService queueService)
+        TransactionQueueService queueService,
+        InboxWatcherService inboxService,
+        MercadoPagoService mpService)
     {
         _configService = configService;
         _cloverService = cloverService;
         _queueService = queueService;
+        _inboxService = inboxService;
+        _mpService = mpService;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -133,6 +139,7 @@ public class ApiService : BackgroundService
                 "/api/transaction/void" when request.HttpMethod == "POST" => await HandleVoidAsync(request),
                 "/api/transaction/refund" when request.HttpMethod == "POST" => await HandleRefundAsync(request),
                 "/api/qr" when request.HttpMethod == "POST" => await HandleQrAsync(request),
+                "/webhooks/mp" when request.HttpMethod == "POST" => await HandleMpWebhookAsync(request),
                 _ => new { error = "Not found" }
             };
 
@@ -353,6 +360,58 @@ public class ApiService : BackgroundService
 
         var response = await _queueService.EnqueueTransactionAsync(message);
         return response;
+    }
+
+    private async Task<object> HandleMpWebhookAsync(HttpListenerRequest request)
+    {
+        try
+        {
+            // 1. Obtener Headers básicos
+            var signature = request.Headers["x-signature"];
+            var requestId = request.Headers["x-request-id"];
+            
+            using var reader = new StreamReader(request.InputStream);
+            var body = await reader.ReadToEndAsync();
+            
+            Log.Information("MP Webhook: Recibido requestId={RequestId}", requestId);
+            
+            // 2. Parsear el body para obtener el payment_id si viene
+            string? paymentId = null;
+            try
+            {
+                var payload = JsonSerializer.Deserialize<JsonElement>(body);
+                // El formato suele ser { "action": "payment.created", "data": { "id": "123" } }
+                if (payload.TryGetProperty("data", out var data) && data.TryGetProperty("id", out var id))
+                {
+                    paymentId = id.GetString() ?? id.GetRawText();
+                }
+            }
+            catch { }
+
+            // 3. Si no vino en el body, intentar de query params ( data.id o id )
+            if (string.IsNullOrEmpty(paymentId))
+            {
+                paymentId = request.QueryString["data.id"] ?? request.QueryString["id"];
+            }
+
+            if (!string.IsNullOrEmpty(paymentId))
+            {
+                Log.Information("MP Webhook: Identificado PaymentId={Id}. Procesando...", paymentId);
+                // 4. Delegar al servicio de Inbox para que complete la transacción pendiente
+                _ = _inboxService.CompleteMercadoPagoPaymentAsync(paymentId);
+            }
+            else
+            {
+                Log.Warning("MP Webhook: No se pudo encontrar un PaymentId en el body o query params");
+            }
+
+            return new { success = true };
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "MP Webhook: Error al procesar webhook");
+            return new { success = false, error = ex.Message };
+        }
     }
 
     public override void Dispose()

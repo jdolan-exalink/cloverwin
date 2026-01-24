@@ -14,6 +14,7 @@ public class ConfigurationService
 {
     private readonly string _configDir;
     private readonly string _cloverYamlPath;
+    private readonly string _qrmpYamlPath;
     private AppConfig _config;
     
     // Serializadores de YAML
@@ -35,7 +36,9 @@ public class ConfigurationService
         Directory.CreateDirectory(_configDir);
         
         _cloverYamlPath = Path.Combine(_configDir, "clover.yml");
-        Log.Information("📂 Ruta de configuración YAML: {Path}", _cloverYamlPath);
+        _qrmpYamlPath = Path.Combine(_configDir, "qrmp.yml");
+        
+        Log.Information("📂 Rutas de configuración YAML: {CloverPath}, {QrmpPath}", _cloverYamlPath, _qrmpYamlPath);
 
         // Configurar YamlDotNet
         _serializer = new SerializerBuilder()
@@ -67,34 +70,49 @@ public class ConfigurationService
 
     private AppConfig LoadConfig()
     {
+        AppConfig config = new AppConfig();
+        
+        // 1. Cargar Clover config
         try
         {
             if (File.Exists(_cloverYamlPath))
             {
                 var yaml = File.ReadAllText(_cloverYamlPath);
-                Log.Debug("📄 Contenido YAML leído: {Yaml}", yaml);
-                
-                var config = _deserializer.Deserialize<AppConfig>(yaml);
-                
-                if (config != null)
-                {
-                    Log.Information("✅ Configuración cargada desde YAML: IP={IP}, Puerto={Puerto}, WSS={WSS}, Token={Token}", 
-                        config.Clover.Host, config.Clover.Port, config.Clover.Secure, !string.IsNullOrEmpty(config.Clover.AuthToken));
-                    
-                    return config;
-                }
+                var loaded = _deserializer.Deserialize<AppConfig>(yaml);
+                if (loaded != null) config = loaded;
+                Log.Information("✅ Configuración Clover cargada");
             }
-
-            Log.Information("⚠️ No se encontró clover.yml o está vacío, creando uno nuevo con valores por defecto.");
-            var defaultConfig = new AppConfig();
-            SaveConfig(defaultConfig);
-            return defaultConfig;
+            else
+            {
+                Log.Warning("⚠️ clover.yml no encontrado, se creará uno nuevo.");
+            }
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "❌ Error crítico cargando clover.yml. Formato inválido?");
-            return new AppConfig();
+            Log.Error(ex, "❌ Error cargando clover.yml");
         }
+
+        // 2. Cargar MP QR config
+        try
+        {
+            if (File.Exists(_qrmpYamlPath))
+            {
+                var yaml = File.ReadAllText(_qrmpYamlPath);
+                var loaded = _deserializer.Deserialize<QrmpConfig>(yaml);
+                if (loaded != null) config.Qrmp = loaded;
+                Log.Information("✅ Configuración Mercado Pago cargada");
+            }
+            else
+            {
+                Log.Warning("⚠️ qrmp.yml no encontrado, se creará uno nuevo.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "❌ Error cargando qrmp.yml");
+        }
+
+        return config;
     }
 
     public void SaveConfig(AppConfig? config = null)
@@ -103,19 +121,19 @@ public class ConfigurationService
         {
             var configToSave = config ?? _config;
             
-            var tokenSnippet = !string.IsNullOrEmpty(configToSave.Clover.AuthToken) 
-                ? $"***{configToSave.Clover.AuthToken.Substring(Math.Max(0, configToSave.Clover.AuthToken.Length - 4))}" 
-                : "VACIO";
-                
-            Log.Information("✍️ Guardando clover.yml. Token a persistir: {Token}", tokenSnippet);
+            // Guardar clover.yml
+            var cloverYaml = _serializer.Serialize(configToSave);
+            File.WriteAllText(_cloverYamlPath, cloverYaml);
+            
+            // Guardar qrmp.yml
+            var qrmpYaml = _serializer.Serialize(configToSave.Qrmp);
+            File.WriteAllText(_qrmpYamlPath, qrmpYaml);
 
-            var yaml = _serializer.Serialize(configToSave);
-            File.WriteAllText(_cloverYamlPath, yaml);
-            Log.Information("💾 Archivo config/clover.yml actualizado con éxito");
+            Log.Information("💾 Archivos de configuración actualizados");
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "❌ Error guardando configuración en clover.yml");
+            Log.Error(ex, "❌ Error guardando configuración");
         }
     }
 

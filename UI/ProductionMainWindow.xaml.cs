@@ -31,6 +31,7 @@ public partial class ProductionMainWindow : Window
     private readonly ConfigurationService _configService;
     private readonly TransactionQueueService _queueService;
     private readonly InboxWatcherService _inboxService;
+    private readonly MercadoPagoService _mpService;
     private readonly ObservableCollection<TransactionRecord> _transactions;
     private readonly DispatcherTimer _uptimeTimer;
     // private readonly DispatcherTimer _outboxMonitorTimer; // ELIMINADO - Ya no se usa
@@ -53,7 +54,8 @@ public partial class ProductionMainWindow : Window
         CloverWebSocketService cloverService,
         ConfigurationService configService,
         TransactionQueueService queueService,
-        InboxWatcherService inboxService)
+        InboxWatcherService inboxService,
+        MercadoPagoService mpService)
     {
         InitializeComponent();
 
@@ -61,6 +63,7 @@ public partial class ProductionMainWindow : Window
         _configService = configService;
         _queueService = queueService;
         _inboxService = inboxService;
+        _mpService = mpService;
         _transactions = new ObservableCollection<TransactionRecord>();
         _startTime = DateTime.Now;
 
@@ -236,6 +239,8 @@ public partial class ProductionMainWindow : Window
         try
         {
             var config = _configService.GetConfig();
+            
+            // Clover UI context
             HostTextBox.Text = config.Clover.Host ?? "10.1.1.53";
             PortTextBox.Text = config.Clover.Port.ToString();
             MerchantIdTextBox.Text = config.Clover.RemoteAppId ?? "clover-bridge";
@@ -243,11 +248,30 @@ public partial class ProductionMainWindow : Window
             TokenTextBox.Text = config.Clover.AuthToken ?? "";
             SecureCheckBox.IsChecked = config.Clover.Secure;
             
-            LogSystem($"⚙️ Configuración cargada: {config.Clover.Host}:{config.Clover.Port}");
+            // Refrescar estado de MP en UI
+            UpdateMpStatus(config);
+            
+            LogSystem($"⚙️ Configuración cargada. Clover: {(config.Clover.Enabled ? "On" : "Off")}, MP: {(config.Qrmp.Enabled ? "On" : "Off")}");
         }
         catch (Exception ex)
         {
             LogSystem($"⚠️ Error cargando configuración: {ex.Message}");
+        }
+    }
+
+    private void UpdateMpStatus(AppConfig config)
+    {
+        if (!config.Qrmp.Enabled)
+        {
+            MpStatusText.Text = "Desactivado";
+            MpStatusText.Foreground = new SolidColorBrush(Color.FromRgb(148, 163, 184)); // Gray
+            TestMpButton.IsEnabled = false;
+        }
+        else
+        {
+            MpStatusText.Text = "Listo para operar";
+            MpStatusText.Foreground = new SolidColorBrush(Color.FromRgb(16, 185, 129)); // Green
+            TestMpButton.IsEnabled = true;
         }
     }
 
@@ -1096,6 +1120,76 @@ public partial class ProductionMainWindow : Window
         LogSystem("📋 Abriendo visor de logs en tiempo real");
     }
 
+    private async void TestMpSaleButton_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            var config = _configService.GetConfig();
+            if (!config.Qrmp.Enabled)
+            {
+                MessageBox.Show("La integración de Mercado Pago está desactivada.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            var amount = 10.0m;
+            if (decimal.TryParse(TestAmountTextBox.Text?.Replace(",", "."), System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var parsed))
+            {
+                amount = parsed;
+            }
+
+            var invoice = $"TEST-MP-{DateTime.Now:HHmmss}";
+            LogSystem($"🧪 Iniciando prueba de pago QR MP: {invoice} (${amount})");
+
+            var transaction = new TransactionFile
+            {
+                InvoiceNumber = invoice,
+                Amount = amount,
+                Provider = "QRMP",
+                ExternalId = GenerateExternalId(),
+                Status = TransactionStatus.Pending
+            };
+
+            var fileService = new TransactionFileService(_configService);
+            var inboxPath = Path.Combine(config.Folders.Inbox, $"{invoice}.json");
+            var json = JsonSerializer.Serialize(transaction, new JsonSerializerOptions { WriteIndented = true });
+            
+            await File.WriteAllTextAsync(inboxPath, json);
+            LogSystem($"✅ Archivo de prueba creado en INBOX. El sistema lo procesará automáticamente.");
+        }
+        catch (Exception ex)
+        {
+            LogSystem($"❌ Error en prueba MP: {ex.Message}");
+        }
+    }
+
+    private async void TestMpApi_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+             LogSystem("🔍 Probando conectividad con API de Mercado Pago...");
+             var success = await _mpService.TestCredentialsAsync();
+             if (success)
+             {
+                 LogSystem("✅ API Mercado Pago: Conexión exitosa.");
+                 MessageBox.Show("Conexión con Mercado Pago exitosa.", "Test API", MessageBoxButton.OK, MessageBoxImage.Information);
+             }
+             else
+             {
+                 LogSystem("❌ API Mercado Pago: Error de configuración.");
+                 MessageBox.Show("Error de conexión con Mercado Pago.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+             }
+        }
+        catch (Exception ex)
+        {
+            LogSystem($"❌ Error testeando API: {ex.Message}");
+        }
+    }
+
+    private void ClosePairingPopup_Click(object sender, RoutedEventArgs e)
+    {
+        PairingPopup.Visibility = Visibility.Collapsed;
+    }
+
     /* private void TransactionFilter_Changed(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
     {
         // TODO: Implementar filtrado de transacciones
@@ -1145,12 +1239,6 @@ public partial class ProductionMainWindow : Window
         LogSystem("➖ Ventana minimizada al systray");
     }
     */
-
-    private void ClosePairingPopup_Click(object sender, RoutedEventArgs e)
-    {
-        PairingPopup.Visibility = Visibility.Collapsed;
-    }
-
     private void RetryPairingButton_Click(object sender, RoutedEventArgs e)
     {
         PopupPairingCode.Text = "------";
@@ -1225,11 +1313,11 @@ public partial class ProductionMainWindow : Window
 
     private void OpenConfigPopup_Click(object sender, RoutedEventArgs e)
     {
-        var configWin = new ConfigWindow(_configService);
+        var configWin = new ConfigWindow(_configService, _mpService);
         configWin.Owner = this;
         if (configWin.ShowDialog() == true)
         {
-            LogSystem("✅ Configuración actualizada desde ventana externa");
+            LogSystem("✅ Configuración actualizada");
             // Refrescar los campos ocultos de la UI principal para que estén sincronizados
             LoadConfiguration();
             

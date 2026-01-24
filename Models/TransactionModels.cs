@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Linq;
 
@@ -108,6 +109,9 @@ public class TransactionDetail
 /// </summary>
 public class TransactionFile
 {
+    [JsonPropertyName("provider")]
+    public string Provider { get; set; } = "CLOVER";
+
     [JsonPropertyName("transactionId")]
     public string TransactionId { get; set; } = string.Empty;
 
@@ -139,8 +143,14 @@ public class TransactionFile
     [JsonPropertyName("notes")]
     public string? Notes { get; set; }
 
+    [JsonPropertyName("currency")]
+    public string? Currency { get; set; } = "ARS";
+
+    [JsonPropertyName("raw")]
+    public object? Raw { get; set; }
+
     // Resultado del pago
-    [JsonPropertyName("paymentInfo")]
+    [JsonPropertyName("details")]
     public PaymentFileInfo? PaymentInfo { get; set; }
 
     [JsonPropertyName("errorMessage")]
@@ -203,6 +213,7 @@ public class TransactionLogEntry
 /// <summary>
 /// Estados posibles de una transacción
 /// </summary>
+[JsonConverter(typeof(TransactionStatusConverter))]
 public enum TransactionStatus
 {
     Pending,             // Pendiente (al enviar)
@@ -292,4 +303,57 @@ public class PaymentFileInfo
 
     [JsonPropertyName("processingStartTime")]
     public DateTime? ProcessingStartTime { get; set; }
+
+    [JsonPropertyName("mp")]
+    public MpPaymentDetail? Mp { get; set; }
+}
+
+public class MpPaymentDetail
+{
+    [JsonPropertyName("payment_id")]
+    public string? PaymentId { get; set; }
+
+    [JsonPropertyName("status")]
+    public string? Status { get; set; }
+
+    [JsonPropertyName("status_detail")]
+    public string? StatusDetail { get; set; }
+
+    [JsonPropertyName("date_approved")]
+    public string? DateApproved { get; set; }
+
+    [JsonPropertyName("pos_external_id")]
+    public string? PosExternalId { get; set; }
+
+    [JsonPropertyName("store_external_id")]
+    public string? StoreExternalId { get; set; }
+}
+
+public class TransactionStatusConverter : JsonConverter<TransactionStatus>
+{
+    public override TransactionStatus Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var s = reader.GetString();
+        if (s == "APPROVED") return TransactionStatus.Successful;
+        if (s == "PENDING") return TransactionStatus.Pending;
+        if (s == "PROCESSING") return TransactionStatus.Processing;
+        if (s == "REJECTED") return TransactionStatus.Cancelled;
+        return TransactionStatus.Failed;
+    }
+
+    public override void Write(Utf8JsonWriter writer, TransactionStatus value, JsonSerializerOptions options)
+    {
+        var s = value switch
+        {
+            TransactionStatus.Successful => "APPROVED",
+            TransactionStatus.Pending => "PENDING",
+            TransactionStatus.Processing => "PROCESSING",
+            TransactionStatus.Cancelled => "REJECTED",
+            TransactionStatus.InsufficientFunds => "REJECTED",
+            TransactionStatus.Timeout => "ERROR",
+            TransactionStatus.Failed => "ERROR",
+            _ => "UNKNOWN"
+        };
+        writer.WriteStringValue(s);
+    }
 }

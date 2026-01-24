@@ -23,6 +23,7 @@ public class TrayApplicationContext : ApplicationContext
     private readonly ApiService _apiService;
     private readonly TransactionQueueService _queueService;
     private readonly InboxWatcherService _inboxService;
+    private readonly MercadoPagoService _mpService;
     private PairingWindow? _pairingWindow;
     private ProductionMainWindow? _mainWindow;
     private bool _initialCheckPerformed = false;
@@ -40,6 +41,7 @@ public class TrayApplicationContext : ApplicationContext
             services.AddSingleton<TransactionQueueService>();
             services.AddSingleton<InboxWatcherService>();
             services.AddSingleton<ApiService>();
+            services.AddSingleton<MercadoPagoService>();
 
             services.AddHostedService<CloverWebSocketService>(sp => sp.GetRequiredService<CloverWebSocketService>());
             services.AddHostedService<TransactionQueueService>(sp => sp.GetRequiredService<TransactionQueueService>());
@@ -55,6 +57,7 @@ public class TrayApplicationContext : ApplicationContext
         _apiService = _host.Services.GetRequiredService<ApiService>();
         _queueService = _host.Services.GetRequiredService<TransactionQueueService>();
         _inboxService = _host.Services.GetRequiredService<InboxWatcherService>();
+        _mpService = _host.Services.GetRequiredService<MercadoPagoService>();
 
         // Suscribirse a eventos de Clover
         _cloverService.StateChanged += OnCloverStateChanged;
@@ -318,7 +321,8 @@ public class TrayApplicationContext : ApplicationContext
                     _cloverService,
                     _configService,
                     _queueService,
-                    _inboxService
+                    _inboxService,
+                    _mpService
                 );
                 _mainWindow.Closed += (s, e) => _mainWindow = null;
             }

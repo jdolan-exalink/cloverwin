@@ -80,25 +80,76 @@
             </StackPanel>
         </Border>
 
-        <!-- Buttons Grid (2 per row) -->
-        <Grid Grid.Row="2" VerticalAlignment="Top">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+        <!-- Main Tabs -->
+        <TabControl Grid.Row="2" Background="Transparent" BorderThickness="0">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Header" Value="{Binding Header}"/>
+                    <Setter Property="Foreground" Value="#94a3b8"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border x:Name="Border" Padding="15,8" BorderThickness="0,0,0,2">
+                                    <ContentPresenter ContentSource="Header" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Border" Property="BorderBrush" Value="#6366f1"/>
+                                        <Setter Property="Foreground" Value="#e2e8f0"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
 
-            <!-- Row 0 -->
-            <Button x:Name="ConnectButton" Grid.Row="0" Grid.Column="0" Content="CONECTAR" Style="{StaticResource SuccessButton}" Click="ConnectButton_Click"/>
-            <Button x:Name="DisconnectButton" Grid.Row="0" Grid.Column="1" Content="DESCONECTAR" Style="{StaticResource DangerButton}" IsEnabled="False" Click="DisconnectButton_Click"/>
+            <!-- TAB CLOVER -->
+            <TabItem Header="CLOVER">
+                <Grid Margin="0,15,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-            <!-- Row 1 -->
-            <Button x:Name="MainPairingButton" Grid.Row="1" Grid.Column="0" Content="SINCRONIZAR" Style="{StaticResource MainButton}" Click="PairingButton_Click"/>
-            <Button x:Name="MainUnpairButton" Grid.Row="1" Grid.Column="1" Content="DESVINCULAR" Style="{StaticResource GhostButton}" IsEnabled="False" Click="UnpairButton_Click"/>
-        </Grid>
+                    <Button x:Name="ConnectButton" Grid.Row="0" Grid.Column="0" Content="CONECTAR" Style="{StaticResource SuccessButton}" Click="ConnectButton_Click"/>
+                    <Button x:Name="DisconnectButton" Grid.Row="0" Grid.Column="1" Content="DESCONECTAR" Style="{StaticResource DangerButton}" IsEnabled="False" Click="DisconnectButton_Click"/>
+                    
+                    <Button x:Name="MainPairingButton" Grid.Row="1" Grid.Column="0" Content="SINCRONIZAR" Style="{StaticResource MainButton}" Click="PairingButton_Click"/>
+                    <Button x:Name="MainUnpairButton" Grid.Row="1" Grid.Column="1" Content="DESVINCULAR" Style="{StaticResource GhostButton}" IsEnabled="False" Click="UnpairButton_Click"/>
+
+                    <Button x:Name="TestCloverButton" Grid.Row="2" Grid.ColumnSpan="2" Content="🧪 PRUEBA DE PAGO CLOVER" Style="{StaticResource GhostButton}" Height="50" Margin="5" Click="SendSaleButton_Click"/>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB MERCADO PAGO -->
+            <TabItem Header="MERCADO PAGO">
+                <StackPanel Margin="0,15,0,0">
+                    <Border Background="#1e293b" CornerRadius="10" Padding="15" Margin="5">
+                        <StackPanel>
+                            <TextBlock Text="Estado QR Mercado Pago" Foreground="#94a3b8" FontSize="11" Margin="0,0,0,5"/>
+                            <TextBlock x:Name="MpStatusText" Text="Listo para operar" Foreground="#10b981" FontWeight="Bold"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <Button x:Name="TestMpButton" Content="🧪 PRUEBA DE PAGO QR MP" Style="{StaticResource SuccessButton}" Height="60" Margin="5" Click="TestMpSaleButton_Click"/>
+                    
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Content="📋 VER LOGS" Style="{StaticResource GhostButton}" Height="50" Margin="5" Click="OpenLogsFolder_Click"/>
+                        <Button Grid.Column="1" Content="🔗 TEST API" Style="{StaticResource GhostButton}" Height="50" Margin="5" Click="TestMpApi_Click"/>
+                    </Grid>
+                </StackPanel>
+            </TabItem>
+        </TabControl>
 
         <!-- Multi-Action Row: Config & Logs -->
         <Grid Grid.Row="3" Margin="0,15,0,5">
@@ -111,7 +162,7 @@
         </Grid>
 
         <!-- Footer -->
-        <StackPanel Grid.Row="4" Margin="0,20,0,0">
+        <StackPanel Grid.Row="4" Margin="0,15,0,0">
             <TextBlock x:Name="FooterStatusText" Text="Sistema listo para operar" Foreground="#64748b" FontSize="11" HorizontalAlignment="Center" Margin="0,0,0,5"/>
             <TextBlock Text="PRO VERSION © 2026" Foreground="#334155" FontSize="10" FontWeight="Bold" HorizontalAlignment="Center"/>
         </StackPanel>

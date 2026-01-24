@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Bridge between ERP and Clover POS terminals")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.2.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.2.0+ec8311641602e519db6283970087fae388fe7eed")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.2.0+9e5f7d2f54b4fb326ab2ebebc0de266526f41b10")]
 [assembly: System.Reflection.AssemblyProductAttribute("Clover Bridge")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CloverBridge")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.2.0.0")]

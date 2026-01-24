@@ -1,0 +1,8 @@
+Enabled: true
+AccessToken: "YOUR_ACCESS_TOKEN"
+UserId: 0
+ExternalStoreId: "YOUR_STORE_ID"
+ExternalPosId: "YOUR_POS_ID"
+WebhookUrl: "https://your-domain.com/webhook"
+WebhookSecret: "your_secret"
+OrderTtlSeconds: 120

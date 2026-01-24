@@ -20,20 +20,24 @@ public class InboxWatcherService : BackgroundService
     private readonly CloverWebSocketService _cloverService;
     private readonly TransactionQueueService _queueService;
     private readonly TransactionLogService _logService;
+    private readonly MercadoPagoService _mpService;
     private FileSystemWatcher? _watcher;
     
     // Diccionario para rastrear transacciones en proceso
     private readonly ConcurrentDictionary<string, TransactionFile> _activeTransactions = new();
     private readonly ConcurrentDictionary<string, CancellationTokenSource> _transactionTimeouts = new();
+    private readonly ConcurrentDictionary<string, TaskCompletionSource<TransactionResponse>> _mpPendingPayments = new();
 
     public InboxWatcherService(
         ConfigurationService configService,
         CloverWebSocketService cloverService,
-        TransactionQueueService queueService)
+        TransactionQueueService queueService,
+        MercadoPagoService mpService)
     {
         _configService = configService;
         _cloverService = cloverService;
         _queueService = queueService;
+        _mpService = mpService;
         _logService = new TransactionLogService(configService);
     }
 
@@ -239,71 +243,108 @@ public class InboxWatcherService : BackgroundService
             timeoutCts = new CancellationTokenSource();
             _transactionTimeouts[transaction.TransactionId] = timeoutCts;
 
-            Log.Information("Processing transaction: Invoice={Invoice} Amount=${Amount} TransactionId={TransactionId}",
-                transaction.InvoiceNumber, transaction.Amount, transaction.TransactionId);
+            // Determinar PROVEEDOR (Clover vs QRMP)
+            var config = _configService.GetConfig();
+            if (string.IsNullOrEmpty(transaction.Provider))
+            {
+                transaction.Provider = config.PaymentProvider ?? "CLOVER";
+            }
+            
+            Log.Information("Routing transaction for {Invoice} to provider: {Provider}", 
+                transaction.InvoiceNumber, transaction.Provider);
 
-            transaction.AddLogEntry("PROCESSING", "Iniciando proceso de pago", $"Monto: ${transaction.Amount}");
-
-            // Enviar a Clover para procesar pago
+            // Enviar solicitud según proveedor
             transaction.Status = TransactionStatus.Processing;
             transaction.SentToTerminalTime = DateTime.UtcNow;
             transaction.TimeoutRemainingSeconds = 80;
-            transaction.AddLogEntry("SENT_TO_TERMINAL", "Solicitud enviada a terminal Clover", $"Monto en centavos: {(long)(transaction.Amount * 100)}");
             
-            // NO guardar estado intermedio en OUTBOX - solo al finalizar
-            // cobro.txt irá a OUTBOX, {invoiceNumber}.txt irá a ARCHIVE
+            Task<TransactionResponse> paymentTask;
             
-            var amountInCents = (long)(transaction.Amount * 100);
-            
-            // Tarea de envío a Clover
-            var cloverTask = _cloverService.SendSaleAsync(transaction.Amount, transaction.ExternalId, 0);
-            
+            if (transaction.Provider.Equals("QRMP", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!config.Qrmp.Enabled)
+                {
+                    Log.Warning("⚠️ Cobro QRMP solicitado pero la integración está desactivada");
+                    await FinalizeTransactionAndCleanup(transaction, filePath, TransactionStatus.Failed, "Integración Mercado Pago desactivada");
+                    return;
+                }
+
+                transaction.AddLogEntry("MP_ORDER_CREATING", "Creando orden en Mercado Pago (QR Fijo)");
+                var success = await _mpService.CreateOrderAsync(transaction);
+                
+                if (!success)
+                {
+                    await FinalizeTransactionAndCleanup(transaction, filePath, TransactionStatus.Failed, "Error al crear orden en Mercado Pago");
+                    return;
+                }
+                
+                transaction.AddLogEntry("MP_ORDER_CREATED", "Orden creada, esperando escaneo y pago");
+                
+                // Crear Task que se completará vía Webhook
+                var tcs = new TaskCompletionSource<TransactionResponse>();
+                _mpPendingPayments[transaction.InvoiceNumber] = tcs;
+                paymentTask = tcs.Task;
+            }
+            else
+            {
+                if (!config.Clover.Enabled)
+                {
+                    Log.Warning("⚠️ Cobro Clover solicitado pero la integración está desactivada");
+                    await FinalizeTransactionAndCleanup(transaction, filePath, TransactionStatus.Failed, "Integración Clover desactivada");
+                    return;
+                }
+
+                // Default: CLOVER
+                transaction.AddLogEntry("SENT_TO_TERMINAL", "Solicitud enviada a terminal Clover", $"Monto en centavos: {(long)(transaction.Amount * 100)}");
+                
+                // Envolver CloverTask para devolver TransactionResponse
+                paymentTask = Task.Run(async () => {
+                    var cloverMsg = await _cloverService.SendSaleAsync(transaction.Amount, transaction.ExternalId, 0);
+                    return ConvertToTransactionResponse(cloverMsg);
+                });
+            }
+
             // Tarea de timeout (80 segundos)
             var timeoutTask = CountdownWithUpdatesAsync(transaction, 80, timeoutCts.Token);
 
             // Esperar el primero que termine
-            var completedTask = await Task.WhenAny(cloverTask, timeoutTask);
+            var completedTask = await Task.WhenAny(paymentTask, timeoutTask);
 
             if (completedTask == timeoutTask && !timeoutCts.Token.IsCancellationRequested)
             {
                 // TIMEOUT - 80 segundos sin respuesta confirmada
-                Log.Warning("⏱️ Transaction TIMEOUT: Invoice={Invoice} TransactionId={TransactionId}", 
-                    transaction.InvoiceNumber, transaction.TransactionId);
+                Log.Warning("⏱️ Transaction TIMEOUT: Invoice={Invoice} Provider={Provider}", 
+                    transaction.InvoiceNumber, transaction.Provider);
                 
                 transaction.AddLogEntry("TIMEOUT", "Timeout de 80 segundos alcanzado", "Pago no confirmado en tiempo límite");
                 
-                // ENVIAR CANCELACIÓN AL TERMINAL
-                try
+                if (transaction.Provider.Equals("CLOVER", StringComparison.OrdinalIgnoreCase))
                 {
-                    Log.Information("🚫 Enviando cancelación al terminal...");
-                    transaction.AddLogEntry("CANCELLING", "Enviando cancelación al terminal", "Timeout sin confirmación");
-                    await _cloverService.CancelTransactionAsync();
-                    Log.Information("✅ Cancelación enviada al terminal");
-                    transaction.AddLogEntry("CANCELLED_SENT", "Cancelación enviada al terminal", "Terminal notificado");
+                    // ENVIAR CANCELACIÓN AL TERMINAL CLOVER
+                    try { await _cloverService.CancelTransactionAsync(); } catch { }
                 }
-                catch (Exception cancelEx)
+                else
                 {
-                    Log.Warning(cancelEx, "⚠️ Error al enviar cancelación al terminal");
-                    transaction.AddLogEntry("CANCEL_ERROR", "Error al enviar cancelación", cancelEx.Message);
+                    // LIMPIAR ORDEN EN MP
+                    try { await _mpService.DeleteOrderAsync(); } catch { }
+                    _mpPendingPayments.TryRemove(transaction.InvoiceNumber, out _);
                 }
                 
                 await FinalizeTransactionAndCleanup(transaction, filePath, TransactionStatus.Timeout, 
-                    "Timeout de 80 segundos - Pago no confirmado, cancelación enviada al terminal");
+                    "Timeout de 80 segundos - Pago no confirmado");
             }
             else if (!timeoutCts.Token.IsCancellationRequested)
             {
-                // Respuesta recibida antes del timeout - CANCELAR INMEDIATAMENTE EL CONTADOR
-                try
+                // Respuesta recibida antes del timeout
+                try { timeoutCts.Cancel(); } catch { }
+                
+                if (transaction.Provider.Equals("QRMP", StringComparison.OrdinalIgnoreCase))
                 {
-                    timeoutCts.Cancel(); // Cancelar el countdown inmediatamente
+                    _mpPendingPayments.TryRemove(transaction.InvoiceNumber, out _);
                 }
-                catch { }
 
-                var cloverResponse = await cloverTask;
-                transaction.AddLogEntry("RESPONSE_RECEIVED", "Respuesta recibida de terminal", $"Método: {cloverResponse.Method}");
-
-                // Convertir CloverMessage a TransactionResponse
-                var response = ConvertToTransactionResponse(cloverResponse);
+                var response = await paymentTask;
+                transaction.AddLogEntry("RESPONSE_RECEIVED", "Respuesta de pago recibida", $"Exitosa: {response.Success}");
 
                 // Procesar resultado
                 var fileService = new TransactionFileService(_configService);
@@ -313,9 +354,6 @@ public class InboxWatcherService : BackgroundService
 
                 // Finalizar y limpiar
                 await FinalizeTransactionAndCleanup(transaction, filePath, transaction.Status, transaction.ErrorMessage);
-
-                Log.Information("Transaction processed: Invoice={Invoice} Status={Status}",
-                    transaction.InvoiceNumber, transaction.Status);
             }
         }
         catch (Exception ex)
@@ -566,6 +604,96 @@ public class InboxWatcherService : BackgroundService
                     : 0
             }).ToList()
         };
+    }
+
+    /// <summary>
+    /// Se llama cuando Mercado Pago confirma un pago vía Webhook
+    /// </summary>
+    public async Task CompleteMercadoPagoPaymentAsync(string paymentId)
+    {
+        try
+        {
+            Log.Information("MP Webhook: Procesando pago {PaymentId}", paymentId);
+            
+            // 1. Consultar detalles reales del pago en MP (Server-to-Server)
+            var mpPayment = await _mpService.GetPaymentAsync(paymentId);
+            if (mpPayment == null)
+            {
+                Log.Warning("MP Webhook: No se pudieron obtener detalles del pago {PaymentId}", paymentId);
+                return;
+            }
+
+            // 2. Extraer external_reference para matchear con InvoiceNúmero
+            string? invoiceNumber = null;
+            if (mpPayment.Value.TryGetProperty("external_reference", out var extRef))
+            {
+                invoiceNumber = extRef.GetString();
+            }
+
+            if (string.IsNullOrEmpty(invoiceNumber))
+            {
+                Log.Warning("MP Webhook: El pago {PaymentId} no tiene external_reference", paymentId);
+                return;
+            }
+
+            // 3. Buscar si tenemos una transacción activa esperando este pago
+            if (_mpPendingPayments.TryGetValue(invoiceNumber, out var tcs))
+            {
+                Log.Information("MP Webhook: Match encontrado para Factura {Invoice}", invoiceNumber);
+                
+                // Convertir el pago de MP a nuestro formato interno de respuesta
+                var response = ConvertMpPaymentToResponse(mpPayment.Value);
+                
+                // Completar el Task que está esperando en ProcessFileAsync
+                tcs.TrySetResult(response);
+            }
+            else
+            {
+                Log.Information("MP Webhook: No hay transacciones locales esperando el pago de factura {Invoice}", invoiceNumber);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "MP Webhook: Error procesando completitud de pago {PaymentId}", paymentId);
+        }
+    }
+
+    private TransactionResponse ConvertMpPaymentToResponse(JsonElement mp)
+    {
+        var status = mp.TryGetProperty("status", out var s) ? s.GetString() : "unknown";
+        var statusDetail = mp.TryGetProperty("status_detail", out var sd) ? sd.GetString() : "";
+        var success = status == "approved";
+        
+        var response = new TransactionResponse
+        {
+            Success = success,
+            Result = status?.ToUpper() ?? "FAILED",
+            Reason = statusDetail,
+            Message = $"Mercado Pago: {status} ({statusDetail})"
+        };
+
+        if (mp.TryGetProperty("id", out var idProp))
+        {
+            var id = idProp.ValueKind == JsonValueKind.Number ? idProp.GetInt64().ToString() : idProp.GetString();
+            
+            response.Payment = new PaymentInfo
+            {
+                Id = id ?? "",
+                Amount = mp.TryGetProperty("transaction_amount", out var amt) ? (long)(amt.GetDecimal() * 100) : 0,
+                ExternalPaymentId = mp.TryGetProperty("external_reference", out var ext) ? ext.GetString() : null
+            };
+
+            // Llenar detalles específicos de MP en el objeto que se persistirá
+            response.Payment.Note = $"MP Status: {status}, Detail: {statusDetail}";
+            
+            // Usar el objeto MPDetail que agregamos a PaymentFileInfo
+            // Lo pasamos vía PaymentInfo para que ProcessPaymentResult lo use
+            // NOTA: Como PaymentInfo en CloverMessages no tiene el campo MP, 
+            // podemos usar TransactionResponse.Message o Raw para pasar info extra
+            // o simplemente confiar en que ProcessPaymentResult lo maneje.
+        }
+
+        return response;
     }
 
     private TransactionResponse ConvertToTransactionResponse(CloverMessage cloverMessage)
