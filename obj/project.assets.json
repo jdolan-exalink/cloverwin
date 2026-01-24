@@ -3656,13 +3656,13 @@
     "C:\\Users\\juan\\.nuget\\packages\\": {}
   },
   "project": {
-    "version": "1.1.0",
+    "version": "1.2.0",
     "restore": {
-      "projectUniqueName": "d:\\DEVs\\Cloverwin\\CloverBridge.csproj",
+      "projectUniqueName": "D:\\DEVs\\Cloverwin\\CloverBridge.csproj",
       "projectName": "CloverBridge",
-      "projectPath": "d:\\DEVs\\Cloverwin\\CloverBridge.csproj",
+      "projectPath": "D:\\DEVs\\Cloverwin\\CloverBridge.csproj",
       "packagesPath": "C:\\Users\\juan\\.nuget\\packages\\",
-      "outputPath": "d:\\DEVs\\Cloverwin\\obj\\",
+      "outputPath": "D:\\DEVs\\Cloverwin\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\juan\\AppData\\Roaming\\NuGet\\NuGet.Config"
