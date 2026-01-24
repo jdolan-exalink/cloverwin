@@ -25,6 +25,7 @@ public class TrayApplicationContext : ApplicationContext
     private readonly InboxWatcherService _inboxService;
     private PairingWindow? _pairingWindow;
     private ProductionMainWindow? _mainWindow;
+    private bool _initialCheckPerformed = false;
 
     public TrayApplicationContext()
     {
@@ -59,10 +60,34 @@ public class TrayApplicationContext : ApplicationContext
         _cloverService.StateChanged += OnCloverStateChanged;
         _cloverService.PairingCodeReceived += OnPairingCodeReceived;
 
-        // Crear icono de bandeja con tarjeta de crédito
+        // Intentar cargar el icono desde el archivo .ico comercial
+        Icon trayIcon;
+        try
+        {
+            var exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+            var appPath = !string.IsNullOrEmpty(exePath) 
+                ? Path.GetDirectoryName(exePath) 
+                : AppContext.BaseDirectory;
+
+            var iconPath = Path.Combine(appPath ?? "", "cloverwin.ico");
+            if (File.Exists(iconPath))
+            {
+                trayIcon = new Icon(iconPath);
+            }
+            else
+            {
+                trayIcon = CreateIconFromEmoji("💳");
+            }
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "No se pudo cargar cloverwin.ico, usando genérico");
+            trayIcon = SystemIcons.Application;
+        }
+
         _notifyIcon = new NotifyIcon
         {
-            Icon = CreateIconFromEmoji("💳"),
+            Icon = trayIcon,
             Text = "CloverBridge - Sistema de Pagos",
             Visible = true,
             ContextMenuStrip = CreateContextMenu()
@@ -74,6 +99,20 @@ public class TrayApplicationContext : ApplicationContext
         _ = _host.StartAsync();
 
         Log.Information("TrayApplicationContext initialized");
+
+        // Chequeo de inicio: Si en 10 segundos no está integrado, mostrar la ventana principal
+        // Usamos un Timer de WinForms para que se ejecute en el hilo de la UI correctamente
+        var startupTimer = new System.Windows.Forms.Timer();
+        startupTimer.Interval = 10000;
+        startupTimer.Tick += (s, e) => {
+            startupTimer.Stop();
+            if (_cloverService.State != ConnectionState.Paired && !_initialCheckPerformed)
+            {
+                Log.Information("Auto-integration check: Terminal not paired after timeout, showing main window.");
+                OpenMainWindow();
+            }
+        };
+        startupTimer.Start();
     }
 
     private ContextMenuStrip CreateContextMenu()
@@ -123,7 +162,7 @@ public class TrayApplicationContext : ApplicationContext
         configItem.Click += (s, e) => OpenConfiguration();
         menu.Items.Add(configItem);
 
-        var logsItem = new ToolStripMenuItem("Ver Logs");
+        var logsItem = new ToolStripMenuItem("Ver Logs en Tiempo Real");
         logsItem.Click += (s, e) => OpenLogs();
         menu.Items.Add(logsItem);
 
@@ -146,24 +185,26 @@ public class TrayApplicationContext : ApplicationContext
 
             if (result == DialogResult.Yes)
             {
-                Log.Information("User requested application shutdown");
+                Log.Information("User requested application shutdown via tray");
                 _notifyIcon.Visible = false;
                 
-                try
-                {
-                    await _host.StopAsync(TimeSpan.FromSeconds(5));
-                }
-                catch { }
-                
-                // Forzar cierre de ventanas
+                // Forzar cierre de ventanas primero
                 if (_mainWindow != null)
                 {
                     _mainWindow.ForceClose = true;
-                    _mainWindow.Close();
+                    _mainWindow.Dispatcher.Invoke(() => _mainWindow.Close());
                 }
+                
                 _pairingWindow?.Close();
                 
-                Application.Exit();
+                try
+                {
+                    // Detener servicios de forma asíncrona pero esperar un poco
+                    _host.StopAsync(TimeSpan.FromSeconds(2)).Wait();
+                }
+                catch { }
+                
+                Log.Information("App termination complete");
                 Environment.Exit(0);
             }
         };
@@ -244,20 +285,21 @@ public class TrayApplicationContext : ApplicationContext
         }}";
 
         _notifyIcon.Text = tooltip;
-
         Log.Information("Tray tooltip updated: {Tooltip}", tooltip);
+
+        // Si cambia a integrado, ya no necesitamos el chequeo inicial
+        if (state == ConnectionState.Paired)
+        {
+            _initialCheckPerformed = true;
+        }
     }
 
     private void OnPairingCodeReceived(object? sender, string code)
     {
         Log.Information("Pairing code received in tray: {Code}", code);
         
-        if (_pairingWindow == null || !_pairingWindow.IsVisible)
-        {
-            ShowPairingWindow();
-        }
-
-        _pairingWindow?.UpdatePairingCode(code);
+        OpenMainWindow();
+        _mainWindow?.ShowPairingPopup(code);
     }
 
     private void OnTrayDoubleClick(object? sender, EventArgs e)
@@ -267,6 +309,7 @@ public class TrayApplicationContext : ApplicationContext
 
     private void OpenMainWindow()
     {
+        _initialCheckPerformed = true;
         if (_mainWindow == null || !_mainWindow.IsVisible)
         {
             if (_mainWindow == null)
@@ -289,15 +332,8 @@ public class TrayApplicationContext : ApplicationContext
 
     private void ShowPairingWindow()
     {
-        if (_pairingWindow == null || !_pairingWindow.IsVisible)
-        {
-            _pairingWindow = new PairingWindow(_cloverService);
-            _pairingWindow.Show();
-        }
-        else
-        {
-            _pairingWindow.Activate();
-        }
+        OpenMainWindow();
+        _mainWindow?.ShowPairingPopup();
     }
 
     private void OpenDashboard()
@@ -323,11 +359,14 @@ public class TrayApplicationContext : ApplicationContext
     {
         try
         {
-            var appDataPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "CloverBridge"
-            );
-            Process.Start("explorer.exe", appDataPath);
+            var exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+            var appPath = !string.IsNullOrEmpty(exePath) 
+                ? Path.GetDirectoryName(exePath) 
+                : AppContext.BaseDirectory;
+            
+            var configPath = Path.Combine(appPath ?? "", "config");
+            if (!Directory.Exists(configPath)) Directory.CreateDirectory(configPath);
+            Process.Start("explorer.exe", configPath);
         }
         catch (Exception ex)
         {
@@ -337,19 +376,16 @@ public class TrayApplicationContext : ApplicationContext
 
     private void OpenLogs()
     {
-        try
+        if (_mainWindow == null)
         {
-            var logsPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "CloverBridge",
-                "logs"
-            );
-            Process.Start("explorer.exe", logsPath);
+            OpenMainWindow();
         }
-        catch (Exception ex)
-        {
-            Log.Error(ex, "Error opening logs folder");
-        }
+        
+        _mainWindow?.Dispatcher.Invoke(() => {
+            var logWin = new LogWindow();
+            logWin.Owner = _mainWindow;
+            logWin.Show();
+        });
     }
 
     private void Exit()

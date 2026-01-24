@@ -67,16 +67,16 @@ public partial class ProductionMainWindow : Window
         // Mostrar versión
         VersionTextBlock.Text = AppVersion.GetVersion();
 
-        // Configurar DataGrid
-        TransactionsDataGrid.ItemsSource = _transactions;
+        // Configurar DataGrid (Eliminado del form principal)
+        // TransactionsDataGrid.ItemsSource = _transactions;
 
-        // Timer para uptime
+        /* Timer para uptime
         _uptimeTimer = new DispatcherTimer
         {
             Interval = TimeSpan.FromSeconds(1)
         };
         _uptimeTimer.Tick += UpdateUptime;
-        _uptimeTimer.Start();
+        _uptimeTimer.Start(); */
 
         // Timer para contador de timeout visible (cada 1 segundo)
         _timeoutCounterTimer = new DispatcherTimer
@@ -110,11 +110,11 @@ public partial class ProductionMainWindow : Window
         LogSystem($"📊 Sistema listo para operar");
     }
 
-    private void UpdateUptime(object? sender, EventArgs e)
+    /* private void UpdateUptime(object? sender, EventArgs e)
     {
         var uptime = DateTime.Now - _startTime;
         UptimeText.Text = $"{uptime.Hours:D2}:{uptime.Minutes:D2}:{uptime.Seconds:D2}";
-    }
+    } */
 
     private void UpdateTimeoutCounter(object? sender, EventArgs e)
     {
@@ -160,7 +160,7 @@ public partial class ProductionMainWindow : Window
         TimeoutCounterBorder.Visibility = Visibility.Collapsed;
     }
 
-    private async void TransactionsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    /* private async void TransactionsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
         if (TransactionsDataGrid.SelectedItem is TransactionRecord record)
         {
@@ -207,10 +207,9 @@ public partial class ProductionMainWindow : Window
                     $"Error al mostrar detalles: {ex.Message}",
                     "Error",
                     MessageBoxButton.OK,
-                    MessageBoxImage.Error);
             }
         }
-    }
+    } */
 
     private async void MonitorOutboxTransactions_Removed(object? sender, EventArgs e)
     {
@@ -266,7 +265,14 @@ public partial class ProductionMainWindow : Window
             
             config.Clover.RemoteAppId = MerchantIdTextBox.Text?.Trim() ?? "";
             config.Clover.SerialNumber = DeviceIdTextBox.Text?.Trim() ?? "";
-            config.Clover.AuthToken = TokenTextBox.Text?.Trim() ?? "";
+            
+            // Solo actualizar token si no está vacío en la UI para evitar borrarlo por error
+            var uiToken = TokenTextBox.Text?.Trim();
+            if (!string.IsNullOrEmpty(uiToken))
+            {
+                config.Clover.AuthToken = uiToken;
+            }
+            
             config.Clover.Secure = SecureCheckBox.IsChecked ?? false;
             
             // Guardar en el archivo
@@ -297,7 +303,7 @@ public partial class ProductionMainWindow : Window
             ConnectionState.PairingRequired => ("⚠️ Requiere Integración", "#f59e0b"),
             ConnectionState.Connecting => ("🔄 Conectando...", "#667eea"),
             ConnectionState.Disconnected => ("⭕ Desconectado", "#ef4444"),
-            ConnectionState.Error => ("❌ Error", "#ef4444"),
+            ConnectionState.Error => ("❌ Error de Conexión", "#ef4444"),
             _ => ("❓ Desconocido", "#64748b")
         };
 
@@ -310,22 +316,39 @@ public partial class ProductionMainWindow : Window
         
         DisconnectButton.IsEnabled = isConnected;
         ConnectButton.IsEnabled = !isConnected;
-        UnpairButton.IsEnabled = isPaired;
+        MainUnpairButton.IsEnabled = isPaired;
+        MainPairingButton.IsEnabled = !isPaired;
 
         if (isPaired)
         {
+            PairingPopup.Visibility = Visibility.Collapsed;
             LogSystem("✅ Terminal integrado correctamente");
+            
+            // Sincronizar el token recibido con el campo de la interfaz
+            var config = _configService.GetConfig();
+            if (!string.IsNullOrEmpty(config.Clover.AuthToken) && string.IsNullOrEmpty(TokenTextBox.Text))
+            {
+                TokenTextBox.Text = config.Clover.AuthToken;
+                Log.Information("Sync: Token sincronizado con la interfaz UI");
+            }
+        }
+        else if (state == ConnectionState.PairingRequired)
+        {
+            // Mostrar popup de pairing automáticamente si se requiere integración
+            ShowPairingPopup();
+        }
+        else if (state == ConnectionState.Error)
+        {
+            // Mostrar popup con el error si la integración falló o hay problemas
+            ShowPairingPopup();
+            PopupPairingStatus.Text = "❌ Error de integración. Verifica la IP del terminal y que el servicio de Clover esté activo.";
+            PopupPairingStatus.Foreground = new SolidColorBrush(Color.FromRgb(239, 68, 68)); // Rojo
         }
     }
 
     private void OnPairingCodeReceived(object? sender, string code)
     {
-        Dispatcher.Invoke(() =>
-        {
-            PopupPairingCode.Text = code;
-            PopupPairingStatus.Text = "✅ Ingresa este código en el terminal Clover";
-            LogSystem($"🔑 Código de integración: {code}");
-        });
+        ShowPairingPopup(code);
     }
 
     private void OnCloverMessageReceived(object? sender, CloverMessage message)
@@ -409,13 +432,7 @@ public partial class ProductionMainWindow : Window
 
     private void UpdateMetrics()
     {
-        TotalPaymentsText.Text = _totalPayments.ToString();
-        TotalPaymentsAmountText.Text = $"${_totalPaymentsAmount:F2}";
-        
-        TotalRefundsText.Text = _totalRefunds.ToString();
-        TotalRefundsAmountText.Text = $"${_totalRefundsAmount:F2}";
-        
-        TotalErrorsText.Text = _totalErrors.ToString();
+        // Métricas de UI eliminadas para diseño minimalista
     }
 
     private void LoadTransactionHistory()
@@ -476,15 +493,21 @@ public partial class ProductionMainWindow : Window
         }
     }
 
-    private void LogSystem(string message)
+    public void LogSystem(string message)
     {
-        var timestamp = DateTime.Now.ToString("HH:mm:ss");
-        var logEntry = $"[{timestamp}] {message}\n";
-        
-        SystemLogTextBox.AppendText(logEntry);
-        SystemLogTextBox.ScrollToEnd();
-        
-        FooterStatusText.Text = message;
+        Dispatcher.Invoke(() =>
+        {
+            var timestamp = DateTime.Now.ToString("HH:mm:ss");
+            var logEntry = $"[{timestamp}] {message}\n";
+            
+            SystemLogTextBox.AppendText(logEntry);
+            SystemLogTextBox.ScrollToEnd();
+            
+            FooterStatusText.Text = message;
+            
+            // Solo loguear en Serilog, el Sink se encarga del resto
+            Log.Information(message);
+        });
     }
 
     private string GenerateExternalId()
@@ -1067,34 +1090,25 @@ public partial class ProductionMainWindow : Window
 
     private void OpenLogsFolder_Click(object sender, RoutedEventArgs e)
     {
-        try
-        {
-            var logsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "logs");
-            if (!Directory.Exists(logsPath))
-            {
-                Directory.CreateDirectory(logsPath);
-            }
-            Process.Start("explorer.exe", logsPath);
-        }
-        catch (Exception ex)
-        {
-            LogSystem($"❌ Error abriendo logs: {ex.Message}");
-        }
+        var logWin = new LogWindow();
+        logWin.Owner = this;
+        logWin.Show();
+        LogSystem("📋 Abriendo visor de logs en tiempo real");
     }
 
-    private void TransactionFilter_Changed(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    /* private void TransactionFilter_Changed(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
     {
         // TODO: Implementar filtrado de transacciones
-    }
+    } */
 
-    private void RefreshTransactions_Click(object sender, RoutedEventArgs e)
+    /* private void RefreshTransactions_Click(object sender, RoutedEventArgs e)
     {
         LogSystem("🔄 Actualizando transacciones...");
         // Ya están en memoria, solo refrescar vista
         TransactionsDataGrid.Items.Refresh();
-    }
+    } */
 
-    private void ClearHistory_Click(object sender, RoutedEventArgs e)
+    /* private void ClearHistory_Click(object sender, RoutedEventArgs e)
     {
         var result = MessageBox.Show(
             "¿Está seguro que desea limpiar el historial de transacciones?",
@@ -1111,11 +1125,11 @@ public partial class ProductionMainWindow : Window
             _totalRefunds = 0;
             _totalRefundsAmount = 0;
             _totalErrors = 0;
-            UpdateMetrics();
+            // UpdateMetrics(); // Eliminado
             SaveTransactionHistory();
             LogSystem("🗑️ Historial limpiado");
         }
-    }
+    } */
 
     private void ClearLogs_Click(object sender, RoutedEventArgs e)
     {
@@ -1171,6 +1185,105 @@ public partial class ProductionMainWindow : Window
         e.Handled = true;
     }
 
+    // ============ Header Button Handlers ============
+
+    /* private void OpenPaymentTestButton_Click(object sender, RoutedEventArgs e)
+    {
+        // Abrir popup de configuración en la pestaña de Test (índice 1)
+        ConfigPopup.Visibility = Visibility.Visible;
+        var tabControl = FindConfigPopupTabControl();
+        if (tabControl != null)
+        {
+            tabControl.SelectedIndex = 1;
+        }
+        LogSystem("🧪 Abriendo Test de Pago");
+    } */
+
+    /* private void OpenLogsButton_Click(object sender, RoutedEventArgs e)
+    {
+        // Abrir popup de configuración en la pestaña de Logs (índice 2)
+        ConfigPopup.Visibility = Visibility.Visible;
+        var tabControl = FindConfigPopupTabControl();
+        if (tabControl != null)
+        {
+            tabControl.SelectedIndex = 2;
+        }
+        LogSystem("📋 Abriendo Logs del Sistema");
+    }
+
+    private void OpenConfigButton_Click(object sender, RoutedEventArgs e)
+    {
+        // Abrir popup de configuración en la pestaña de Configuración (índice 0)
+        ConfigPopup.Visibility = Visibility.Visible;
+        var tabControl = FindConfigPopupTabControl();
+        if (tabControl != null)
+        {
+            tabControl.SelectedIndex = 0;
+        }
+        LogSystem("⚙️ Abriendo Configuración");
+    } */
+
+    private void OpenConfigPopup_Click(object sender, RoutedEventArgs e)
+    {
+        var configWin = new ConfigWindow(_configService);
+        configWin.Owner = this;
+        if (configWin.ShowDialog() == true)
+        {
+            LogSystem("✅ Configuración actualizada desde ventana externa");
+            // Reiniciar conexión si es necesario
+            Task.Run(async () => {
+                await _cloverService.DisconnectAsync();
+                await Task.Delay(500);
+                await _cloverService.ConnectAsync();
+            });
+        }
+    }
+
+    /* private void CloseConfigPopup_Click(object sender, RoutedEventArgs e)
+    {
+        ConfigPopup.Visibility = Visibility.Collapsed;
+    }
+
+    private void ConfigPopup_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        // Cerrar al hacer clic fuera
+        ConfigPopup.Visibility = Visibility.Collapsed;
+    }
+
+    private void ConfigPopupContent_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        // Evitar que el clic en el contenido cierre el popup
+        e.Handled = true;
+    }
+
+    private System.Windows.Controls.TabControl? FindConfigPopupTabControl()
+    {
+        // El ConfigPopup es un Grid
+        if (ConfigPopup != null)
+        {
+            // El primer hijo (y único contenedor visual) es un Border
+            foreach (var child in ConfigPopup.Children)
+            {
+                if (child is System.Windows.Controls.Border border)
+                {
+                    // Dentro del Border hay un Grid
+                    if (border.Child is System.Windows.Controls.Grid contentGrid)
+                    {
+                        // En ese Grid, el TabControl es uno de los hijos
+                        foreach (var innerChild in contentGrid.Children)
+                        {
+                            if (innerChild is System.Windows.Controls.TabControl tc)
+                            {
+                                return tc;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    } */
+
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
         // Siempre guardar configuración antes de cerrar/ocultar
@@ -1184,9 +1297,9 @@ public partial class ProductionMainWindow : Window
         }
         else
         {
-            _uptimeTimer.Stop();
+            if (_uptimeTimer != null) _uptimeTimer.Stop();
             // _outboxMonitorTimer.Stop(); // ELIMINADO
-            _timeoutCounterTimer.Stop();
+            if (_timeoutCounterTimer != null) _timeoutCounterTimer.Stop();
             SaveTransactionHistory();
         }
     }
@@ -1205,6 +1318,29 @@ public partial class ProductionMainWindow : Window
         this.WindowState = WindowState.Normal;
         this.Activate();
         LogSystem("⬆️ Ventana restaurada");
+    }
+
+    public void ShowPairingPopup(string? code = null)
+    {
+        Dispatcher.Invoke(() => {
+            PairingPopup.Visibility = Visibility.Visible;
+            
+            // Si no se pasa un código, intentar usar el último del servicio
+            var activeCode = code ?? _cloverService.LastPairingCode;
+
+            if (!string.IsNullOrEmpty(activeCode))
+            {
+                PopupPairingCode.Text = activeCode;
+                PopupPairingStatus.Text = "✅ Ingresa este código en el terminal Clover";
+                PopupPairingStatus.Foreground = new SolidColorBrush(Color.FromRgb(148, 163, 184)); // Color original #94a3b8
+                Log.Information($"🔑 Mostrando código de integración: {activeCode}");
+            }
+            else if (string.IsNullOrEmpty(PopupPairingCode.Text) || PopupPairingCode.Text == "------")
+            {
+                PopupPairingStatus.Text = "Esperando código del terminal...";
+                PopupPairingStatus.Foreground = new SolidColorBrush(Color.FromRgb(148, 163, 184)); // Color original #94a3b8
+            }
+        });
     }
 
 

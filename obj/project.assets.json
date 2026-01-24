@@ -773,6 +773,19 @@
         "build": {
           "buildTransitive/net6.0/System.Text.Json.targets": {}
         }
+      },
+      "YamlDotNet/16.3.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/YamlDotNet.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/YamlDotNet.dll": {
+            "related": ".xml"
+          }
+        }
       }
     },
     "net8.0-windows7.0/win-x64": {
@@ -1532,6 +1545,19 @@
         "build": {
           "buildTransitive/net6.0/System.Text.Json.targets": {}
         }
+      },
+      "YamlDotNet/16.3.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/YamlDotNet.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/YamlDotNet.dll": {
+            "related": ".xml"
+          }
+        }
       }
     },
     "net8.0-windows7.0/win-x86": {
@@ -2290,6 +2316,19 @@
         },
         "build": {
           "buildTransitive/net6.0/System.Text.Json.targets": {}
+        }
+      },
+      "YamlDotNet/16.3.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/YamlDotNet.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/YamlDotNet.dll": {
+            "related": ".xml"
+          }
         }
       }
     }
@@ -3573,6 +3612,29 @@
         "system.text.json.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "YamlDotNet/16.3.0": {
+      "sha512": "SgMOdxbz8X65z8hraIs6hOEdnkH6hESTAIUa7viEngHOYaH+6q5XJmwr1+yb9vJpNQ19hCQY69xbFsLtXpobQA==",
+      "type": "package",
+      "path": "yamldotnet/16.3.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "images/yamldotnet.png",
+        "lib/net47/YamlDotNet.dll",
+        "lib/net47/YamlDotNet.xml",
+        "lib/net6.0/YamlDotNet.dll",
+        "lib/net6.0/YamlDotNet.xml",
+        "lib/net8.0/YamlDotNet.dll",
+        "lib/net8.0/YamlDotNet.xml",
+        "lib/netstandard2.0/YamlDotNet.dll",
+        "lib/netstandard2.0/YamlDotNet.xml",
+        "lib/netstandard2.1/YamlDotNet.dll",
+        "lib/netstandard2.1/YamlDotNet.xml",
+        "yamldotnet.16.3.0.nupkg.sha512",
+        "yamldotnet.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
@@ -3586,20 +3648,21 @@
       "Serilog.Extensions.Hosting >= 8.0.0",
       "Serilog.Sinks.Console >= 5.0.1",
       "Serilog.Sinks.File >= 5.0.0",
-      "System.Text.Json >= 8.0.5"
+      "System.Text.Json >= 8.0.5",
+      "YamlDotNet >= 16.3.0"
     ]
   },
   "packageFolders": {
     "C:\\Users\\juan\\.nuget\\packages\\": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "1.1.0",
     "restore": {
-      "projectUniqueName": "D:\\DEVs\\Cloverwin\\CloverBridge.csproj",
+      "projectUniqueName": "d:\\DEVs\\Cloverwin\\CloverBridge.csproj",
       "projectName": "CloverBridge",
-      "projectPath": "D:\\DEVs\\Cloverwin\\CloverBridge.csproj",
+      "projectPath": "d:\\DEVs\\Cloverwin\\CloverBridge.csproj",
       "packagesPath": "C:\\Users\\juan\\.nuget\\packages\\",
-      "outputPath": "D:\\DEVs\\Cloverwin\\obj\\",
+      "outputPath": "d:\\DEVs\\Cloverwin\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\juan\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -3673,6 +3736,10 @@
           "System.Text.Json": {
             "target": "Package",
             "version": "[8.0.5, )"
+          },
+          "YamlDotNet": {
+            "target": "Package",
+            "version": "[16.3.0, )"
           }
         },
         "imports": [

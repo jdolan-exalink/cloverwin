@@ -8,7 +8,7 @@ public static class AppVersion
     /// <summary>
     /// Current application version - Update this to change the version displayed in the UI
     /// </summary>
-    public const string Version = "1.0.0";
+    public const string Version = "1.2.0";
 
     /// <summary>
     /// Gets the complete version string

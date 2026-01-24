@@ -9,7 +9,7 @@
     <ApplicationIcon>cloverwin.ico</ApplicationIcon>
     <AssemblyName>CloverBridge</AssemblyName>
     <RootNamespace>CloverBridge</RootNamespace>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>Clover Bridge Team</Authors>
     <Company>Clover Bridge</Company>
     <Product>Clover Bridge</Product>
@@ -35,6 +35,7 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <PackageReference Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +43,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="cloverwin.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="cloverwin.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

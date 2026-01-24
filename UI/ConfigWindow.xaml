@@ -1,0 +1,96 @@
+<Window x:Class="CloverBridge.UI.ConfigWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="CloverBridge - Configuración"
+        Height="550"
+        Width="400"
+        WindowStartupLocation="CenterOwner"
+        Background="#0f172a"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <Style x:Key="ModernTextBox" TargetType="TextBox">
+            <Setter Property="Background" Value="#1e293b"/>
+            <Setter Property="Foreground" Value="#e2e8f0"/>
+            <Setter Property="BorderBrush" Value="#334155"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="6">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background" Value="#6366f1"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SecondaryButton" TargetType="Button" BasedOn="{StaticResource PrimaryButton}">
+            <Setter Property="Background" Value="#334155"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="AJUSTES DEL SISTEMA" Foreground="#6366f1" FontWeight="Bold" FontSize="16" Margin="0,0,0,25"/>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <TextBlock Text="Servidor Clover (IP):" Foreground="#94a3b8" Margin="0,0,0,5"/>
+                <TextBox x:Name="HostTextBox" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Puerto:" Foreground="#94a3b8" Margin="0,0,0,5"/>
+                <TextBox x:Name="PortTextBox" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15"/>
+
+                <TextBlock Text="ID de Aplicación Remota:" Foreground="#94a3b8" Margin="0,0,0,5"/>
+                <TextBox x:Name="MerchantIdTextBox" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Número de Serie (Device ID):" Foreground="#94a3b8" Margin="0,0,0,5"/>
+                <TextBox x:Name="DeviceIdTextBox" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15"/>
+
+                <TextBlock Text="Auth Token:" Foreground="#94a3b8" Margin="0,0,0,5"/>
+                <TextBox x:Name="TokenTextBox" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15"/>
+
+                <CheckBox x:Name="SecureCheckBox" Content="Usar Conexión Segura (WSS)" Foreground="#e2e8f0" Margin="0,10,0,0"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Grid Grid.Row="2" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="15"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="Guardar" Style="{StaticResource PrimaryButton}" Click="SaveButton_Click"/>
+            <Button Grid.Column="2" Content="Cancelar" Style="{StaticResource SecondaryButton}" Click="CancelButton_Click"/>
+        </Grid>
+    </Grid>
+</Window>

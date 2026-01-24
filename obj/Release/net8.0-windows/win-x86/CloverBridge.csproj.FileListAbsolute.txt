@@ -517,3 +517,12 @@ D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\CloverBridge.dll
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\refint\CloverBridge.dll
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\CloverBridge.genruntimeconfig.cache
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\ref\CloverBridge.dll
+d:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x86\CloverBridge.pdb
+d:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\UI\ConfigWindow.baml
+d:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\UI\LogWindow.baml
+d:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\UI\ConfigWindow.g.cs
+d:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\UI\LogWindow.g.cs
+d:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\CloverBridge.sourcelink.json
+d:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\CloverBridge.pdb
+d:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x86\cloverwin.ico
+d:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x86\YamlDotNet.dll

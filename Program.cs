@@ -75,8 +75,14 @@ internal static class Program
 
     private static void ConfigureLogging()
     {
-        // Usar carpeta del ejecutable en lugar de AppData
-        var appPath = AppContext.BaseDirectory ?? Environment.CurrentDirectory;
+        // Usar la carpeta del ejecutable REAL
+        var exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+        var appPath = !string.IsNullOrEmpty(exePath) 
+            ? Path.GetDirectoryName(exePath) 
+            : AppContext.BaseDirectory;
+
+        if (string.IsNullOrEmpty(appPath)) appPath = Environment.CurrentDirectory;
+        
         var logsPath = Path.Combine(appPath, "logs");
         
         Directory.CreateDirectory(logsPath);
@@ -108,6 +114,7 @@ internal static class Program
                 restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug,
                 outputTemplate: "═══════════════════════════════════════════════════════════════════{NewLine}[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] [{Level:u3}]{NewLine}{Message:lj}{NewLine}{Exception}"
             )
+            .WriteTo.Sink(new CloverBridge.Services.LogWindowSink())
             .CreateLogger();
         
         Log.Information("═══════════════════════════════════════════════════════════════════");

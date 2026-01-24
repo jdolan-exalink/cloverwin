@@ -22,6 +22,8 @@ public class CloverWebSocketService : BackgroundService
     private ConnectionState _state = ConnectionState.Disconnected;
     private string? _lastPairingCode;
     private int _reconnectAttempts = 0;
+    private readonly SemaphoreSlim _connectionLock = new(1, 1);
+    private bool _isConnecting = false;
     
     // Opciones de JSON serializador con convertidor personalizado
     private static readonly JsonSerializerOptions JsonOptions = new()
@@ -51,30 +53,25 @@ public class CloverWebSocketService : BackgroundService
         {
             try
             {
-                await ConnectAsync(stoppingToken);
-                await ReceiveMessagesAsync(stoppingToken);
+                // Solo intentar conectar si no estamos conectados y no hay una conexión en curso
+                if (State == ConnectionState.Disconnected || State == ConnectionState.Error)
+                {
+                    await ConnectAsync(stoppingToken);
+                }
+
+                if (_webSocket?.State == WebSocketState.Open)
+                {
+                    await ReceiveMessagesAsync(stoppingToken);
+                }
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error in WebSocket connection");
+                Log.Error(ex, "⚠️ WebSocket Loop Error");
                 UpdateState(ConnectionState.Error);
-                
-                // Esperar antes de reconectar
-                var config = _configService.GetConfig();
-                if (_reconnectAttempts < config.Clover.MaxReconnectAttempts)
-                {
-                    _reconnectAttempts++;
-                    Log.Information("Reconnect attempt {Attempt}/{Max}", 
-                        _reconnectAttempts, config.Clover.MaxReconnectAttempts);
-                    await Task.Delay(config.Clover.ReconnectDelayMs, stoppingToken);
-                }
-                else
-                {
-                    Log.Warning("Max reconnect attempts reached, waiting longer...");
-                    await Task.Delay(60000, stoppingToken); // Esperar 1 minuto
-                    _reconnectAttempts = 0;
-                }
             }
+
+            // Esperar un poco antes de reintentar para evitar loops infinitos agresivos
+            await Task.Delay(5000, stoppingToken);
         }
 
         await DisconnectAsync();
@@ -84,38 +81,43 @@ public class CloverWebSocketService : BackgroundService
     // Exponer conexión manual para UI/control
     public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
-        var config = _configService.GetConfig();
-        var url = config.Clover.GetWebSocketUrl();
-
-        Log.Information("Connecting to Clover at {Url}", url);
-        UpdateState(ConnectionState.Connecting);
-
-        _webSocket = new ClientWebSocket();
+        if (_isConnecting) return;
         
-        // Configurar opciones del WebSocket
-        if (config.Clover.Secure)
+        await _connectionLock.WaitAsync(cancellationToken);
+        try
         {
-            // Para wss://, permitir certificados autofirmados si es necesario
-            _webSocket.Options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) =>
+            if (_webSocket?.State == WebSocketState.Open) return;
+            
+            _isConnecting = true;
+            var config = _configService.GetConfig();
+            var url = config.Clover.GetWebSocketUrl();
+
+            Log.Information("Connecting to Clover at {Url}", url);
+            UpdateState(ConnectionState.Connecting);
+
+            _webSocket = new ClientWebSocket();
+            
+            // Configurar opciones del WebSocket
+            if (config.Clover.Secure)
             {
-                // En producción, verificar el certificado apropiadamente
-                // Por ahora, aceptamos cualquier certificado para desarrollo
-                if (errors != System.Net.Security.SslPolicyErrors.None)
-                {
-                    Log.Warning("SSL certificate validation failed: {Errors}", errors);
-                }
-                return true; // Aceptar el certificado
-            };
+                _webSocket.Options.RemoteCertificateValidationCallback = (sender, certificate, chain, errors) => true;
+                Log.Debug("SSL certificate validation disabled for development");
+            }
+
+            await _webSocket.ConnectAsync(new Uri(url), cancellationToken);
+
+            UpdateState(ConnectionState.Connected);
+            _reconnectAttempts = 0;
+            Log.Information("✅ Connected to Clover");
+
+            // Enviar pairing request
+            await SendPairingRequestAsync();
         }
-
-        await _webSocket.ConnectAsync(new Uri(url), cancellationToken);
-
-        UpdateState(ConnectionState.Connected);
-        _reconnectAttempts = 0;
-        Log.Information("Connected to Clover");
-
-        // Enviar pairing request
-        await SendPairingRequestAsync();
+        finally
+        {
+            _isConnecting = false;
+            _connectionLock.Release();
+        }
     }
 
     // Exponer pairing manual para UI/control
@@ -124,24 +126,34 @@ public class CloverWebSocketService : BackgroundService
         var config = _configService.GetConfig();
 
         Log.Information("Initiating pairing request. AuthToken present: {HasToken}", !string.IsNullOrEmpty(config.Clover.AuthToken));
-        UpdateState(ConnectionState.PairingRequired);
-
-        // Crear el payload interno como en TypeScript - SIEMPRE incluir authToken si existe
-        var pairingRequestPayload = new
+        
+        // Si no tenemos token, entramos en estado de pairing inmediatamente
+        // Si tenemos token, permanecemos en Connected (autenticando) hasta recibir respuesta
+        if (string.IsNullOrEmpty(config.Clover.AuthToken))
         {
-            method = "PAIRING_REQUEST",
-            serialNumber = config.Clover.SerialNumber ?? "CB-001",
-            name = config.Clover.PosName ?? "CloverBridge-POS",
-            authenticationToken = config.Clover.AuthToken ?? null
+            UpdateState(ConnectionState.PairingRequired);
+        }
+
+        // Crear el payload interno - Formato compatible con NPD
+        var pairingRequestPayload = new Dictionary<string, object?>
+        {
+            { "method", "PAIRING_REQUEST" },
+            { "serialNumber", config.Clover.SerialNumber ?? "CB-001" },
+            { "name", config.Clover.PosName ?? "CloverBridge-POS" }
         };
 
-        // Envolver en RemoteMessage como espera Clover (igual que TypeScript)
+        if (!string.IsNullOrEmpty(config.Clover.AuthToken))
+        {
+            pairingRequestPayload.Add("authenticationToken", config.Clover.AuthToken);
+        }
+
+        // Envolver en RemoteMessage
         var message = new
         {
             method = "PAIRING_REQUEST",
-            payload = JsonSerializer.Serialize(pairingRequestPayload), // Stringify payload!
-            remoteApplicationID = config.Clover.RemoteAppId ?? "com.mycompany.cloverbridge",
-            remoteSourceSDK = "CloverBridge-1.0.0",
+            payload = JsonSerializer.Serialize(pairingRequestPayload),
+            remoteApplicationID = config.Clover.RemoteAppId ?? "com.clover.bridge",
+            remoteSourceSDK = "CloverBridge-DotNet-1.0",
             version = 1
         };
 
@@ -171,6 +183,9 @@ public class CloverWebSocketService : BackgroundService
 
                 // Emitir evento de código de pairing
                 PairingCodeReceived?.Invoke(this, code);
+                
+                // Asegurar que el estado sea PairingRequired para mostrar la UI
+                UpdateState(ConnectionState.PairingRequired);
 
                 // Auto-completar después de 5 segundos
                 await Task.Delay(5000);
@@ -179,9 +194,12 @@ public class CloverWebSocketService : BackgroundService
                     Log.Warning("Auto-completing pairing (fallback mode)");
                     var authToken = GenerateAuthToken();
                     
-                    // Guardar token
-                    config.Clover.AuthToken = authToken;
-                    _configService.UpdateConfig(config);
+                    // Guardar token solo si no teníamos uno (modo simulado inicial)
+                    if (string.IsNullOrEmpty(config.Clover.AuthToken))
+                    {
+                        config.Clover.AuthToken = authToken;
+                        _configService.UpdateConfig(config);
+                    }
                     
                     UpdateState(ConnectionState.Paired);
                 }
@@ -193,9 +211,9 @@ public class CloverWebSocketService : BackgroundService
 
     private string GeneratePairingCode()
     {
-        // Generar código de 6 dígitos como en TypeScript
+        // Generar código de 4 dígitos (Clover estándar)
         var random = new Random();
-        return random.Next(100000, 999999).ToString();
+        return random.Next(1000, 10000).ToString();
     }
 
     private string GenerateAuthToken()
@@ -254,7 +272,7 @@ public class CloverWebSocketService : BackgroundService
 
                 if (result.MessageType == WebSocketMessageType.Close)
                 {
-                    Log.Information("WebSocket closed by server");
+                    Log.Warning("📡 WebSocket cerrado por el terminal (Close message)");
                     break;
                 }
 
@@ -276,10 +294,11 @@ public class CloverWebSocketService : BackgroundService
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "Error receiving message");
+                Log.Error(ex, "❌ Error fatal recibiendo mensajes: {Message}", ex.Message);
                 break;
             }
         }
+        Log.Warning("📡 Receiver loop finalizado. State: {State}", _webSocket.State);
     }
 
     private async Task HandleMessageAsync(string messageJson)
@@ -684,6 +703,9 @@ public class CloverWebSocketService : BackgroundService
                 
                 // Emitir evento
                 PairingCodeReceived?.Invoke(this, code);
+                
+                // IMPORTANTE: Cambiar el estado para que la UI sepa que se requiere interacción
+                UpdateState(ConnectionState.PairingRequired);
             }
             else
             {
@@ -753,6 +775,7 @@ public class CloverWebSocketService : BackgroundService
                         var config = _configService.GetConfig();
                         config.Clover.AuthToken = authToken;
                         _configService.UpdateConfig(config);
+                        Log.Information("✍️ AuthToken guardado en configuración: ***{Last4}", authToken.Substring(Math.Max(0, authToken.Length - 4)));
                     }
                 }
                 
@@ -774,6 +797,8 @@ public class CloverWebSocketService : BackgroundService
                 {
                     Log.Information("⏳ Waiting for manager PIN on terminal");
                     Console.WriteLine("⏳ Esperando PIN de gerente en el terminal");
+                    // También marcamos como PairingRequired para que la UI se muestre si es necesario
+                    UpdateState(ConnectionState.PairingRequired);
                 }
                 else
                 {
