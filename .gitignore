@@ -1,0 +1,43 @@
+# Binaries, caches, and logs
+[Bb]in/
+[Oo]bj/
+*.log
+*.logs/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.sln.iml
+.idea/
+*.swp
+*.swo
+
+# Package files
+packages/
+nuget.exe
+*.nupkg
+*.snupkg
+
+# Build results
+DebugPublic/
+Release/
+*.exe
+!CloverBridge.exe
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+
+# Node (if using npm)
+node_modules/
+package-lock.json
+
+# Python (if needed)
+__pycache__/
+*.py[cod]
+*$py.class

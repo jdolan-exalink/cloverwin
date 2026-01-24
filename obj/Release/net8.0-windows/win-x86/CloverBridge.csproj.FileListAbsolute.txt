@@ -4,7 +4,6 @@ D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x86\CloverBridge.exe
 D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x86\CloverBridge.deps.json
 D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x86\CloverBridge.runtimeconfig.json
 D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x86\CloverBridge.dll
-D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x86\CloverBridge.pdb
 D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x86\Microsoft.Extensions.Configuration.dll
 D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x86\Microsoft.Extensions.Configuration.Abstractions.dll
 D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x86\Microsoft.Extensions.Configuration.Binder.dll
@@ -502,9 +501,11 @@ D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\CloverBridge.csproj.Assembl
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\UI\MainWindow.baml
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\UI\PairingWindow.baml
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\UI\ProductionMainWindow.baml
+D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\UI\TransactionDetailWindow.baml
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\UI\MainWindow.g.cs
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\UI\PairingWindow.g.cs
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\UI\ProductionMainWindow.g.cs
+D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\UI\TransactionDetailWindow.g.cs
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\CloverBridge_MarkupCompile.cache
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\CloverBridge.g.resources
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\CloverBridge.GeneratedMSBuildEditorConfig.editorconfig
@@ -514,6 +515,5 @@ D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\CloverBridge.csproj.CoreCom
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\CloverBr.7DA3B1C6.Up2Date
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\CloverBridge.dll
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\refint\CloverBridge.dll
-D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\CloverBridge.pdb
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\CloverBridge.genruntimeconfig.cache
 D:\DEVs\Cloverwin\obj\Release\net8.0-windows\win-x86\ref\CloverBridge.dll

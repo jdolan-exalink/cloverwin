@@ -121,22 +121,83 @@ public class TransactionFile
     public TransactionStatus Status { get; set; } = TransactionStatus.Pending;
 
     [JsonPropertyName("type")]
-    public string Type { get; set; } = "SALE"; // SALE, REFUND, VOID, etc
+    public string Type { get; set; } = "SALE"; // SALE, REFUND, VOID
 
-    [JsonPropertyName("detail")]
-    public TransactionDetail Detail { get; set; } = new();
+    // Datos de la factura
+    [JsonPropertyName("invoiceNumber")]
+    public string InvoiceNumber { get; set; } = string.Empty;
 
+    [JsonPropertyName("amount")]
+    public decimal Amount { get; set; } // Monto total en pesos/dólares
+
+    [JsonPropertyName("tax")]
+    public decimal? Tax { get; set; }
+
+    [JsonPropertyName("customerName")]
+    public string? CustomerName { get; set; }
+
+    [JsonPropertyName("notes")]
+    public string? Notes { get; set; }
+
+    // Resultado del pago
     [JsonPropertyName("paymentInfo")]
     public PaymentFileInfo? PaymentInfo { get; set; }
 
-    [JsonPropertyName("result")]
-    public string? Result { get; set; }
-
-    [JsonPropertyName("message")]
-    public string? Message { get; set; }
+    [JsonPropertyName("errorMessage")]
+    public string? ErrorMessage { get; set; }
 
     [JsonPropertyName("errorCode")]
     public string? ErrorCode { get; set; }
+
+    // Tracking de tiempos
+    [JsonPropertyName("processStartTime")]
+    public DateTime? ProcessStartTime { get; set; }
+
+    [JsonPropertyName("processEndTime")]
+    public DateTime? ProcessEndTime { get; set; }
+
+    [JsonPropertyName("sentToTerminalTime")]
+    public DateTime? SentToTerminalTime { get; set; }
+
+    [JsonPropertyName("inboxFilePath")]
+    public string? InboxFilePath { get; set; }
+
+    // Tiempo restante para timeout (en segundos)
+    [JsonPropertyName("timeoutRemainingSeconds")]
+    public int? TimeoutRemainingSeconds { get; set; }
+
+    // Lista de eventos de la transacción
+    [JsonPropertyName("transactionLog")]
+    public List<TransactionLogEntry> TransactionLog { get; set; } = new();
+
+    public void AddLogEntry(string eventType, string description, string? details = null)
+    {
+        TransactionLog.Add(new TransactionLogEntry
+        {
+            Timestamp = DateTime.UtcNow,
+            EventType = eventType,
+            Description = description,
+            Details = details
+        });
+    }
+}
+
+/// <summary>
+/// Entrada de log para transacción
+/// </summary>
+public class TransactionLogEntry
+{
+    [JsonPropertyName("timestamp")]
+    public DateTime Timestamp { get; set; }
+
+    [JsonPropertyName("eventType")]
+    public string EventType { get; set; } = string.Empty;
+
+    [JsonPropertyName("description")]
+    public string Description { get; set; } = string.Empty;
+
+    [JsonPropertyName("details")]
+    public string? Details { get; set; }
 }
 
 /// <summary>
@@ -144,14 +205,13 @@ public class TransactionFile
 /// </summary>
 public enum TransactionStatus
 {
-    Pending,      // Pendiente (en INBOX)
-    Processing,   // Procesándose en Clover
-    Completed,    // Completada exitosamente
-    Approved,     // Aprobada por usuario
-    Rejected,     // Rechazada por usuario
-    Cancelled,    // Cancelada por usuario o timeout
-    Failed,       // Error durante procesamiento
-    Reversed      // Reversada/reembolsada
+    Pending,             // Pendiente (al enviar)
+    Processing,          // Procesándose en Clover
+    Successful,          // Exitosa (pagada correctamente)
+    Cancelled,           // Cancelada por usuario
+    Timeout,             // Timeout (120 segundos sin respuesta)
+    InsufficientFunds,   // Sin fondos / tarjeta rechazada
+    Failed               // Error durante procesamiento
 }
 
 /// <summary>
@@ -186,7 +246,35 @@ public class PaymentFileInfo
     [JsonPropertyName("processingFee")]
     public decimal? ProcessingFee { get; set; }
 
-    // Nuevos campos para cancelación y timeout
+    // Nuevos campos para información detallada del pago
+    [JsonPropertyName("paymentMethod")]
+    public string? PaymentMethod { get; set; } // Ej: "MERCADO PAGO Transferencia", "VISA", etc.
+
+    [JsonPropertyName("entryType")]
+    public string? EntryType { get; set; } // Ej: "QR_CODE", "EMV_CONTACT", "SWIPE"
+
+    [JsonPropertyName("currency")]
+    public string? Currency { get; set; } // Ej: "ARS", "USD"
+
+    [JsonPropertyName("paymentNote")]
+    public string? PaymentNote { get; set; } // Nota con detalles adicionales
+
+    [JsonPropertyName("tenderLabel")]
+    public string? TenderLabel { get; set; } // Ej: "ar.com.fiserv.fiservqr.prod"
+
+    [JsonPropertyName("deviceId")]
+    public string? DeviceId { get; set; }
+
+    [JsonPropertyName("employeeId")]
+    public string? EmployeeId { get; set; }
+
+    [JsonPropertyName("merchantId")]
+    public string? MerchantId { get; set; }
+
+    [JsonPropertyName("transactionTime")]
+    public DateTime? TransactionTime { get; set; } // Hora real de la transacción en Clover
+
+    // Campos para cancelación y timeout
     [JsonPropertyName("cancelledReason")]
     public string? CancelledReason { get; set; }
 
@@ -200,7 +288,8 @@ public class PaymentFileInfo
     public int? TimeoutSeconds { get; set; }
 
     [JsonPropertyName("terminalTimeoutDefault")]
-    public int TerminalTimeoutDefault { get; set; } = 30; // 30 segundos por defecto
+    public int TerminalTimeoutDefault { get; set; } = 30;
 
     [JsonPropertyName("processingStartTime")]
-    public DateTime? ProcessingStartTime { get; set; }}
+    public DateTime? ProcessingStartTime { get; set; }
+}

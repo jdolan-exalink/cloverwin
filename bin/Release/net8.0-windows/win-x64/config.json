@@ -3,7 +3,7 @@
     "host": "10.1.1.53",
     "port": 12345,
     "secure": true,
-    "authToken": "c29d5460-e93a-468e-8c5a-a163053bb31e",
+    "authToken": "4489e248-1371-4fcd-8bae-c6f9f7bfca28",
     "remoteAppId": "clover-bridge",
     "posName": "ERP Bridge",
     "serialNumber": "CB-001",
@@ -15,9 +15,9 @@
     "host": "127.0.0.1"
   },
   "folders": {
-    "inbox": "D:\\DEVs\\Clover2\\windows\\bin\\Release\\net8.0-windows\\win-x64\\INBOX",
-    "outbox": "D:\\DEVs\\Clover2\\windows\\bin\\Release\\net8.0-windows\\win-x64\\OUTBOX",
-    "archive": "D:\\DEVs\\Clover2\\windows\\bin\\Release\\net8.0-windows\\win-x64\\ARCHIVE"
+    "inbox": "D:\\DEVs\\Cloverwin\\bin\\Release\\net8.0-windows\\win-x64\\INBOX",
+    "outbox": "D:\\DEVs\\Cloverwin\\bin\\Release\\net8.0-windows\\win-x64\\OUTBOX",
+    "archive": "D:\\DEVs\\Cloverwin\\bin\\Release\\net8.0-windows\\win-x64\\ARCHIVE"
   },
   "transaction": {
     "timeoutMs": 120000,

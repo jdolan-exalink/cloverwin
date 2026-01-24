@@ -29,8 +29,16 @@ internal static class Program
             var isService = args.Contains("--service");
             var isConsole = args.Contains("--console");
             var isUIMode = args.Contains("--ui");
+            var isTestOutbox = args.Contains("--test-outbox");
 
-            if (isService)
+            if (isTestOutbox)
+            {
+                // Modo prueba OUTBOX
+                Log.Information("Starting OUTBOX test mode");
+                TestOutboxReader.TestOutboxAsync().GetAwaiter().GetResult();
+                return;
+            }
+            else if (isService)
             {
                 // Modo Windows Service
                 Log.Information("Starting as Windows Service");
@@ -69,20 +77,44 @@ internal static class Program
     {
         // Usar carpeta del ejecutable en lugar de AppData
         var appPath = AppContext.BaseDirectory ?? Environment.CurrentDirectory;
-        var logPath = Path.Combine(appPath, "logs", "clover-bridge-.log");
+        var logsPath = Path.Combine(appPath, "logs");
         
-        Directory.CreateDirectory(Path.Combine(appPath, "logs"));
+        Directory.CreateDirectory(logsPath);
+
+        // Log general de la aplicación
+        var generalLogPath = Path.Combine(logsPath, "clover-bridge-.log");
+        
+        // Log específico de comunicación con terminal (más detallado)
+        var terminalLogPath = Path.Combine(logsPath, "terminal-communication-.log");
 
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Information()
-            .WriteTo.Console()
+            .MinimumLevel.Debug() // Capturar todo, incluyendo Debug
+            .WriteTo.Console(
+                outputTemplate: "[{Timestamp:HH:mm:ss}] [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+            )
+            // Log general (Information y superior)
             .WriteTo.File(
-                logPath,
+                generalLogPath,
                 rollingInterval: RollingInterval.Day,
                 retainedFileCountLimit: 30,
-                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+                restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+            )
+            // Log detallado de terminal (Debug y superior) - para debugging
+            .WriteTo.File(
+                terminalLogPath,
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 14,
+                restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Debug,
+                outputTemplate: "═══════════════════════════════════════════════════════════════════{NewLine}[{Timestamp:yyyy-MM-dd HH:mm:ss.fff}] [{Level:u3}]{NewLine}{Message:lj}{NewLine}{Exception}"
             )
             .CreateLogger();
+        
+        Log.Information("═══════════════════════════════════════════════════════════════════");
+        Log.Information("  CloverBridge - Log iniciado");
+        Log.Information("  Hora: {Time}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+        Log.Information("  Carpeta de logs: {Path}", logsPath);
+        Log.Information("═══════════════════════════════════════════════════════════════════");
     }
 
     private static async Task RunAsServiceAsync()
@@ -100,7 +132,6 @@ internal static class Program
         {
             // Registrar servicios
             services.AddSingleton<ConfigurationService>();
-            services.AddSingleton<TransactionFileService>();
             services.AddSingleton<CloverWebSocketService>();
             services.AddSingleton<TransactionQueueService>();
             services.AddSingleton<InboxWatcherService>();
@@ -125,7 +156,6 @@ internal static class Program
         builder.ConfigureServices(services =>
         {
             services.AddSingleton<ConfigurationService>();
-            services.AddSingleton<TransactionFileService>();
             services.AddSingleton<CloverWebSocketService>();
             services.AddSingleton<TransactionQueueService>();
             services.AddSingleton<InboxWatcherService>();
@@ -193,7 +223,6 @@ internal static class Program
         builder.ConfigureServices(services =>
         {
             services.AddSingleton<ConfigurationService>();
-            services.AddSingleton<TransactionFileService>();
             services.AddSingleton<CloverWebSocketService>();
             services.AddSingleton<TransactionQueueService>();
             services.AddSingleton<InboxWatcherService>();

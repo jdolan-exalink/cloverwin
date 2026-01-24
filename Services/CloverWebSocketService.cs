@@ -208,11 +208,22 @@ public class CloverWebSocketService : BackgroundService
     {
         if (_webSocket?.State != WebSocketState.Open)
         {
+            Log.Error("❌ SEND FAILED - WebSocket not connected");
             throw new InvalidOperationException("WebSocket is not connected");
         }
 
         var json = JsonSerializer.Serialize(message);
         var bytes = Encoding.UTF8.GetBytes(json);
+        
+        // Log detallado del mensaje enviado
+        Log.Debug("═══════════════════════════════════════════════════════════════════");
+        Log.Debug("📤 ENVIANDO AL TERMINAL");
+        Log.Debug("───────────────────────────────────────────────────────────────────");
+        Log.Debug("  Método: {Method}", message.Method);
+        Log.Debug("  ID: {Id}", message.Id ?? "N/A");
+        Log.Debug("  Tamaño: {Size} bytes", bytes.Length);
+        Log.Debug("  JSON: {Json}", json.Length > 1000 ? json.Substring(0, 1000) + "..." : json);
+        Log.Debug("═══════════════════════════════════════════════════════════════════");
         
         await _webSocket.SendAsync(
             new ArraySegment<byte>(bytes),
@@ -221,7 +232,8 @@ public class CloverWebSocketService : BackgroundService
             CancellationToken.None
         );
 
-        Log.Debug("Sent: {Message}", json);
+        Log.Information("📤 Mensaje enviado: Method={Method} ID={Id} Size={Size}bytes", 
+            message.Method, message.Id ?? "N/A", bytes.Length);
     }
 
     private async Task ReceiveMessagesAsync(CancellationToken cancellationToken)
@@ -274,16 +286,50 @@ public class CloverWebSocketService : BackgroundService
     {
         try
         {
-            Log.Information("📨 Raw message received: {Message}", messageJson.Length > 200 ? messageJson.Substring(0, 200) + "..." : messageJson);
+            // Log detallado del mensaje recibido
+            Log.Debug("═══════════════════════════════════════════════════════════════════");
+            Log.Debug("📥 RECIBIDO DEL TERMINAL");
+            Log.Debug("───────────────────────────────────────────────────────────────────");
+            Log.Debug("  Tamaño: {Size} bytes", messageJson.Length);
+            Log.Debug("  JSON completo:");
+            
+            // Dividir JSON largo en líneas para mejor legibilidad
+            if (messageJson.Length > 500)
+            {
+                // Intentar formatear el JSON para que sea legible
+                try
+                {
+                    var jsonDoc = JsonDocument.Parse(messageJson);
+                    var formattedJson = JsonSerializer.Serialize(jsonDoc, new JsonSerializerOptions { WriteIndented = true });
+                    foreach (var line in formattedJson.Split('\n').Take(50))
+                    {
+                        Log.Debug("    {Line}", line);
+                    }
+                    if (formattedJson.Split('\n').Length > 50)
+                        Log.Debug("    ... (truncado)");
+                }
+                catch
+                {
+                    Log.Debug("    {Json}", messageJson);
+                }
+            }
+            else
+            {
+                Log.Debug("    {Json}", messageJson);
+            }
+            Log.Debug("═══════════════════════════════════════════════════════════════════");
             
             var message = JsonSerializer.Deserialize<CloverMessage>(messageJson, JsonOptions);
             if (message == null)
             {
                 Log.Warning("⚠️ Failed to deserialize message");
+                Log.Warning("  Raw JSON: {Json}", messageJson);
                 return;
             }
 
-            Log.Information("📬 Received message type: {Method}, ID: {Id}", message.Method, message.Id);
+            Log.Information("📥 Mensaje recibido: Method={Method}, ID={Id}, Size={Size}bytes", 
+                message.Method, message.Id ?? "N/A", messageJson.Length);
+
 
             switch (message.Method)
             {
@@ -298,13 +344,31 @@ public class CloverWebSocketService : BackgroundService
                     break;
 
                 case "ACK":
-                    Log.Information("✅ Received ACK for message {Id}", message.Id);
+                    Log.Debug("✅ Received ACK for message {Id}", message.Id);
+                    break;
+
+                case "FINISH_OK":
+                    Log.Information("✅ PAGO EXITOSO - FINISH_OK recibido");
+                    LogPaymentDetails(message, true);
+                    HandleTransactionResponse(message); // Resuelve el pending con éxito
+                    break;
+
+                case "FINISH_CANCEL":
+                    Log.Warning("❌ PAGO CANCELADO - FINISH_CANCEL recibido");
+                    LogPaymentDetails(message, false);
+                    HandleTransactionResponse(message); // Resuelve el pending con cancelación
                     break;
 
                 case "TX_START_RESPONSE":
+                    // TX_START_RESPONSE = Terminal recibió la solicitud y está procesando
+                    // NO resuelve el pending, solo es informativo
+                    Log.Information("📝 TX_START_RESPONSE - Transacción en proceso (esperando FINISH_OK o FINISH_CANCEL)");
+                    // No llamar HandleTransactionResponse - esperar FINISH_OK o FINISH_CANCEL
+                    break;
+
                 case "REFUND_RESPONSE":
                 case "VOID_PAYMENT_RESPONSE":
-                    Log.Information("💳 Processing transaction response");
+                    Log.Information("💳 Processing transaction response: {Method}", message.Method);
                     HandleTransactionResponse(message);
                     break;
 
@@ -315,8 +379,13 @@ public class CloverWebSocketService : BackgroundService
                     MessageReceived?.Invoke(this, message);
                     break;
 
+                case "UI_STATE":
+                    // UI State es informativo, loguear solo en debug
+                    Log.Debug("📺 UI_STATE: {Payload}", message.Payload?.ToString()?.Substring(0, Math.Min(100, message.Payload?.ToString()?.Length ?? 0)));
+                    break;
+
                 default:
-                    // Notificar otros mensajes a los suscriptores
+                    Log.Debug("📨 Mensaje no manejado: {Method}", message.Method);
                     MessageReceived?.Invoke(this, message);
                     break;
             }
@@ -324,6 +393,150 @@ public class CloverWebSocketService : BackgroundService
         catch (Exception ex)
         {
             Log.Error(ex, "Error handling message");
+        }
+    }
+
+    /// <summary>
+    /// Log detallado de los datos del pago recibidos del terminal
+    /// </summary>
+    private void LogPaymentDetails(CloverMessage message, bool? isSuccess)
+    {
+        try
+        {
+            if (message.Payload == null)
+            {
+                Log.Warning("  ⚠️ No hay payload en el mensaje");
+                return;
+            }
+
+            // Serializar payload para parsearlo
+            var payloadJson = JsonSerializer.Serialize(message.Payload);
+            var payload = JsonDocument.Parse(payloadJson).RootElement;
+            
+            Log.Information("═══════════════════════════════════════════════════════════════════");
+            Log.Information("  📋 DETALLES DEL PAGO - {Method}", message.Method);
+            Log.Information("───────────────────────────────────────────────────────────────────");
+            
+            // El objeto payment puede estar stringificado
+            if (payload.TryGetProperty("payment", out var paymentProp))
+            {
+                JsonElement payment;
+                
+                // Checar si es string (stringified) o objeto directo
+                if (paymentProp.ValueKind == JsonValueKind.String)
+                {
+                    var paymentStr = paymentProp.GetString();
+                    if (!string.IsNullOrEmpty(paymentStr))
+                    {
+                        payment = JsonDocument.Parse(paymentStr).RootElement;
+                    }
+                    else
+                    {
+                        Log.Warning("  ⚠️ Payment string está vacío");
+                        return;
+                    }
+                }
+                else
+                {
+                    payment = paymentProp;
+                }
+                
+                // Datos principales del pago
+                var id = payment.TryGetProperty("id", out var idProp) ? idProp.GetString() : "N/A";
+                var externalId = payment.TryGetProperty("externalPaymentId", out var extIdProp) ? extIdProp.GetString() : "N/A";
+                var amount = payment.TryGetProperty("amount", out var amountProp) ? amountProp.GetInt64() : 0;
+                var result = payment.TryGetProperty("result", out var resultProp) ? resultProp.GetString() : "N/A";
+                
+                Log.Information("  💰 RESULTADO: {Result}", result);
+                Log.Information("  🆔 ID Transacción: {Id}", id);
+                Log.Information("  📄 External ID: {ExtId}", externalId);
+                Log.Information("  💵 Monto: ${Amount} ({AmountCents} centavos)", amount / 100m, amount);
+                
+                // Order ID
+                if (payment.TryGetProperty("order", out var orderProp) && 
+                    orderProp.TryGetProperty("id", out var orderIdProp))
+                {
+                    Log.Information("  📦 Order ID: {OrderId}", orderIdProp.GetString());
+                }
+                
+                // Card Transaction (authCode, cardType)
+                if (payment.TryGetProperty("cardTransaction", out var cardTx))
+                {
+                    var authCode = cardTx.TryGetProperty("authCode", out var authProp) ? authProp.GetString() : "N/A";
+                    var cardType = cardTx.TryGetProperty("cardType", out var typeProp) ? typeProp.GetString() : "N/A";
+                    var currency = cardTx.TryGetProperty("currency", out var currProp) ? currProp.GetString() : "N/A";
+                    
+                    Log.Information("  🔐 Código Autorización (Cupón): {AuthCode}", authCode);
+                    Log.Information("  💳 Tipo de Tarjeta: {CardType}", cardType);
+                    Log.Information("  💱 Moneda: {Currency}", currency?.ToUpper());
+                }
+                
+                // Transaction Info (mejor descripcion de tipo de pago)
+                if (payment.TryGetProperty("transactionInfo", out var txInfo))
+                {
+                    var cardTypeLabel = txInfo.TryGetProperty("cardTypeLabel", out var labelProp) ? labelProp.GetString() : null;
+                    var entryType = txInfo.TryGetProperty("entryType", out var entryProp) ? entryProp.GetString() : null;
+                    
+                    if (!string.IsNullOrEmpty(cardTypeLabel))
+                        Log.Information("  🏷️ Método de Pago: {Label}", cardTypeLabel);
+                    if (!string.IsNullOrEmpty(entryType))
+                        Log.Information("  📲 Tipo de Entrada: {EntryType}", entryType);
+                }
+                
+                // Note (contiene info adicional de QR, Billetera, etc.)
+                if (payment.TryGetProperty("note", out var noteProp))
+                {
+                    var note = noteProp.GetString();
+                    if (!string.IsNullOrEmpty(note))
+                    {
+                        Log.Information("  📝 Nota del Pago:");
+                        // Parsear la nota que viene con formato "clave: valor;"
+                        foreach (var part in note.Split(';', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            Log.Information("      - {NotePart}", part.Trim());
+                        }
+                    }
+                }
+                
+                // Tender (tipo de medio de pago)
+                if (payment.TryGetProperty("tender", out var tenderProp))
+                {
+                    var labelKey = tenderProp.TryGetProperty("labelKey", out var lkProp) ? lkProp.GetString() : null;
+                    if (!string.IsNullOrEmpty(labelKey))
+                        Log.Information("  🎫 Tender: {LabelKey}", labelKey);
+                }
+                
+                // Device ID
+                if (payment.TryGetProperty("device", out var deviceProp) && 
+                    deviceProp.TryGetProperty("id", out var deviceIdProp))
+                {
+                    Log.Information("  📱 Device ID: {DeviceId}", deviceIdProp.GetString());
+                }
+                
+                // Created Time
+                if (payment.TryGetProperty("createdTime", out var createdTimeProp))
+                {
+                    try
+                    {
+                        var timestamp = createdTimeProp.GetInt64();
+                        var dateTime = DateTimeOffset.FromUnixTimeMilliseconds(timestamp).ToLocalTime();
+                        Log.Information("  🕐 Fecha/Hora: {DateTime}", dateTime.ToString("yyyy-MM-dd HH:mm:ss"));
+                    }
+                    catch { }
+                }
+            }
+            else
+            {
+                // Si no hay payment object, mostrar payload completo
+                Log.Information("  📄 Payload (sin objeto payment):");
+                Log.Information("      {Payload}", payloadJson.Length > 500 ? payloadJson.Substring(0, 500) + "..." : payloadJson);
+            }
+            
+            Log.Information("═══════════════════════════════════════════════════════════════════");
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Error al parsear detalles del pago");
         }
     }
 
@@ -584,7 +797,7 @@ public class CloverWebSocketService : BackgroundService
     private int _messageId = 0;
     private readonly Dictionary<string, TaskCompletionSource<CloverMessage>> _pendingMessages = new();
 
-    public async Task<CloverMessage> SendSaleAsync(decimal amount, string externalId, decimal tipAmount = 0, List<LineItem>? items = null)
+    public async Task<CloverMessage> SendSaleAsync(decimal amount, string externalId, decimal tipAmount = 0)
     {
         if (_webSocket?.State != WebSocketState.Open)
         {
@@ -603,34 +816,14 @@ public class CloverWebSocketService : BackgroundService
             var config = _configService.GetConfig();
             var id = (++_messageId).ToString();
 
-            // Crear items de orden si están disponibles (requerido por Clover para mostrar detalles)
-            var orderItems = items != null && items.Count > 0 
-                ? items.Select((item, idx) => new
-                {
-                    id = $"item_{idx}",
-                    name = item.ProductName ?? $"Item {idx + 1}",
-                    price = (long)(item.UnitPrice * 100),
-                    quantity = (long)item.Quantity,
-                    userDefinedData = new { sku = item.ProductId }
-                }).Cast<object>().ToList() 
-                : new List<object>();
-
             // Crear PayIntent según protocolo Clover (igual que TypeScript)
-            // IMPORTANTE: order va AQUI dentro de payIntent, no afuera
             var payIntent = new
             {
                 action = "com.clover.intent.action.PAY",
                 amount = (long)(amount * 100), // Convertir a centavos
                 tipAmount = (long)(tipAmount * 100),
                 taxAmount = 0,
-                orderId = orderItems.Count > 0 ? $"order_{Guid.NewGuid():N}" : (string?)null,
-                order = orderItems.Count > 0 ? new
-                {
-                    id = $"order_{Guid.NewGuid():N}",
-                    lineItems = orderItems,
-                    taxAmount = 0L,
-                    total = (long)(amount * 100)
-                } : null,
+                orderId = (string?)null,
                 paymentId = (string?)null,
                 employeeId = (string?)null,
                 transactionType = "PAYMENT",
@@ -684,6 +877,7 @@ public class CloverWebSocketService : BackgroundService
                 id,
                 method = "TX_START",
                 payIntent,
+                order = (object?)null,
                 requestInfo = "SALE"
             };
 
@@ -700,19 +894,32 @@ public class CloverWebSocketService : BackgroundService
             };
 
             var json = JsonSerializer.Serialize(remoteMessage);
-            Log.Information("Sending SALE transaction with {ItemCount} items, amount: {Amount} centavos", orderItems.Count, (long)(amount * 100));
-            Console.WriteLine($"ENVIANDO VENTA: ${amount:F2} con {orderItems.Count} articulos al terminal");
-
-            if (items != null && items.Count > 0)
+            
+            // Log detallado de la transacción
+            Log.Debug("═══════════════════════════════════════════════════════════════════");
+            Log.Debug("💳 ENVIANDO TRANSACCION SALE AL TERMINAL");
+            Log.Debug("───────────────────────────────────────────────────────────────────");
+            Log.Debug("  ID de transacción: {Id}", id);
+            Log.Debug("  Monto: ${Amount} ({AmountCents} centavos)", amount / 100m, amount);
+            Log.Debug("  ExternalPaymentId: {ExtId}", externalId);
+            Log.Debug("  Tip: ${Tip}", tipAmount / 100m);
+            Log.Debug("  RemoteAppId: {AppId}", config.Clover.RemoteAppId);
+            Log.Debug("───────────────────────────────────────────────────────────────────");
+            Log.Debug("  JSON completo ({Size} bytes):", json.Length);
+            // Formatear JSON para legibilidad
+            try
             {
-                var itemTotal = items.Sum(i => i.Quantity * i.UnitPrice);
-                foreach (var item in items)
+                var formattedPayIntent = JsonSerializer.Serialize(payIntent, new JsonSerializerOptions { WriteIndented = true });
+                foreach (var line in formattedPayIntent.Split('\n').Take(30))
                 {
-                    var itemSubtotal = item.Quantity * item.UnitPrice;
-                    Console.WriteLine($"  {item.ProductName}: {item.Quantity} x ${item.UnitPrice:F2} = ${itemSubtotal:F2}");
+                    Log.Debug("    {Line}", line);
                 }
-                Console.WriteLine($"  Total: ${itemTotal:F2}");
             }
+            catch { Log.Debug("    {Json}", json); }
+            Log.Debug("═══════════════════════════════════════════════════════════════════");
+            
+            Log.Information("💳 Enviando SALE: ID={Id} Monto=${Amount} ExternalId={ExtId}", 
+                id, amount / 100m, externalId);
 
             // Crear TaskCompletionSource para esperar respuesta
             var tcs = new TaskCompletionSource<CloverMessage>();
@@ -728,7 +935,11 @@ public class CloverWebSocketService : BackgroundService
 
             // Esperar respuesta con timeout de 120 segundos
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(120));
-            cts.Token.Register(() => tcs.TrySetCanceled());
+            cts.Token.Register(() => 
+            {
+                Log.Warning("⏱️ Transaction timeout after 120 seconds for ID {Id}", id);
+                tcs.TrySetException(new TimeoutException("Transaction timed out after 120 seconds"));
+            });
 
             var response = await tcs.Task;
             UpdateState(ConnectionState.Paired);
@@ -800,7 +1011,11 @@ public class CloverWebSocketService : BackgroundService
 
             // Esperar respuesta con timeout
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(120));
-            cts.Token.Register(() => tcs.TrySetCanceled());
+            cts.Token.Register(() => 
+            {
+                Log.Warning("⏱️ Refund timeout after 120 seconds for ID {Id}", id);
+                tcs.TrySetException(new TimeoutException("Refund timed out after 120 seconds"));
+            });
 
             var response = await tcs.Task;
             UpdateState(ConnectionState.Paired);
@@ -809,6 +1024,73 @@ public class CloverWebSocketService : BackgroundService
         catch
         {
             UpdateState(ConnectionState.Paired);
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Cancela una transacción en curso en el terminal
+    /// </summary>
+    public async Task<CloverMessage> CancelTransactionAsync()
+    {
+        if (_webSocket?.State != WebSocketState.Open)
+        {
+            throw new InvalidOperationException("WebSocket is not connected");
+        }
+
+        try
+        {
+            var config = _configService.GetConfig();
+            var id = (++_messageId).ToString();
+
+            // Crear el mensaje de cancelación
+            var innerPayload = new
+            {
+                id,
+                method = "BREAK"
+            };
+
+            // Envolver en RemoteMessage
+            var remoteMessage = new
+            {
+                method = "BREAK",
+                payload = JsonSerializer.Serialize(innerPayload),
+                remoteApplicationID = config.Clover.RemoteAppId ?? "com.mycompany.cloverbridge",
+                remoteSourceSDK = "CloverBridge-1.0.0",
+                version = 2,
+                directed = true,
+                packageName = "com.clover.remote_protocol_broadcast.app"
+            };
+
+            var json = JsonSerializer.Serialize(remoteMessage);
+            Log.Information("📤 Sending CANCEL transaction (BREAK): {Json}", json);
+
+            // Crear TaskCompletionSource para esperar respuesta
+            var tcs = new TaskCompletionSource<CloverMessage>();
+            _pendingMessages[id] = tcs;
+
+            var bytes = Encoding.UTF8.GetBytes(json);
+            await _webSocket.SendAsync(
+                new ArraySegment<byte>(bytes),
+                WebSocketMessageType.Text,
+                endOfMessage: true,
+                CancellationToken.None
+            );
+
+            // Esperar respuesta con timeout de 30 segundos
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+            cts.Token.Register(() => 
+            {
+                Log.Warning("⏱️ Cancel timeout after 30 seconds");
+                tcs.TrySetException(new TimeoutException("Cancel timed out after 30 seconds"));
+            });
+
+            var response = await tcs.Task;
+            return response;
+        }
+        catch (Exception ex)
+        {
+            Log.Warning(ex, "Error cancelling transaction, terminal may not support BREAK");
             throw;
         }
     }

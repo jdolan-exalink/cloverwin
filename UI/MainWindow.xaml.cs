@@ -79,6 +79,40 @@ public partial class MainWindow : Window
         }
     }
 
+    private void SaveConfiguration()
+    {
+        try
+        {
+            var config = _configService.GetConfig();
+            
+            // Guardar todos los valores de la UI
+            config.Clover.Host = HostTextBox.Text?.Trim() ?? "10.1.1.53";
+            
+            if (int.TryParse(PortTextBox.Text, out var port))
+                config.Clover.Port = port;
+            
+            config.Clover.RemoteAppId = MerchantIdTextBox.Text?.Trim() ?? "";
+            config.Clover.SerialNumber = DeviceIdTextBox.Text?.Trim() ?? "";
+            config.Clover.AuthToken = TokenTextBox.Text?.Trim() ?? "";
+            config.Clover.Secure = SecureCheckBox.IsChecked ?? false;
+            
+            // Guardar en el archivo
+            _configService.UpdateConfig(config);
+            
+            LogSystem($"💾 Configuración guardada:");
+            LogSystem($"   Host: {config.Clover.Host}:{config.Clover.Port}");
+            LogSystem($"   Secure (WS/WSS): {(config.Clover.Secure ? "WSS" : "WS")}");
+            LogSystem($"   Remote App ID: {config.Clover.RemoteAppId}");
+            LogSystem($"   Serial Number: {config.Clover.SerialNumber}");
+            LogSystem($"   Auth Token: {(string.IsNullOrEmpty(config.Clover.AuthToken) ? "(vacío)" : "***" + config.Clover.AuthToken.Substring(Math.Max(0, config.Clover.AuthToken.Length - 4)))}");
+        }
+        catch (Exception ex)
+        {
+            LogSystem($"⚠️ Error guardando configuración: {ex.Message}");
+            Log.Error(ex, "Error al guardar configuración");
+        }
+    }
+
     private void OnCloverStateChanged(object? sender, ConnectionState state)
     {
         Dispatcher.Invoke(() => UpdateConnectionStatus(state));
@@ -395,23 +429,9 @@ public partial class MainWindow : Window
     {
         try
         {
-            var config = _configService.GetConfig();
-            config.Clover.Host = HostTextBox.Text;
+            // Usar el método centralizado para guardar
+            SaveConfiguration();
             
-            if (int.TryParse(PortTextBox.Text, out var port))
-            {
-                config.Clover.Port = port;
-            }
-            
-            config.Clover.RemoteAppId = MerchantIdTextBox.Text;
-            config.Clover.SerialNumber = DeviceIdTextBox.Text;
-            config.Clover.AuthToken = TokenTextBox.Text;
-            config.Clover.Secure = SecureCheckBox.IsChecked ?? false;
-
-            _configService.UpdateConfig(config);
-
-            LogSystem("✅ Configuración guardada exitosamente");
-            LogSystem($"   Nueva configuración: {config.Clover.Host}:{config.Clover.Port}");
             MessageBox.Show("Configuración guardada. Reinicie la aplicación para aplicar cambios.", 
                           "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -546,6 +566,9 @@ public partial class MainWindow : Window
 
     protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
     {
+        // Siempre guardar configuración antes de cerrar/ocultar
+        SaveConfiguration();
+        
         // Si ForceClose está activado, permitir cierre real
         if (ForceClose)
         {

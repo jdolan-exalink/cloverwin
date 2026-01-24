@@ -33,7 +33,11 @@ public partial class ProductionMainWindow : Window
     private readonly InboxWatcherService _inboxService;
     private readonly ObservableCollection<TransactionRecord> _transactions;
     private readonly DispatcherTimer _uptimeTimer;
+    // private readonly DispatcherTimer _outboxMonitorTimer; // ELIMINADO - Ya no se usa
+    private readonly DispatcherTimer _timeoutCounterTimer;
     private DateTime _startTime;
+    private int _currentTimeoutSeconds = 0;
+    private bool _isProcessingTransaction = false;
     
     // Contadores
     private int _totalPayments = 0;
@@ -74,6 +78,14 @@ public partial class ProductionMainWindow : Window
         _uptimeTimer.Tick += UpdateUptime;
         _uptimeTimer.Start();
 
+        // Timer para contador de timeout visible (cada 1 segundo)
+        _timeoutCounterTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1)
+        };
+        _timeoutCounterTimer.Tick += UpdateTimeoutCounter;
+        _timeoutCounterTimer.Start();
+
         // Cargar configuración
         LoadConfiguration();
 
@@ -87,12 +99,12 @@ public partial class ProductionMainWindow : Window
 
         // Generar External ID inicial
         ExternalIdTextBox.Text = GenerateExternalId();
+        
+        // Generar Invoice Number inicial
+        GenerateNewInvoiceNumber();
 
         // Cargar historial de transacciones
         LoadTransactionHistory();
-
-        // Inicializar desglose de productos
-        UpdateProductSummary();
 
         LogSystem("🚀 CloverBridge Professional iniciado");
         LogSystem($"📊 Sistema listo para operar");
@@ -102,6 +114,122 @@ public partial class ProductionMainWindow : Window
     {
         var uptime = DateTime.Now - _startTime;
         UptimeText.Text = $"{uptime.Hours:D2}:{uptime.Minutes:D2}:{uptime.Seconds:D2}";
+    }
+
+    private void UpdateTimeoutCounter(object? sender, EventArgs e)
+    {
+        if (_isProcessingTransaction && _currentTimeoutSeconds > 0)
+        {
+            TimeoutCounterText.Text = $"{_currentTimeoutSeconds}s";
+            
+            // Cambiar color según tiempo restante
+            if (_currentTimeoutSeconds <= 15)
+            {
+                TimeoutCounterBorder.Background = new SolidColorBrush(Color.FromRgb(239, 68, 68)); // Rojo
+            }
+            else if (_currentTimeoutSeconds <= 30)
+            {
+                TimeoutCounterBorder.Background = new SolidColorBrush(Color.FromRgb(245, 158, 11)); // Naranja
+            }
+            else
+            {
+                TimeoutCounterBorder.Background = new SolidColorBrush(Color.FromRgb(59, 130, 246)); // Azul
+            }
+        }
+        else if (_isProcessingTransaction)
+        {
+            // Timeout alcanzado
+            TimeoutCounterText.Text = "0s";
+            TimeoutCounterBorder.Background = new SolidColorBrush(Color.FromRgb(239, 68, 68));
+        }
+    }
+
+    private void ShowTimeoutCounter(int seconds)
+    {
+        _isProcessingTransaction = true;
+        _currentTimeoutSeconds = seconds;
+        TimeoutCounterBorder.Visibility = Visibility.Visible;
+        TimeoutCounterText.Text = $"{seconds}s";
+        TimeoutCounterBorder.Background = new SolidColorBrush(Color.FromRgb(59, 130, 246)); // Azul inicial
+    }
+
+    private void HideTimeoutCounter()
+    {
+        _isProcessingTransaction = false;
+        _currentTimeoutSeconds = 0;
+        TimeoutCounterBorder.Visibility = Visibility.Collapsed;
+    }
+
+    private async void TransactionsDataGrid_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        if (TransactionsDataGrid.SelectedItem is TransactionRecord record)
+        {
+            try
+            {
+                // Buscar la transacción en OUTBOX por InvoiceNumber del TransactionId
+                var transactionId = record.TransactionId;
+                
+                // Leer desde OUTBOX
+                var fileService = new TransactionFileService(_configService);
+                var outboxService = new TransactionOutboxService(_configService);
+                
+                // Intentar obtener la transacción desde OUTBOX
+                var transactions = await outboxService.ReadAllTransactionsFromOutboxAsync();
+                var transaction = transactions.FirstOrDefault(t => 
+                    t.TransactionId == transactionId || 
+                    t.InvoiceNumber == transactionId);
+                
+                if (transaction != null)
+                {
+                    // Serializar para mostrar JSON
+                    var jsonRaw = JsonSerializer.Serialize(transaction, new JsonSerializerOptions 
+                    { 
+                        WriteIndented = true 
+                    });
+                    
+                    // Mostrar ventana de detalles
+                    var detailWindow = new TransactionDetailWindow(transaction, jsonRaw);
+                    detailWindow.ShowDialog();
+                }
+                else
+                {
+                    MessageBox.Show(
+                        "No se encontró el detalle completo de esta transacción en OUTBOX.",
+                        "Transacción no encontrada",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error showing transaction details");
+                MessageBox.Show(
+                    $"Error al mostrar detalles: {ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+    }
+
+    private async void MonitorOutboxTransactions_Removed(object? sender, EventArgs e)
+    {
+        // MÉTODO ELIMINADO - Ya no se usa el monitoreo de OUTBOX
+        // Las transacciones se ven haciendo doble click en la tabla
+    }
+
+    private string GetStatusMessage(TransactionStatus status)
+    {
+        return status switch
+        {
+            TransactionStatus.Successful => "Transacción completada exitosamente",
+            TransactionStatus.Processing => "Procesando en terminal...",
+            TransactionStatus.Cancelled => "Transacción cancelada por el usuario",
+            TransactionStatus.Timeout => "Timeout - Sin respuesta del terminal",
+            TransactionStatus.InsufficientFunds => "Fondos insuficientes o tarjeta rechazada",
+            TransactionStatus.Failed => "Error durante el procesamiento",
+            _ => "Estado desconocido"
+        };
     }
 
     private void LoadConfiguration()
@@ -121,6 +249,37 @@ public partial class ProductionMainWindow : Window
         catch (Exception ex)
         {
             LogSystem($"⚠️ Error cargando configuración: {ex.Message}");
+        }
+    }
+
+    private void SaveConfiguration()
+    {
+        try
+        {
+            var config = _configService.GetConfig();
+            
+            // Guardar todos los valores de la UI
+            config.Clover.Host = HostTextBox.Text?.Trim() ?? "10.1.1.53";
+            
+            if (int.TryParse(PortTextBox.Text, out var port))
+                config.Clover.Port = port;
+            
+            config.Clover.RemoteAppId = MerchantIdTextBox.Text?.Trim() ?? "";
+            config.Clover.SerialNumber = DeviceIdTextBox.Text?.Trim() ?? "";
+            config.Clover.AuthToken = TokenTextBox.Text?.Trim() ?? "";
+            config.Clover.Secure = SecureCheckBox.IsChecked ?? false;
+            
+            // Guardar en el archivo
+            _configService.UpdateConfig(config);
+            
+            LogSystem($"💾 Configuración guardada:");
+            LogSystem($"   Host: {config.Clover.Host}:{config.Clover.Port}");
+            LogSystem($"   Secure (WS/WSS): {(config.Clover.Secure ? "WSS" : "WS")}");
+        }
+        catch (Exception ex)
+        {
+            LogSystem($"⚠️ Error guardando configuración: {ex.Message}");
+            Log.Error(ex, "Error al guardar configuración");
         }
     }
 
@@ -188,50 +347,53 @@ public partial class ProductionMainWindow : Window
 
     private void AddTransaction(string type, JsonElement data)
     {
-        // Obtener el estado real de la transacción
-        var statusStr = "Unknown";
+        // Obtener el estado del campo "status"
+        string status = "❓ Desconocido";
+        string message = "Procesado";
         
-        // Intentar leer status primero (el campo que contiene el estado real)
         if (data.TryGetProperty("status", out var statusProp))
         {
-            statusStr = statusProp.ValueKind == JsonValueKind.String 
-                ? statusProp.GetString() ?? "Unknown"
-                : statusProp.ToString();
-            LogSystem($"DEBUG: Leido status desde JSON: '{statusStr}'");
-        }
-        else
-        {
-            LogSystem($"DEBUG: Campo 'status' no encontrado en JSON");
-            // Fallback a success si status no existe
-            if (data.TryGetProperty("success", out var suc) && suc.GetBoolean())
+            var statusText = statusProp.GetString();
+            status = statusText switch
             {
-                statusStr = "Completed";
-            }
-            else
+                "Successful" => "✅ Exitoso",
+                "Cancelled" => "❌ Cancelado",
+                "Failed" => "❌ Fallido",
+                "InsufficientFunds" => "💳 Sin fondos",
+                "Pending" => "⏳ Pendiente",
+                _ => "❓ Desconocido"
+            };
+            
+            // Mensaje específico según el estado
+            message = statusText switch
             {
-                statusStr = "Failed";
+                "Successful" => "Transacción completada exitosamente",
+                "Cancelled" => "Transacción cancelada",
+                "Failed" => "Transacción fallida",
+                "InsufficientFunds" => "Fondos insuficientes",
+                "Pending" => "Esperando respuesta",
+                _ => "Estado desconocido"
+            };
+        }
+        
+        // Si hay un mensaje específico en los datos, usarlo
+        if (data.TryGetProperty("message", out var msgProp))
+        {
+            var customMsg = msgProp.GetString();
+            if (!string.IsNullOrEmpty(customMsg))
+            {
+                message = customMsg;
             }
         }
-
-        // Mapear estado a emoji y descripción
-        string statusDisplay = statusStr switch
-        {
-            "Completed" => "✅ Exitoso",
-            "Cancelled" => "⏹️ Cancelado",
-            "Timeout" => "⏱️ Timeout",
-            "Declined" => "❌ Rechazado",
-            "Failed" => "❌ Fallido",
-            _ => $"⚠️ {statusStr}"
-        };
-
+        
         var record = new TransactionRecord
         {
             Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
             Type = type,
             Amount = data.TryGetProperty("amount", out var amt) ? $"${amt.GetDecimal() / 100m:F2}" : "N/A",
             TransactionId = data.TryGetProperty("id", out var id) ? id.GetString() ?? "N/A" : "N/A",
-            Status = statusDisplay,
-            Message = data.TryGetProperty("message", out var msg) ? msg.GetString() ?? "" : ""
+            Status = status,
+            Message = message
         };
 
         _transactions.Insert(0, record);
@@ -459,165 +621,145 @@ public partial class ProductionMainWindow : Window
                 return decimal.TryParse(normalized, System.Globalization.CultureInfo.InvariantCulture, out value);
             }
 
-            // Validar Producto 1
-            if (!TryParsePrice(Product1PriceTextBox.Text, out var product1Price) || product1Price <= 0)
+            // Validar monto
+            if (!TryParsePrice(TestAmountTextBox.Text, out var totalAmount) || totalAmount <= 0)
             {
-                MessageBox.Show("Precio del Producto 1 inválido", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                Product1PriceTextBox.Focus();
+                MessageBox.Show("Monto inválido. Ingrese un valor mayor a 0", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                TestAmountTextBox.Focus();
                 return;
             }
-
-            if (!int.TryParse(Product1QtyTextBox.Text, out var product1Qty) || product1Qty <= 0)
-            {
-                MessageBox.Show("Cantidad del Producto 1 inválida", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                Product1QtyTextBox.Focus();
-                return;
-            }
-
-            // Validar Producto 2
-            if (!TryParsePrice(Product2PriceTextBox.Text, out var product2Price) || product2Price <= 0)
-            {
-                MessageBox.Show("Precio del Producto 2 inválido", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                Product2PriceTextBox.Focus();
-                return;
-            }
-
-            if (!int.TryParse(Product2QtyTextBox.Text, out var product2Qty) || product2Qty <= 0)
-            {
-                MessageBox.Show("Cantidad del Producto 2 inválida", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                Product2QtyTextBox.Focus();
-                return;
-            }
-
-            // Calcular totales
-            var product1Total = product1Price * product1Qty;
-            var product2Total = product2Price * product2Qty;
-            var totalAmount = product1Total + product2Total;
 
             var externalId = string.IsNullOrWhiteSpace(ExternalIdTextBox.Text) ? GenerateExternalId() : ExternalIdTextBox.Text;
 
-            // Crear items de línea
+            // Crear item de línea simple
             var items = new List<LineItem>
             {
                 new LineItem
                 {
-                    ProductId = "PROD-001",
-                    ProductName = Product1NameTextBox.Text.Trim(),
-                    Quantity = product1Qty,
-                    UnitPrice = product1Price
-                },
-                new LineItem
-                {
-                    ProductId = "PROD-002",
-                    ProductName = Product2NameTextBox.Text.Trim(),
-                    Quantity = product2Qty,
-                    UnitPrice = product2Price
+                    ProductId = "PROD-TEST",
+                    ProductName = "Venta de Prueba",
+                    Quantity = 1,
+                    UnitPrice = totalAmount
                 }
             };
 
-            // Crear archivo de transacción
+            // Crear archivo de transacción con formato simplificado
             var fileService = new TransactionFileService(_configService);
-            var transactionFile = fileService.CreateTransactionFile(invoiceNumber, externalId, totalAmount, items);
+            var notes = $"Venta de prueba - ${totalAmount:F2}";
+            
+            var transactionFile = fileService.CreateTransactionFile(
+                invoiceNumber, 
+                externalId, 
+                totalAmount,
+                customerName: "Cliente de Prueba",
+                notes: notes,
+                tax: null);
 
-            // Inicializar info de pago con timestamp y timeout por defecto
+            // Inicializar info de pago con timestamp y timeout de 120 segundos
             transactionFile.PaymentInfo = new PaymentFileInfo
             {
                 TotalAmount = totalAmount,
                 ProcessingStartTime = DateTime.Now,
-                TerminalTimeoutDefault = 30 // 30 segundos por defecto
+                TerminalTimeoutDefault = 120 // 120 segundos
             };
 
             LogSystem($"📄 Transacción creada: {invoiceNumber}");
-            LogSystem($"  📦 Producto 1: {items[0].ProductName} x{items[0].Quantity} = ${product1Total:F2}");
-            LogSystem($"  📦 Producto 2: {items[1].ProductName} x{items[1].Quantity} = ${product2Total:F2}");
-            LogSystem($"  💰 Total: ${totalAmount:F2}");
-            LogSystem($"  ⏱️  Timeout por defecto: {transactionFile.PaymentInfo.TerminalTimeoutDefault}s");
+            LogSystem($"  � Monto: ${totalAmount:F2}");
+            LogSystem($"  ⏱️  Timeout: {transactionFile.PaymentInfo.TerminalTimeoutDefault}s");
 
-            // Guardar a OUTBOX (archivo de entrada/salida)
+            // Guardar a OUTBOX con estado Pending
+            transactionFile.Status = TransactionStatus.Pending;
             await fileService.WriteTransactionToOutboxAsync(transactionFile);
-            LogSystem($"💾 Archivo guardado en OUTBOX para seguimiento");
+            LogSystem($"💾 Archivo guardado en OUTBOX como Pendiente");
 
-            // Enviar pago a Clover con timeout
+            // Enviar pago a Clover con timeout de 120 segundos
             LogSystem($"💳 Enviando pago de ${totalAmount:F2} (Factura: {invoiceNumber})...");
             FooterStatusText.Text = "Procesando pago en terminal...";
 
-            var timeoutTask = Task.Delay(TimeSpan.FromSeconds(transactionFile.PaymentInfo.TerminalTimeoutDefault));
-            var responseTask = _cloverService.SendSaleAsync(totalAmount, externalId, 0, items);
-            var completedTask = await Task.WhenAny(responseTask, timeoutTask);
-
             CloverMessage? response = null;
+            bool timedOut = false;
 
-            if (completedTask == timeoutTask)
+            try
             {
-                // Timeout alcanzado
-                LogSystem($"⏱️  TIMEOUT: Transaccion no respondio en {transactionFile.PaymentInfo.TerminalTimeoutDefault}s");
-                transactionFile.Status = TransactionStatus.Cancelled;
-                transactionFile.Result = "TIMEOUT";
-                transactionFile.Message = $"Timeout despues de {transactionFile.PaymentInfo.TerminalTimeoutDefault} segundos";
-                
-                if (transactionFile.PaymentInfo != null)
+                // Enviar transacción con timeout interno de 120s en CloverWebSocketService
+                response = await _cloverService.SendSaleAsync(totalAmount, externalId, 0);
+                var success = response?.Method?.Contains("RESPONSE") == true;
+
+                if (success)
                 {
-                    transactionFile.PaymentInfo.TimeoutSeconds = transactionFile.PaymentInfo.TerminalTimeoutDefault;
-                    transactionFile.PaymentInfo.CancelledReason = "Timeout en terminal";
-                    transactionFile.PaymentInfo.CancelledTimestamp = DateTime.Now;
-                }
-            }
-            else
-            {
-                // Respuesta recibida - per Clover documentation
-                // La respuesta puede incluir challenges (OFFLINE_CHALLENGE, DUPLICATE_CHALLENGE)
-                // o resultados (COMPLETED, DECLINED, etc.)
-                response = await responseTask;
-                var method = response?.Method ?? "";
-                
-                // Verificar si fue aceptado/completado
-                if (method.Contains("RESPONSE") || method.Contains("APPROVED"))
-                {
-                    transactionFile.Status = TransactionStatus.Completed;
-                    transactionFile.Result = "COMPLETED";
-                    transactionFile.Message = "Transaccion completada exitosamente";
+                    transactionFile.Status = TransactionStatus.Successful;
+                    transactionFile.ErrorCode = null;
+                    transactionFile.ErrorMessage = null;
                     LogSystem($"✅ Pago aprobado");
-                }
-                else if (method.Contains("DECLINED") || method.Contains("FAIL"))
-                {
-                    // Pago rechazado - puede ser por fondos insuficientes, tarjeta invalida, etc.
-                    transactionFile.Status = TransactionStatus.Cancelled;
-                    transactionFile.Result = "DECLINED";
-                    transactionFile.Message = "Pago rechazado en terminal";
-                    
-                    if (transactionFile.PaymentInfo != null)
-                    {
-                        transactionFile.PaymentInfo.CancelledReason = "Declined por payment gateway";
-                        transactionFile.PaymentInfo.CancelledTimestamp = DateTime.Now;
-                        transactionFile.PaymentInfo.CancelledBy = "Payment Gateway";
-                    }
-                    
-                    LogSystem($"❌ Pago rechazado");
-                }
-                else if (method.Contains("CANCEL") || method.Contains("ABORT"))
-                {
-                    // Usuario cancelo en terminal
-                    transactionFile.Status = TransactionStatus.Cancelled;
-                    transactionFile.Result = "USER_CANCELLED";
-                    transactionFile.Message = "Usuario cancelo el pago en terminal";
-                    
-                    if (transactionFile.PaymentInfo != null)
-                    {
-                        transactionFile.PaymentInfo.CancelledReason = "Cancelado por usuario";
-                        transactionFile.PaymentInfo.CancelledTimestamp = DateTime.Now;
-                        transactionFile.PaymentInfo.CancelledBy = "Usuario en terminal";
-                    }
-                    
-                    LogSystem($"⏹️ Pago cancelado por usuario");
                 }
                 else
                 {
-                    // Estado desconocido
-                    transactionFile.Status = TransactionStatus.Cancelled;
-                    transactionFile.Result = "UNKNOWN";
-                    transactionFile.Message = $"Estado desconocido: {method}";
-                    LogSystem($"⚠️ Estado desconocido del pago: {method}");
+                    // Procesar la respuesta desde el WebSocket
+                    fileService.ProcessPaymentResult(transactionFile, response);
+                    
+                    if (transactionFile.Status == TransactionStatus.Cancelled)
+                    {
+                        LogSystem($"❌ Pago cancelado en terminal");
+                    }
+                    else if (transactionFile.Status != TransactionStatus.Successful)
+                    {
+                        LogSystem($"❌ Pago no exitoso: {transactionFile.Status}");
+                    }
                 }
+            }
+            catch (TimeoutException timeoutEx)
+            {
+                // Timeout de 120 segundos alcanzado
+                timedOut = true;
+                LogSystem($"⏱️  TIMEOUT: Transacción no respondió en 120 segundos");
+                
+                // Intentar cancelar la transacción en el terminal
+                try
+                {
+                    LogSystem($"🚫 Intentando cancelar transacción en terminal...");
+                    await _cloverService.CancelTransactionAsync();
+                    LogSystem($"✅ Comando de cancelación enviado al terminal");
+                }
+                catch (Exception cancelEx)
+                {
+                    LogSystem($"⚠️  No se pudo cancelar en terminal: {cancelEx.Message}");
+                }
+                
+                LogSystem($"🔍 Consultando OUTBOX para verificar estado final...");
+
+                // Consultar OUTBOX por si el InboxWatcher procesó la transacción
+                await Task.Delay(2000); // Esperar 2 segundos por si hay escritura pendiente
+                var outboxTransaction = await fileService.ReadLatestTransactionFromOutboxAsync(invoiceNumber);
+
+                if (outboxTransaction != null && outboxTransaction.Status != TransactionStatus.Pending)
+                {
+                    // Encontramos un resultado en OUTBOX
+                    LogSystem($"✅ Estado encontrado en OUTBOX: {outboxTransaction.Status}");
+                    transactionFile = outboxTransaction;
+                }
+                else
+                {
+                    // No hay resultado, marcar como cancelado por timeout
+                    LogSystem($"❌ No se encontró resultado en OUTBOX, marcando como Cancelado");
+                    transactionFile.Status = TransactionStatus.Cancelled;
+                    transactionFile.ErrorCode = "TIMEOUT";
+                    transactionFile.ErrorMessage = "Timeout después de 120 segundos - transacción cancelada";
+                    
+                    if (transactionFile.PaymentInfo != null)
+                    {
+                        transactionFile.PaymentInfo.TimeoutSeconds = 120;
+                        transactionFile.PaymentInfo.CancelledReason = "Timeout de 120 segundos";
+                        transactionFile.PaymentInfo.CancelledTimestamp = DateTime.Now;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Otro error
+                LogSystem($"❌ Error en transacción: {ex.Message}");
+                transactionFile.Status = TransactionStatus.Failed;
+                transactionFile.ErrorCode = "ERROR";
+                transactionFile.ErrorMessage = ex.Message;
             }
 
             // Guardar resultado actualizado a OUTBOX
@@ -629,18 +771,38 @@ public partial class ProductionMainWindow : Window
                 var responseJson = JsonSerializer.Serialize(response, new JsonSerializerOptions { WriteIndented = true });
                 LogSystem($"📥 Respuesta:\n{responseJson}");
             }
+            else if (timedOut)
+            {
+                LogSystem($"⏱️  Sin respuesta del terminal (timeout)");
+            }
 
             // Registrar en transacciones - crear JsonElement con datos de la transacción
-            var transactionData = new
+            var transactionMessage = transactionFile.Status switch
             {
-                amount = (long)(totalAmount * 100), // Convertir a centavos
-                id = externalId,
-                success = transactionFile.Status == TransactionStatus.Completed,
-                message = transactionFile.Message,
-                status = transactionFile.Status.ToString()
+                TransactionStatus.Successful => "Transacción completada exitosamente",
+                TransactionStatus.Cancelled => transactionFile.ErrorMessage ?? "Transacción cancelada",
+                TransactionStatus.Timeout => "Timeout - Sin respuesta del terminal",
+                TransactionStatus.Failed => transactionFile.ErrorMessage ?? "Transacción fallida",
+                TransactionStatus.InsufficientFunds => "Fondos insuficientes",
+                TransactionStatus.Pending => "Esperando respuesta",
+                _ => "Estado desconocido"
             };
-            var dataJson = JsonSerializer.SerializeToElement(transactionData);
-            AddTransaction("SALE", dataJson);
+            
+            // NO agregar aquí - el monitor de OUTBOX lo hará automáticamente
+            // Solo actualizar métricas si es exitoso
+            if (transactionFile.Status == TransactionStatus.Successful)
+            {
+                _totalPayments++;
+                _totalPaymentsAmount += totalAmount;
+                UpdateMetrics();
+            }
+            else if (transactionFile.Status == TransactionStatus.Failed || 
+                     transactionFile.Status == TransactionStatus.Cancelled ||
+                     transactionFile.Status == TransactionStatus.Timeout)
+            {
+                _totalErrors++;
+                UpdateMetrics();
+            }
 
             // Reiniciar formulario
             ExternalIdTextBox.Text = GenerateExternalId();
@@ -649,9 +811,11 @@ public partial class ProductionMainWindow : Window
             // Actualizar estado en footer
             FooterStatusText.Text = transactionFile.Status switch
             {
-                TransactionStatus.Completed => "✅ Pago procesado exitosamente",
-                TransactionStatus.Cancelled => "⏱️ Pago cancelado/timeout",
+                TransactionStatus.Successful => "✅ Pago procesado exitosamente",
+                TransactionStatus.Cancelled => "❌ Pago cancelado",
+                TransactionStatus.Timeout => "⏱️ Timeout - Sin respuesta",
                 TransactionStatus.Failed => "❌ Pago rechazado",
+                TransactionStatus.InsufficientFunds => "💳 Sin fondos",
                 _ => "ℹ️ Pago pendiente de aprobación"
             };
         }
@@ -663,11 +827,29 @@ public partial class ProductionMainWindow : Window
         }
     }
 
-    private void RecalculateTotal_Click(object sender, RoutedEventArgs e)
+    // ============ Testing Helper Methods ============
+
+    private void GenerateInvoiceNumber_Click(object sender, RoutedEventArgs e)
     {
+        GenerateNewInvoiceNumber();
+    }
+
+    private void GenerateNewInvoiceNumber()
+    {
+        var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+        var random = new Random().Next(1000, 9999);
+        InvoiceNumberTextBox.Text = $"FB-{timestamp}-{random}";
+        LogSystem($"🎲 Nuevo número de factura: {InvoiceNumberTextBox.Text}");
+    }
+
+    private void TestAmount_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+    {
+        // Evitar NullReferenceException durante InitializeComponent
+        if (TestAmountTextBox == null || TestAmountPreview == null)
+            return;
+            
         try
         {
-            // Función auxiliar para parsear decimales con soporte a coma y punto
             bool TryParsePrice(string text, out decimal value)
             {
                 if (string.IsNullOrWhiteSpace(text))
@@ -675,34 +857,29 @@ public partial class ProductionMainWindow : Window
                     value = 0;
                     return false;
                 }
-                // Normalizar: reemplazar coma por punto para conversión
                 var normalized = text.Replace(",", ".");
                 return decimal.TryParse(normalized, System.Globalization.CultureInfo.InvariantCulture, out value);
             }
 
-            if (TryParsePrice(Product1PriceTextBox.Text, out var price1) &&
-                int.TryParse(Product1QtyTextBox.Text, out var qty1) &&
-                TryParsePrice(Product2PriceTextBox.Text, out var price2) &&
-                int.TryParse(Product2QtyTextBox.Text, out var qty2))
+            if (TryParsePrice(TestAmountTextBox.Text, out var amount))
             {
-                var product1Name = Product1NameTextBox.Text.Trim();
-                var product2Name = Product2NameTextBox.Text.Trim();
-                
-                var total1 = price1 * qty1;
-                var total2 = price2 * qty2;
-                var total = total1 + total2;
-                
-                // Actualizar desglose
-                Product1SummaryTextBlock.Text = $"{product1Name}: {qty1} × ${price1:F2} = ${total1:F2}";
-                Product2SummaryTextBlock.Text = $"{product2Name}: {qty2} × ${price2:F2} = ${total2:F2}";
-                TotalAmountTextBlock.Text = $"Total: ${total:F2}";
+                TestAmountPreview.Text = $"Monto a enviar: ${amount:F2}";
+                TestAmountPreview.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(16, 185, 129));
+            }
+            else
+            {
+                TestAmountPreview.Text = "Monto inválido";
+                TestAmountPreview.Foreground = new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(239, 68, 68));
             }
         }
         catch
         {
-            TotalAmountTextBlock.Text = "Total: Error en cálculo";
+            if (TestAmountPreview != null)
+                TestAmountPreview.Text = "Error";
         }
     }
+
+    // Métodos antiguos eliminados - ya no se usan productos individuales
 
     // Métodos de testing removidos - solo Nueva Venta disponible
     /*
@@ -854,18 +1031,9 @@ public partial class ProductionMainWindow : Window
     {
         try
         {
-            var config = _configService.GetConfig();
-            
-            config.Clover.Host = HostTextBox.Text;
-            config.Clover.Port = int.TryParse(PortTextBox.Text, out var port) ? port : 12345;
-            config.Clover.RemoteAppId = MerchantIdTextBox.Text;
-            config.Clover.SerialNumber = DeviceIdTextBox.Text;
-            config.Clover.AuthToken = string.IsNullOrWhiteSpace(TokenTextBox.Text) ? null : TokenTextBox.Text;
-            config.Clover.Secure = SecureCheckBox.IsChecked ?? false;
+            // Usar el método centralizado para guardar
+            SaveConfiguration();
 
-            _configService.UpdateConfig(config);
-
-            LogSystem("✅ Configuración guardada correctamente");
             MessageBox.Show("Configuración guardada. Reiniciando conexión...", "Éxito", 
                 MessageBoxButton.OK, MessageBoxImage.Information);
 
@@ -1005,6 +1173,9 @@ public partial class ProductionMainWindow : Window
 
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
+        // Siempre guardar configuración antes de cerrar/ocultar
+        SaveConfiguration();
+        
         if (!ForceClose && !_isExiting)
         {
             e.Cancel = true;
@@ -1014,6 +1185,8 @@ public partial class ProductionMainWindow : Window
         else
         {
             _uptimeTimer.Stop();
+            // _outboxMonitorTimer.Stop(); // ELIMINADO
+            _timeoutCounterTimer.Stop();
             SaveTransactionHistory();
         }
     }
@@ -1034,58 +1207,21 @@ public partial class ProductionMainWindow : Window
         LogSystem("⬆️ Ventana restaurada");
     }
 
-    private void UpdateProductSummary()
+
+    // ============ OUTBOX Management Methods - ELIMINADOS ============
+    // Los métodos de gestión de OUTBOX se han eliminado.
+    // Ahora se usa doble click en la tabla de transacciones para ver detalles.
+
+    private void RefreshOutboxButton_Click_Removed(object sender, RoutedEventArgs e)
     {
-        try
-        {
-            // Función auxiliar para parsear decimales con soporte a coma y punto
-            bool TryParsePrice(string text, out decimal value)
-            {
-                if (string.IsNullOrWhiteSpace(text))
-                {
-                    value = 0;
-                    return false;
-                }
-                // Normalizar: reemplazar coma por punto para conversión
-                var normalized = text.Replace(",", ".");
-                return decimal.TryParse(normalized, System.Globalization.CultureInfo.InvariantCulture, out value);
-            }
-
-            if (TryParsePrice(Product1PriceTextBox.Text, out var price1) &&
-                int.TryParse(Product1QtyTextBox.Text, out var qty1) &&
-                TryParsePrice(Product2PriceTextBox.Text, out var price2) &&
-                int.TryParse(Product2QtyTextBox.Text, out var qty2))
-            {
-                var product1Name = Product1NameTextBox.Text.Trim();
-                var product2Name = Product2NameTextBox.Text.Trim();
-                
-                var total1 = price1 * qty1;
-                var total2 = price2 * qty2;
-                var total = total1 + total2;
-                
-                // Actualizar desglose
-                Product1SummaryTextBlock.Text = $"{product1Name}: {qty1} × ${price1:F2} = ${total1:F2}";
-                Product2SummaryTextBlock.Text = $"{product2Name}: {qty2} × ${price2:F2} = ${total2:F2}";
-                TotalAmountTextBlock.Text = $"Total: ${total:F2}";
-            }
-        }
-        catch
-        {
-            // Ignorar errores en inicialización
-        }
-    }
-
-    // ============ OUTBOX Management Methods ============
-
-    private void RefreshOutboxButton_Click(object sender, RoutedEventArgs e)
-    {
+        // MÉTODO ELIMINADO - Ya no se usa
         try
         {
             var fileService = new TransactionFileService(_configService);
             var config = _configService.GetConfig();
             var outboxPath = config.Folders.Outbox;
 
-            OutboxFileListBox.Items.Clear();
+            // OutboxFileListBox.Items.Clear();
 
             if (Directory.Exists(outboxPath))
             {
@@ -1094,10 +1230,10 @@ public partial class ProductionMainWindow : Window
                     .OrderByDescending(f => f)
                     .ToList();
 
-                foreach (var file in files)
-                {
-                    OutboxFileListBox.Items.Add(file);
-                }
+                // foreach (var file in files)
+                // {
+                //     OutboxFileListBox.Items.Add(file);
+                // }
 
                 LogSystem($"📂 OUTBOX: {files.Count} archivos encontrados");
             }
@@ -1112,15 +1248,12 @@ public partial class ProductionMainWindow : Window
         }
     }
 
-    private void OutboxFileListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    private void OutboxFileListBox_SelectionChanged_Removed(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
     {
-        if (OutboxFileListBox.SelectedItem is string filename)
-        {
-            LoadOutboxFileDetails(filename);
-        }
+        // MÉTODO ELIMINADO
     }
 
-    private void LoadOutboxFileDetails(string filename)
+    private void LoadOutboxFileDetails_Removed(string filename)
     {
         try
         {
@@ -1134,190 +1267,40 @@ public partial class ProductionMainWindow : Window
                 var parsed = JsonDocument.Parse(json);
                 var formatted = JsonSerializer.Serialize(parsed, options);
 
-                OutboxDetailsTextBox.Text = formatted;
+                // OutboxDetailsTextBox.Text = formatted; // ELIMINADO
                 LogSystem($"📄 Archivo cargado: {filename}");
             }
         }
         catch (Exception ex)
         {
-            OutboxDetailsTextBox.Text = $"Error loading file: {ex.Message}";
+            // OutboxDetailsTextBox.Text = $"Error loading file: {ex.Message}"; // ELIMINADO
             LogSystem($"❌ Error loading file: {ex.Message}");
         }
     }
 
-    private void ViewOutboxDetailsButton_Click(object sender, RoutedEventArgs e)
+    private void ViewOutboxDetailsButton_Click_Removed(object sender, RoutedEventArgs e)
     {
-        if (OutboxFileListBox.SelectedItem is string filename)
-        {
-            LoadOutboxFileDetails(filename);
-        }
-        else
-        {
-            MessageBox.Show("Por favor seleccione un archivo de OUTBOX", "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
-        }
+        // MÉTODO ELIMINADO
     }
 
-    private async void ApproveTransactionButton_Click(object sender, RoutedEventArgs e)
+    private async void ApproveTransactionButton_Click_Removed(object sender, RoutedEventArgs e)
     {
-        if (OutboxFileListBox.SelectedItem is not string filename)
-        {
-            MessageBox.Show("Por favor seleccione un archivo de OUTBOX", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-
-        try
-        {
-            var fileService = new TransactionFileService(_configService);
-            var config = _configService.GetConfig();
-            var filepath = Path.Combine(config.Folders.Outbox, filename);
-
-            var json = File.ReadAllText(filepath);
-            var transaction = JsonSerializer.Deserialize<TransactionFile>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-            if (transaction != null)
-            {
-                // Registrar aprobación
-                transaction.Status = TransactionStatus.Approved;
-                transaction.Message = "Aprobado por usuario en control panel";
-                
-                if (transaction.PaymentInfo != null && transaction.Status == TransactionStatus.Approved)
-                {
-                    transaction.PaymentInfo.CancelledBy = "Aprobado por usuario";
-                    transaction.PaymentInfo.CancelledTimestamp = DateTime.Now;
-                }
-
-                // Archivar con estado actualizado
-                await fileService.ArchiveTransactionAsync(transaction, filename);
-
-                // Eliminar de OUTBOX
-                File.Delete(filepath);
-
-                var invoiceNum = transaction.Detail?.InvoiceNumber ?? "Unknown";
-                LogSystem($"✅ Transacción aprobada: {invoiceNum}");
-                LogSystem($"   Monto: ${transaction.PaymentInfo?.TotalAmount:F2}");
-                LogSystem($"   Archivado para historial");
-                
-                RefreshOutboxButton_Click(null, null);
-                OutboxDetailsTextBox.Clear();
-                MessageBox.Show($"Transacción {invoiceNum} aprobada y archivada", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-        catch (Exception ex)
-        {
-            LogSystem($"❌ Error aprobando transacción: {ex.Message}");
-            MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        // MÉTODO ELIMINADO - Ya no se usa
     }
 
-    private async void RejectTransactionButton_Click(object sender, RoutedEventArgs e)
+    private async void RejectTransactionButton_Click_Removed(object sender, RoutedEventArgs e)
     {
-        if (OutboxFileListBox.SelectedItem is not string filename)
-        {
-            MessageBox.Show("Por favor seleccione un archivo de OUTBOX", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-
-        try
-        {
-            var fileService = new TransactionFileService(_configService);
-            var config = _configService.GetConfig();
-            var filepath = Path.Combine(config.Folders.Outbox, filename);
-
-            var json = File.ReadAllText(filepath);
-            var transaction = JsonSerializer.Deserialize<TransactionFile>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-            if (transaction != null)
-            {
-                // Registrar rechazo con detalles
-                transaction.Status = TransactionStatus.Rejected;
-                transaction.Message = "Rechazado por usuario en control panel";
-                
-                if (transaction.PaymentInfo != null)
-                {
-                    transaction.PaymentInfo.CancelledReason = "Rechazado por usuario";
-                    transaction.PaymentInfo.CancelledBy = "Usuario en control panel";
-                    transaction.PaymentInfo.CancelledTimestamp = DateTime.Now;
-                }
-
-                // Archivar con estado actualizado
-                await fileService.ArchiveTransactionAsync(transaction, filename);
-
-                // Eliminar de OUTBOX
-                File.Delete(filepath);
-
-                var invoiceNum = transaction.Detail?.InvoiceNumber ?? "Unknown";
-                LogSystem($"❌ Transacción rechazada: {invoiceNum}");
-                LogSystem($"   Monto: ${transaction.PaymentInfo?.TotalAmount:F2}");
-                LogSystem($"   Razón: Rechazado en control panel");
-                LogSystem($"   Archivado para historial");
-                
-                RefreshOutboxButton_Click(null, null);
-                OutboxDetailsTextBox.Clear();
-                MessageBox.Show($"Transacción {invoiceNum} rechazada y archivada", "Operación completada", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-        catch (Exception ex)
-        {
-            LogSystem($"❌ Error rechazando transacción: {ex.Message}");
-            MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        // MÉTODO ELIMINADO - Ya no se usa
     }
 
-    private async void ArchiveTransactionButton_Click(object sender, RoutedEventArgs e)
+    private async void ArchiveTransactionButton_Click_Removed(object sender, RoutedEventArgs e)
     {
-        if (OutboxFileListBox.SelectedItem is not string filename)
-        {
-            MessageBox.Show("Por favor seleccione un archivo de OUTBOX", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            return;
-        }
-
-        try
-        {
-            var fileService = new TransactionFileService(_configService);
-            var config = _configService.GetConfig();
-            var filepath = Path.Combine(config.Folders.Outbox, filename);
-
-            var json = File.ReadAllText(filepath);
-            var transaction = JsonSerializer.Deserialize<TransactionFile>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-
-            if (transaction != null)
-            {
-                // Archivar
-                await fileService.ArchiveTransactionAsync(transaction, filename);
-
-                // Eliminar de OUTBOX
-                File.Delete(filepath);
-
-                LogSystem($"📁 Transacción archivada: {transaction.Detail?.InvoiceNumber}");
-                RefreshOutboxButton_Click(null, null);
-                OutboxDetailsTextBox.Clear();
-            }
-        }
-        catch (Exception ex)
-        {
-            LogSystem($"❌ Error archivando transacción: {ex.Message}");
-            MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        // MÉTODO ELIMINADO - Ya no se usa
     }
 
-    private async void CleanupInboxButton_Click(object sender, RoutedEventArgs e)
+    private async void CleanupInboxButton_Click_Removed(object sender, RoutedEventArgs e)
     {
-        try
-        {
-            var fileService = new TransactionFileService(_configService);
-            var result = await fileService.CleanupInboxAsync();
-
-            if (result)
-            {
-                LogSystem("🗑️ INBOX limpiado exitosamente");
-                MessageBox.Show("INBOX limpiado correctamente", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-        }
-        catch (Exception ex)
-        {
-            LogSystem($"❌ Error limpiando INBOX: {ex.Message}");
-            MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        }
+        // MÉTODO ELIMINADO - Ya no se usa
     }
 }
 // Clase para historial de transacciones

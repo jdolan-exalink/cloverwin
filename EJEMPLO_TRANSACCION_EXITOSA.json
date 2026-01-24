@@ -1,0 +1,72 @@
+{
+  "transactionId": "550e8400-e29b-41d4-a716-446655440001",
+  "externalId": "INV-2026-001",
+  "timestamp": "2026-01-18T14:30:00.123Z",
+  "status": "Successful",
+  "type": "SALE",
+  "invoiceNumber": "INV-2026-001",
+  "amount": 150.75,
+  "tax": 15.08,
+  "customerName": "Juan Pérez",
+  "notes": "Compra de productos varios",
+  "processStartTime": "2026-01-18T14:30:00.500Z",
+  "sentToTerminalTime": "2026-01-18T14:30:02.100Z",
+  "processEndTime": "2026-01-18T14:30:28.750Z",
+  "inboxFilePath": "D:\\INBOX\\INV-2026-001.json",
+  "paymentInfo": {
+    "cloverPaymentId": "ABCD1234567890",
+    "cloverOrderId": "ORDER-XYZ123",
+    "cardLast4": "4242",
+    "cardBrand": "VISA",
+    "authCode": "AUTH123",
+    "receiptNumber": "RCP-001",
+    "tip": 15.00,
+    "totalAmount": 165.75,
+    "processingFee": null,
+    "processingStartTime": "2026-01-18T14:30:02.100Z"
+  },
+  "transactionLog": [
+    {
+      "timestamp": "2026-01-18T14:30:00.123Z",
+      "eventType": "RECEIVED",
+      "description": "Transacción recibida en INBOX",
+      "details": "Archivo: INV-2026-001.json"
+    },
+    {
+      "timestamp": "2026-01-18T14:30:00.500Z",
+      "eventType": "PROCESSING",
+      "description": "Iniciando proceso de pago",
+      "details": "Monto: $150.75"
+    },
+    {
+      "timestamp": "2026-01-18T14:30:02.100Z",
+      "eventType": "SENT_TO_TERMINAL",
+      "description": "Solicitud enviada a terminal Clover",
+      "details": "Monto en centavos: 15075"
+    },
+    {
+      "timestamp": "2026-01-18T14:30:28.500Z",
+      "eventType": "RESPONSE_RECEIVED",
+      "description": "Respuesta recibida de terminal",
+      "details": "Método: TX_STATE"
+    },
+    {
+      "timestamp": "2026-01-18T14:30:28.650Z",
+      "eventType": "RESULT_PROCESSED",
+      "description": "Resultado procesado",
+      "details": "Estado: Successful"
+    },
+    {
+      "timestamp": "2026-01-18T14:30:28.750Z",
+      "eventType": "PAYMENT_SUCCESS",
+      "description": "Pago exitoso",
+      "details": "PaymentId: ABCD1234567890"
+    },
+    {
+      "timestamp": "2026-01-18T14:30:28.750Z",
+      "eventType": "FINALIZED",
+      "description": "Transacción finalizada con estado: Successful",
+      "details": "Duración: 28.25s"
+    }
+  ]
+}

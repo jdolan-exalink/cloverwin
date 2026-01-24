@@ -1,78 +1,300 @@
-# CloverBridge - Versión C# .NET
+# CloverBridge - Puente de Integración Clover
 
-Aplicación nativa de Windows para conectar ERP con terminales Clover POS usando Network Pay Display (SNPD).
+Sistema de integración entre terminales de pago Clover y sistemas ERP/Facturación mediante archivos JSON.
 
 ## 🎯 Características
 
-- ✅ **Ejecutable único portable** (~20-30MB, sin dependencias)
-- ✅ **Windows Service** integrado (inicio automático con el sistema)
-- ✅ **System Tray** con menú contextual
-- ✅ **Ventana de Pairing** visual (WPF)
-- ✅ **WebSocket nativo** a Clover
-- ✅ **API HTTP** (puerto 3777)
-- ✅ **File Watcher** para carpeta INBOX
-- ✅ **Transaction Queue** FIFO
-- ✅ **Logs con Serilog** (archivos diarios)
+- ✅ Integración por archivos (INBOX/OUTBOX) - Sin API REST
+- ✅ Procesamiento automático de transacciones
+- ✅ Estados claros: Exitosa, Cancelada, Sin Fondos
+- ✅ Limpieza automática de INBOX
+- ✅ Registro completo en OUTBOX
+- ✅ Interfaz de sistema tray
+- ✅ Logs detallados
 
-## 📦 Requisitos
+## 📋 Requisitos
 
-- Windows 10/11 o Windows Server 2016+
-- .NET 8.0 Runtime (incluido en ejecutable con --self-contained)
+- Windows 10/11
+- .NET 8.0 Runtime
+- Terminal Clover en la misma red
+- Network Pay Display habilitado en Clover
 
-## 🚀 Instalación
+## 🚀 Instalación Rápida
 
-### Modo 1: Aplicación de Tray (Recomendado)
+1. **Descomprimir** el archivo ZIP en `C:\CloverBridge`
+2. **Ejecutar** `CloverBridge.exe`
+3. **Configurar** IP del terminal Clover en la UI
+4. **Realizar pairing** ingresando el código en el terminal
 
-```powershell
-# Ejecutar el instalador o simplemente hacer doble clic en el .exe
-.\CloverBridge.exe
+## 📁 Estructura de Carpetas
+
+```
+C:\CloverBridge\
+├── CloverBridge.exe          # Aplicación principal
+├── config.json               # Configuración
+├── INBOX\                    # Transacciones entrantes (desde ERP)
+├── OUTBOX\                   # Resultados de transacciones (hacia ERP)
+├── ARCHIVE\                  # Historial de transacciones
+└── logs\                     # Logs del sistema
 ```
 
-La aplicación aparecerá en el System Tray. Al hacer doble clic, abre el dashboard web.
+## 🔄 Flujo de Trabajo
 
-### Modo 2: Windows Service
+### 1. Sistema de Facturación → INBOX
 
-```powershell
-# Compilar
-.\build.ps1
+El sistema de facturación crea un archivo JSON en la carpeta `INBOX`:
 
-# Instalar como servicio (requiere administrador)
-.\install-service.ps1
-
-# Desinstalar
-.\install-service.ps1 -Uninstall
+```json
+{
+  "invoiceNumber": "FAC-2026-001234",
+  "amount": 150.50,
+  "externalId": "ERP-20260117-001",
+  "customerName": "Juan Pérez",
+  "notes": "Factura de venta",
+  "tax": 15.05
+}
 ```
 
-### Modo 3: Consola (Para debugging)
+### 2. CloverBridge Procesa
 
-```powershell
-.\CloverBridge.exe --console
+CloverBridge:
+1. ✅ Detecta el archivo en INBOX
+2. ✅ Marca como **Pendiente**
+3. ✅ Envía al terminal Clover
+4. ✅ Espera respuesta del cliente
+5. ✅ Actualiza estado según resultado
+6. ✅ Guarda resultado en OUTBOX
+7. ✅ **Elimina archivo de INBOX**
+
+### 3. OUTBOX → Sistema de Facturación
+
+CloverBridge guarda el resultado en `OUTBOX`:
+
+#### Pago Exitoso
+```json
+{
+  "transactionId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "externalId": "ERP-20260117-001",
+  "timestamp": "2026-01-17T14:30:45.123Z",
+  "status": "Successful",
+  "type": "SALE",
+  "invoiceNumber": "FAC-2026-001234",
+  "amount": 150.50,
+  "tax": 15.05,
+  "customerName": "Juan Pérez",
+  "notes": "Factura de venta",
+  "paymentInfo": {
+    "cloverPaymentId": "CLOVER-PAY-123456",
+    "cloverOrderId": "CLOVER-ORD-789012",
+    "cardLast4": "4242",
+    "cardBrand": "VISA",
+    "authCode": "AUTH123",
+    "totalAmount": 150.50,
+    "tip": 0.00,
+    "processingStartTime": "2026-01-17T14:30:45.123Z"
+  },
+  "errorMessage": null,
+  "errorCode": null
+}
 ```
 
-## 🔧 Compilación
-
-```powershell
-# Build Debug
-.\build.ps1 -Configuration Debug
-
-# Build Release (single-file executable)
-.\build.ps1 -Configuration Release
-
-# Build manual
-dotnet publish -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true
+#### Pago Cancelado
+```json
+{
+  "transactionId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "externalId": "ERP-20260117-001",
+  "timestamp": "2026-01-17T14:32:10.456Z",
+  "status": "Cancelled",
+  "type": "SALE",
+  "invoiceNumber": "FAC-2026-001234",
+  "amount": 150.50,
+  "tax": 15.05,
+  "customerName": "Juan Pérez",
+  "notes": "Factura de venta",
+  "paymentInfo": null,
+  "errorMessage": "Transacción cancelada por el usuario o timeout",
+  "errorCode": "CANCELLED"
+}
 ```
 
-El ejecutable se generará en: `.\bin\publish\CloverBridge.exe`
+#### Sin Fondos / Tarjeta Rechazada
+```json
+{
+  "transactionId": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "externalId": "ERP-20260117-001",
+  "timestamp": "2026-01-17T14:33:22.789Z",
+  "status": "InsufficientFunds",
+  "type": "SALE",
+  "invoiceNumber": "FAC-2026-001234",
+  "amount": 150.50,
+  "tax": 15.05,
+  "customerName": "Juan Pérez",
+  "notes": "Factura de venta",
+  "paymentInfo": null,
+  "errorMessage": "Fondos insuficientes o tarjeta rechazada",
+  "errorCode": "INSUFFICIENT_FUNDS"
+}
+```
+
+## 📊 Estados de Transacción
+
+| Estado | Descripción | Acción ERP |
+|--------|-------------|------------|
+| `Pending` | Enviada al terminal, esperando cliente | Mostrar "Procesando..." |
+| `Successful` | Pago completado exitosamente | **Marcar factura como PAGADA** |
+| `Cancelled` | Cliente canceló o timeout | Permitir reintentar |
+| `InsufficientFunds` | Tarjeta rechazada/sin fondos | Solicitar otro método de pago |
+| `Failed` | Error de sistema | Revisar logs, reintentar |
+
+## 💻 Integración con Sistema ERP
+
+### Ejemplo en C# (.NET)
+
+```csharp
+// 1. Crear archivo de solicitud en INBOX
+public async Task<bool> EnviarPago(string numeroFactura, decimal monto)
+{
+    var solicitud = new
+    {
+        invoiceNumber = numeroFactura,
+        amount = monto,
+        externalId = $"ERP-{DateTime.Now:yyyyMMdd}-{numeroFactura}",
+        customerName = "Cliente XYZ",
+        notes = "Pago de factura",
+        tax = monto * 0.10m // 10% de IVA
+    };
+
+    var json = JsonSerializer.Serialize(solicitud, new JsonSerializerOptions 
+    { 
+        WriteIndented = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase 
+    });
+
+    var filename = $"{numeroFactura}_{DateTime.Now:yyyyMMddHHmmss}.json";
+    var inboxPath = @"C:\CloverBridge\INBOX";
+    
+    await File.WriteAllTextAsync(Path.Combine(inboxPath, filename), json);
+    
+    return true;
+}
+
+// 2. Monitorear OUTBOX para resultados
+public void MonitorearResultados()
+{
+    var watcher = new FileSystemWatcher(@"C:\CloverBridge\OUTBOX")
+    {
+        Filter = "*.json",
+        EnableRaisingEvents = true
+    };
+
+    watcher.Created += async (sender, e) =>
+    {
+        await Task.Delay(500); // Esperar a que termine de escribirse
+        
+        var json = await File.ReadAllTextAsync(e.FullPath);
+        var resultado = JsonSerializer.Deserialize<TransactionResult>(json);
+
+        switch (resultado.Status)
+        {
+            case "Successful":
+                // Marcar factura como pagada
+                ActualizarFactura(resultado.InvoiceNumber, "PAGADA", resultado.PaymentInfo);
+                break;
+                
+            case "Cancelled":
+                // Usuario canceló
+                MostrarMensaje($"Pago cancelado para {resultado.InvoiceNumber}");
+                break;
+                
+            case "InsufficientFunds":
+                // Sin fondos
+                MostrarMensaje($"Tarjeta rechazada: {resultado.InvoiceNumber}");
+                break;
+                
+            case "Failed":
+                // Error
+                MostrarError($"Error procesando: {resultado.ErrorMessage}");
+                break;
+        }
+        
+        // Opcional: Mover o eliminar archivo leído
+        File.Delete(e.FullPath);
+    };
+}
+```
+
+### Ejemplo en Python
+
+```python
+import json
+import time
+from pathlib import Path
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+
+# 1. Enviar pago
+def enviar_pago(numero_factura: str, monto: float):
+    solicitud = {
+        "invoiceNumber": numero_factura,
+        "amount": monto,
+        "externalId": f"ERP-{int(time.time())}-{numero_factura}",
+        "customerName": "Cliente XYZ",
+        "notes": "Pago de factura",
+        "tax": round(monto * 0.10, 2)
+    }
+    
+    inbox_path = Path("C:/CloverBridge/INBOX")
+    filename = f"{numero_factura}_{int(time.time())}.json"
+    
+    with open(inbox_path / filename, 'w', encoding='utf-8') as f:
+        json.dump(solicitud, f, indent=2)
+    
+    print(f"✅ Pago enviado: {filename}")
+
+# 2. Monitorear resultados
+class OutboxHandler(FileSystemEventHandler):
+    def on_created(self, event):
+        if event.is_directory or not event.src_path.endswith('.json'):
+            return
+        
+        time.sleep(0.5)  # Esperar a que termine de escribirse
+        
+        with open(event.src_path, 'r', encoding='utf-8') as f:
+            resultado = json.load(f)
+        
+        status = resultado.get('status')
+        invoice = resultado.get('invoiceNumber')
+        
+        if status == 'Successful':
+            print(f"✅ PAGADA: {invoice}")
+            actualizar_factura_pagada(invoice, resultado['paymentInfo'])
+        elif status == 'Cancelled':
+            print(f"❌ CANCELADA: {invoice}")
+        elif status == 'InsufficientFunds':
+            print(f"💳 SIN FONDOS: {invoice}")
+        elif status == 'Failed':
+            print(f"⚠️ ERROR: {invoice} - {resultado.get('errorMessage')}")
+        
+        # Eliminar archivo leído
+        Path(event.src_path).unlink()
+
+def monitorear_outbox():
+    observer = Observer()
+    observer.schedule(OutboxHandler(), "C:/CloverBridge/OUTBOX", recursive=False)
+    observer.start()
+    
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        observer.stop()
+    
+    observer.join()
+```
 
 ## ⚙️ Configuración
 
-La configuración se almacena en:
-
-```
-C:\Users\[Usuario]\AppData\Roaming\CloverBridge\config.json
-```
-
-### Estructura de configuración:
+El archivo `config.json` se crea automáticamente:
 
 ```json
 {
@@ -80,19 +302,21 @@ C:\Users\[Usuario]\AppData\Roaming\CloverBridge\config.json
     "host": "10.1.1.53",
     "port": 12345,
     "secure": false,
-    "authToken": "",
+    "authToken": "AUTH_TOKEN_AQUI",
     "remoteAppId": "clover-bridge",
     "posName": "ERP Bridge",
-    "serialNumber": "CB-001"
+    "serialNumber": "CB-001",
+    "reconnectDelayMs": 5000,
+    "maxReconnectAttempts": 10
   },
   "api": {
     "port": 3777,
     "host": "127.0.0.1"
   },
   "folders": {
-    "inbox": "C:\\ProgramData\\CloverBridge\\INBOX",
-    "outbox": "C:\\ProgramData\\CloverBridge\\OUTBOX",
-    "archive": "C:\\ProgramData\\CloverBridge\\ARCHIVE"
+    "inbox": "C:\\CloverBridge\\INBOX",
+    "outbox": "C:\\CloverBridge\\OUTBOX",
+    "archive": "C:\\CloverBridge\\ARCHIVE"
   },
   "transaction": {
     "timeoutMs": 120000,
@@ -101,210 +325,157 @@ C:\Users\[Usuario]\AppData\Roaming\CloverBridge\config.json
 }
 ```
 
-## 📡 API Endpoints
+## 🔧 Configuración del Terminal Clover
 
-Base URL: `http://localhost:3777`
+1. Abrir **Settings** en el terminal Clover
+2. Ir a **Setup** → **Developer Options**
+3. Habilitar **Network Pay Display**
+4. Anotar la **IP** mostrada
+5. Configurar esa IP en CloverBridge
 
-### GET /api/health
+## 🔐 Proceso de Pairing
 
-Health check
+1. **Primera vez:** CloverBridge solicita pairing automáticamente
+2. Aparece un código de 6 dígitos en CloverBridge
+3. Ingresar ese código en el terminal Clover
+4. ¡Listo! La integración queda permanente
 
-### GET /api/status
+## 📝 Campos del Archivo INBOX
 
-Estado completo del sistema (Clover, queue, config)
+### Campos Obligatorios
+- `invoiceNumber` (string): Número de factura único
+- `amount` (decimal): Monto total en pesos/dólares
 
-### POST /api/transaction/sale
+### Campos Opcionales
+- `externalId` (string): ID de tu sistema ERP (default: invoiceNumber)
+- `customerName` (string): Nombre del cliente
+- `notes` (string): Notas adicionales
+- `tax` (decimal): Monto de impuestos
 
-Iniciar venta
+## 📤 Campos del Archivo OUTBOX
 
-```json
-{
-  "amount": 1000,
-  "externalId": "REQ-123",
-  "note": "Venta de prueba"
-}
-```
+### Siempre Presentes
+- `transactionId`: ID único generado por CloverBridge
+- `externalId`: Tu ID del sistema ERP
+- `timestamp`: Fecha/hora de procesamiento (UTC)
+- `status`: Estado final (Successful/Cancelled/InsufficientFunds/Failed)
+- `type`: Tipo de transacción (SALE/REFUND/VOID)
+- `invoiceNumber`: Número de factura
+- `amount`: Monto de la transacción
 
-### POST /api/transaction/void
+### Si el Pago fue Exitoso (`status: "Successful"`)
+- `paymentInfo`: Objeto con detalles del pago
+  - `cloverPaymentId`: ID del pago en Clover
+  - `cloverOrderId`: ID de la orden en Clover
+  - `cardLast4`: Últimos 4 dígitos de la tarjeta
+  - `cardBrand`: Marca de la tarjeta (VISA, MASTERCARD, etc.)
+  - `authCode`: Código de autorización
+  - `totalAmount`: Monto total cobrado
+  - `tip`: Propina (si aplica)
 
-Anular transacción
+### Si el Pago Falló
+- `errorMessage`: Descripción del error
+- `errorCode`: Código del error
 
-```json
-{
-  "originalTxId": "tx-id-here"
-}
-```
+## 🚨 Solución de Problemas
 
-### POST /api/transaction/refund
+### El sistema no detecta archivos en INBOX
+- ✅ Verificar que los archivos sean `.json`
+- ✅ Verificar que el JSON sea válido
+- ✅ Revisar logs en `logs\cloverbridge.log`
 
-Reembolso
+### Terminal no responde
+- ✅ Verificar que esté en la misma red
+- ✅ Verificar IP configurada
+- ✅ Verificar que Network Pay Display esté habilitado
+- ✅ Hacer ping al terminal: `ping 10.1.1.53`
 
-```json
-{
-  "originalTxId": "tx-id-here",
-  "amount": 500
-}
-```
-
-### POST /api/qr
-
-Mostrar QR Code
-
-```json
-{
-  "amount": 2500,
-  "externalId": "QR-123"
-}
-```
-
-### POST /api/connect
-
-Conectar a Clover (automático al iniciar)
-
-### POST /api/disconnect
-
-Desconectar de Clover
-
-### GET /api/config
-
-Obtener configuración
-
-### POST /api/config
-
-Actualizar configuración
-
-## 📂 Carpetas de Datos
-
-```
-C:\ProgramData\CloverBridge\
-├── INBOX\          # Requests del ERP (JSON)
-├── OUTBOX\         # Responses (JSON)
-└── ARCHIVE\        # Archivados
-    ├── processed\  # Exitosos
-    └── failed\     # Fallidos
-```
+### Error de pairing
+- ✅ Eliminar `authToken` del config.json
+- ✅ Reiniciar CloverBridge
+- ✅ Ingresar código nuevo en el terminal
 
 ## 📊 Logs
 
-Los logs se guardan en:
+Los logs se guardan en `logs\cloverbridge.log`:
 
 ```
-C:\Users\[Usuario]\AppData\Roaming\CloverBridge\logs\
-clover-bridge-YYYY-MM-DD.log
+[14:30:45 INF] Processing file: INBOX\FAC-2026-001234.json
+[14:30:45 INF] Processing transaction: Invoice=FAC-2026-001234 Amount=$150.50
+[14:30:52 INF] Transaction processed: Invoice=FAC-2026-001234 Status=Successful
+[14:30:52 INF] Transaction written to OUTBOX: FAC-2026-001234_successful_20260117_143052.json
+[14:30:52 INF] INBOX file deleted: INBOX\FAC-2026-001234.json
 ```
 
-Ver logs en tiempo real:
+## 🛠️ Compilación desde Código Fuente
 
-```powershell
-Get-Content "C:\Users\$env:USERNAME\AppData\Roaming\CloverBridge\logs\clover-bridge-*.log" -Tail 50 -Wait
+```bash
+# Clonar repositorio
+git clone https://github.com/tu-usuario/cloverbridge.git
+cd cloverbridge
+
+# Compilar
+dotnet build -c Release
+
+# Publicar ejecutable standalone
+dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true
+
+# El ejecutable estará en: bin\Release\net8.0-windows\win-x64\publish\
 ```
-
-## 🎨 System Tray
-
-El icono en el System Tray muestra el estado de conexión:
-
-- **Desconectado**: Sin conexión
-- **Conectando...**: Intentando conectar
-- **Pairing requerido**: Esperando código
-- **Pareado**: Listo para transacciones
-
-### Menú del Tray:
-
-- **Abrir Dashboard**: Abre el navegador con la API
-- **Mostrar Código de Pairing**: Muestra ventana con código PIN
-- **Configuración**: Abre carpeta de configuración
-- **Ver Logs**: Abre carpeta de logs
-- **Salir**: Cierra la aplicación
-
-## 🔐 Pairing con Clover
-
-1. Iniciar CloverBridge
-2. La ventana de pairing se abre automáticamente
-3. En el terminal Clover:
-   - Ir a **Configuración** → **Network Pay Display**
-   - Habilitar SNPD
-   - Ingresar el código de 6 dígitos
-4. Confirmar en ambos dispositivos
-5. La ventana se cierra automáticamente al completar
-
-## 🐛 Troubleshooting
-
-### El ejecutable no inicia
-
-- Verificar que .NET 8.0 esté instalado (o usar versión self-contained)
-- Revisar logs en `AppData\Roaming\CloverBridge\logs`
-
-### No se conecta a Clover
-
-- Verificar IP y puerto en config.json
-- Verificar que SNPD esté habilitado en el terminal
-- Revisar firewall de Windows
-
-### El servicio no inicia
-
-- Verificar permisos de administrador
-- Revisar Event Viewer (Windows Logs → Application)
-- Verificar que el puerto 3777 no esté en uso
-
-### Puerto 3777 en uso
-
-```powershell
-# Ver qué proceso usa el puerto
-Get-NetTCPConnection -LocalPort 3777 | Select-Object OwningProcess
-Get-Process -Id [PID]
-
-# Detener proceso
-Stop-Process -Id [PID] -Force
-```
-
-## 🚀 Ventajas sobre Node.js/Electron
-
-| Característica        | Node.js/Electron | C# .NET         |
-| --------------------- | ---------------- | --------------- |
-| Tamaño ejecutable     | ~120-150MB       | ~20-30MB        |
-| Dependencias externas | Node, Electron   | Ninguna         |
-| Tiempo de inicio      | 3-5 segundos     | <1 segundo      |
-| Uso de memoria        | 150-200MB        | 40-60MB         |
-| Windows Service       | Requiere wrapper | Nativo          |
-| System Tray           | Electron API     | WinForms nativo |
-| Compilación           | Complejo         | Simple          |
-| Portable              | Problemático     | Nativo          |
-
-## 📝 Arquitectura
-
-```
-CloverBridge.exe
-├── Program.cs              # Entry point y modos de ejecución
-├── Models/
-│   ├── AppConfig.cs        # Configuración
-│   └── CloverMessages.cs   # Mensajes Clover
-├── Services/
-│   ├── ConfigurationService.cs       # Gestión de config
-│   ├── CloverWebSocketService.cs     # WebSocket a Clover
-│   ├── ApiService.cs                 # HTTP API
-│   ├── TransactionQueueService.cs    # Cola FIFO
-│   └── InboxWatcherService.cs        # File watcher
-└── UI/
-    ├── TrayApplicationContext.cs     # System Tray
-    ├── PairingWindow.xaml            # Ventana WPF
-    └── PairingWindow.xaml.cs         # Code-behind
-```
-
-## 🔄 Flujo de Funcionamiento
-
-1. **Inicio**: Se ejecuta Program.cs y detecta el modo
-2. **Servicios**: Se inician todos los BackgroundService
-3. **Conexión**: CloverWebSocketService conecta automáticamente
-4. **Pairing**: Si no hay token, solicita pairing
-5. **API**: ApiService escucha en puerto 3777
-6. **Queue**: TransactionQueueService procesa cola FIFO
-7. **Watcher**: InboxWatcherService monitorea carpeta INBOX
-8. **Tray**: TrayApplicationContext muestra icono y menú
 
 ## 📞 Soporte
 
-Para reportar bugs o solicitar features, crear un issue en el repositorio.
+- **Logs:** `C:\CloverBridge\logs\`
+- **Email:** soporte@tuempresa.com
+- **GitHub:** https://github.com/tu-usuario/cloverbridge/issues
 
 ## 📄 Licencia
 
-[Especificar licencia]
+Propietario - Todos los derechos reservados
+
+---
+
+## 🎯 Ejemplo Completo de Integración
+
+### Escenario: Cobro de Factura
+
+1. **Cliente solicita pagar factura FAC-001234 por $150.50**
+
+2. **Sistema ERP crea archivo en INBOX:**
+   ```json
+   {
+     "invoiceNumber": "FAC-001234",
+     "amount": 150.50,
+     "customerName": "Juan Pérez",
+     "tax": 15.05
+   }
+   ```
+
+3. **CloverBridge procesa automáticamente**
+
+4. **Cliente pasa su tarjeta en el terminal Clover**
+
+5. **CloverBridge guarda resultado en OUTBOX:**
+   ```json
+   {
+     "invoiceNumber": "FAC-001234",
+     "status": "Successful",
+     "amount": 150.50,
+     "paymentInfo": {
+       "cardLast4": "4242",
+       "cardBrand": "VISA",
+       "authCode": "123456"
+     }
+   }
+   ```
+
+6. **Sistema ERP lee OUTBOX y marca factura como PAGADA**
+
+7. **Archivo de INBOX se elimina automáticamente**
+
+✅ **¡Flujo completado!**
+
+---
+
+**Versión:** 1.0.0  
+**Última actualización:** Enero 2026

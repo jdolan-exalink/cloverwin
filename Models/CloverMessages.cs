@@ -145,12 +145,81 @@ public class PaymentInfo
 
     [JsonPropertyName("cardTransaction")]
     public CardTransaction? CardTransaction { get; set; }
+
+    // Campos adicionales del pago
+    [JsonPropertyName("note")]
+    public string? Note { get; set; }
+
+    [JsonPropertyName("result")]
+    public string? Result { get; set; }
+
+    [JsonPropertyName("createdTime")]
+    public long? CreatedTime { get; set; }
+
+    // TransactionInfo - información adicional del tipo de pago
+    [JsonPropertyName("transactionInfo")]
+    public TransactionInfo? TransactionInfo { get; set; }
+
+    // Tender - tipo de medio de pago
+    [JsonPropertyName("tender")]
+    public TenderInfo? Tender { get; set; }
+
+    // Device
+    [JsonPropertyName("device")]
+    public DeviceInfo? Device { get; set; }
+
+    // Merchant
+    [JsonPropertyName("merchant")]
+    public MerchantInfo? Merchant { get; set; }
+
+    // Employee
+    [JsonPropertyName("employee")]
+    public EmployeeInfo? Employee { get; set; }
 }
 
 public class OrderInfo
 {
     [JsonPropertyName("id")]
     public string Id { get; set; } = string.Empty;
+}
+
+public class TransactionInfo
+{
+    [JsonPropertyName("cardTypeLabel")]
+    public string? CardTypeLabel { get; set; }
+
+    [JsonPropertyName("entryType")]
+    public string? EntryType { get; set; }
+
+    [JsonPropertyName("fiscalInvoiceNumber")]
+    public string? FiscalInvoiceNumber { get; set; }
+}
+
+public class TenderInfo
+{
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
+
+    [JsonPropertyName("labelKey")]
+    public string? LabelKey { get; set; }
+}
+
+public class DeviceInfo
+{
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
+}
+
+public class MerchantInfo
+{
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
+}
+
+public class EmployeeInfo
+{
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
 }
 
 public class CardTransaction
@@ -178,6 +247,9 @@ public class CardTransaction
 
     [JsonPropertyName("entryType")]
     public string? EntryType { get; set; }
+
+    [JsonPropertyName("currency")]
+    public string? Currency { get; set; }
 }
 
 /// <summary>

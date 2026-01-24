@@ -172,6 +172,24 @@
                                   FontSize="14"
                                   FontWeight="SemiBold"
                                   Foreground="White"/>
+                        <!-- Contador de Timeout -->
+                        <Border x:Name="TimeoutCounterBorder"
+                               Background="#ef4444"
+                               CornerRadius="15"
+                               Padding="12,4"
+                               Margin="15,0,0,0"
+                               Visibility="Collapsed">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="⏱️" 
+                                          FontSize="14" 
+                                          Margin="0,0,6,0"/>
+                                <TextBlock x:Name="TimeoutCounterText" 
+                                          Text="75s" 
+                                          FontSize="14"
+                                          FontWeight="Bold"
+                                          Foreground="White"/>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </Border>
 
@@ -412,7 +430,8 @@
                                  CanUserResizeRows="False"
                                  CanUserReorderColumns="False"
                                  SelectionMode="Single"
-                                 HeadersVisibility="Column">
+                                 HeadersVisibility="Column"
+                                 MouseDoubleClick="TransactionsDataGrid_MouseDoubleClick">
                             <DataGrid.ColumnHeaderStyle>
                                 <Style TargetType="DataGridColumnHeader">
                                     <Setter Property="Background" Value="#0f172a"/>
@@ -455,11 +474,31 @@
                                       Foreground="#667eea"
                                       Margin="0,0,0,10"/>
                             
-                            <TextBlock Text="Nro. de Factura:" Foreground="#94a3b8" Margin="0,0,0,4"/>
-                            <TextBox x:Name="InvoiceNumberTextBox"                                     Text="FB-12345-12345678"                                    Style="{StaticResource ModernTextBox}"
-                                    FontSize="13"
-                                    Padding="10,8"
-                                    Margin="0,0,0,12"/>
+                            <Grid Margin="0,0,0,12">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Nro. de Factura (Auto-generado):" Foreground="#94a3b8" Margin="0,0,0,4"/>
+                                    <TextBox x:Name="InvoiceNumberTextBox"
+                                            Style="{StaticResource ModernTextBox}"
+                                            IsReadOnly="True"
+                                            FontSize="13"
+                                            FontFamily="Consolas"
+                                            Padding="10,8"/>
+                                </StackPanel>
+                                
+                                <Button Grid.Column="1"
+                                       Content="🔄"
+                                       Style="{StaticResource PrimaryButton}"
+                                       Padding="12,8"
+                                       FontSize="14"
+                                       Margin="8,20,0,0"
+                                       Click="GenerateInvoiceNumber_Click"
+                                       ToolTip="Generar nuevo número"/>
+                            </Grid>
 
                             <TextBlock Text="ID Externo:" Foreground="#94a3b8" Margin="0,0,0,4"/>
                             <TextBox x:Name="ExternalIdTextBox" 
@@ -470,113 +509,32 @@
                                     Margin="0,0,0,15"/>
 
                             <!-- Detalles de Productos -->
-                            <TextBlock Text="📦 Detalles de Productos" 
+                            <TextBlock Text="💰 Monto de la Venta" 
                                       FontSize="13"
                                       FontWeight="SemiBold"
                                       Foreground="#667eea"
                                       Margin="0,0,0,10"/>
 
-                            <!-- Producto 1 -->
-                            <Border Background="#1e293b" CornerRadius="6" Padding="12" Margin="0,0,0,10">
+                            <Border Background="#1e293b" CornerRadius="8" Padding="15" Margin="0,0,0,15">
                                 <StackPanel>
-                                    <TextBlock Text="Producto 1:" Foreground="#10b981" FontWeight="SemiBold"/>
-                                    <TextBlock Text="Nombre:" Foreground="#94a3b8" Margin="0,8,0,2" FontSize="12"/>
-                                    <TextBox x:Name="Product1NameTextBox" 
+                                    <TextBlock Text="Monto Total ($):" Foreground="#94a3b8" Margin="0,0,0,8" FontSize="13"/>
+                                    <TextBox x:Name="TestAmountTextBox" 
                                             Style="{StaticResource ModernTextBox}"
-                                            Text="Producto Test 1"
-                                            FontSize="12"
-                                            Padding="8,6"
-                                            Margin="0,0,0,8"/>
+                                            Text="50.00"
+                                            FontSize="20"
+                                            FontWeight="SemiBold"
+                                            Padding="15,12"
+                                            TextAlignment="Center"
+                                            TextChanged="TestAmount_TextChanged"/>
                                     
-                                    <TextBlock Text="Cantidad:" Foreground="#94a3b8" Margin="0,0,0,2" FontSize="12"/>
-                                    <TextBox x:Name="Product1QtyTextBox" 
-                                            Style="{StaticResource ModernTextBox}"
-                                            Text="1"
-                                            FontSize="12"
-                                            Padding="8,6"
-                                            Margin="0,0,0,8"/>
-                                    
-                                    <TextBlock Text="Precio Unitario ($):" Foreground="#94a3b8" Margin="0,0,0,2" FontSize="12"/>
-                                    <TextBox x:Name="Product1PriceTextBox" 
-                                            Style="{StaticResource ModernTextBox}"
-                                            Text="25,00"
-                                            FontSize="12"
-                                            Padding="8,6"/>
+                                    <TextBlock x:Name="TestAmountPreview" 
+                                              Text="Monto a enviar: $50.00" 
+                                              FontSize="14" 
+                                              Foreground="#10b981"
+                                              FontWeight="SemiBold"
+                                              TextAlignment="Center"
+                                              Margin="0,10,0,0"/>
                                 </StackPanel>
-                            </Border>
-
-                            <!-- Producto 2 -->
-                            <Border Background="#1e293b" CornerRadius="6" Padding="12" Margin="0,0,0,10">
-                                <StackPanel>
-                                    <TextBlock Text="Producto 2:" Foreground="#10b981" FontWeight="SemiBold"/>
-                                    <TextBlock Text="Nombre:" Foreground="#94a3b8" Margin="0,8,0,2" FontSize="12"/>
-                                    <TextBox x:Name="Product2NameTextBox" 
-                                            Style="{StaticResource ModernTextBox}"
-                                            Text="Producto Test 2"
-                                            FontSize="12"
-                                            Padding="8,6"
-                                            Margin="0,0,0,8"/>
-                                    
-                                    <TextBlock Text="Cantidad:" Foreground="#94a3b8" Margin="0,0,0,2" FontSize="12"/>
-                                    <TextBox x:Name="Product2QtyTextBox" 
-                                            Style="{StaticResource ModernTextBox}"
-                                            Text="1"
-                                            FontSize="12"
-                                            Padding="8,6"
-                                            Margin="0,0,0,8"/>
-                                    
-                                    <TextBlock Text="Precio Unitario ($):" Foreground="#94a3b8" Margin="0,0,0,2" FontSize="12"/>
-                                    <TextBox x:Name="Product2PriceTextBox" 
-                                            Style="{StaticResource ModernTextBox}"
-                                            Text="25,00"
-                                            FontSize="12"
-                                            Padding="8,6"/>
-                                </StackPanel>
-                            </Border>
-
-                            <!-- Resumen -->
-                            <Border Background="#1e293b" CornerRadius="6" Padding="12" Margin="0,15,0,15">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <StackPanel Grid.Column="0">
-                                        <TextBlock Text="💰 Resumen de Venta" FontSize="13" FontWeight="SemiBold" Foreground="#667eea" Margin="0,0,0,8"/>
-                                        
-                                        <!-- Desglose de productos -->
-                                        <StackPanel Margin="0,0,0,10">
-                                            <TextBlock Text="Desglose:" Foreground="#94a3b8" FontSize="11" Margin="0,0,0,4"/>
-                                            <TextBlock x:Name="Product1SummaryTextBlock" 
-                                                      Text="Producto 1: 1 × $25.00 = $25.00" 
-                                                      FontSize="11" 
-                                                      Foreground="#e2e8f0"
-                                                      Margin="0,0,0,3"/>
-                                            <TextBlock x:Name="Product2SummaryTextBlock" 
-                                                      Text="Producto 2: 1 × $25.00 = $25.00" 
-                                                      FontSize="11" 
-                                                      Foreground="#e2e8f0"
-                                                      Margin="0,0,0,8"/>
-                                            <Separator Foreground="#334155" Margin="0,0,0,8"/>
-                                        </StackPanel>
-
-                                        <TextBlock x:Name="TotalAmountTextBlock" 
-                                                  Text="Total: $50.00" 
-                                                  FontSize="18" 
-                                                  FontWeight="Bold"
-                                                  Foreground="#10b981"
-                                                  Margin="0,0,0,0"/>
-                                    </StackPanel>
-
-                                    <Button Grid.Column="1"
-                                           Content="🔄 Recalc."
-                                           Style="{StaticResource PrimaryButton}"
-                                           Padding="12,8"
-                                           FontSize="12"
-                                           Click="RecalculateTotal_Click"
-                                           VerticalAlignment="Center"/>
-                                </Grid>
                             </Border>
 
                             <Button Content="✅ Enviar Venta de Prueba"
@@ -587,112 +545,11 @@
                                    Click="SendSaleButton_Click"
                                    Margin="0,0,0,10"/>
                             
-                            <TextBlock Text="ℹ️ Esto enviará una transacción con 2 productos de $25 c/u (Total $50) creando archivos de seguimiento en INBOX/OUTBOX." 
+                            <TextBlock Text="ℹ️ Esto enviará una transacción de prueba con el monto especificado, creando archivos de seguimiento en INBOX/OUTBOX." 
                                       Foreground="#64748b"
                                       Margin="0,0,0,0"
                                       FontSize="11"
                                       TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </Border>
-                </ScrollViewer>
-            </TabItem>
-
-            <!-- TAB: Gestión de OUTBOX -->
-            <TabItem Header="📁 Gestión OUTBOX">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <Border Background="#0f172a" Padding="20">
-                        <StackPanel>
-                            <TextBlock Text="Transacciones Pendientes de Aprobación" 
-                                      FontSize="16" 
-                                      FontWeight="Bold" 
-                                      Foreground="#e2e8f0"
-                                      Margin="0,0,0,15"/>
-
-                            <TextBlock Text="Archivos en OUTBOX:" Foreground="#94a3b8" FontSize="12" Margin="0,0,0,8"/>
-                            <ListBox x:Name="OutboxFileListBox" 
-                                    Background="#1e293b" 
-                                    BorderBrush="#334155" 
-                                    Foreground="#e2e8f0"
-                                    MaxHeight="200"
-                                    SelectionChanged="OutboxFileListBox_SelectionChanged"
-                                    Margin="0,0,0,10">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate>
-                                        <TextBlock Text="{Binding}" Foreground="#e2e8f0" FontSize="11"/>
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                            </ListBox>
-                            <Button Content="🔄 Actualizar Lista" 
-                                   Click="RefreshOutboxButton_Click"
-                                   Background="#667eea"
-                                   Foreground="White"
-                                   Padding="10,8"
-                                   FontSize="12"
-                                   Cursor="Hand"
-                                   Margin="0,0,0,15"/>
-
-                            <Separator Foreground="#334155" Margin="0,10"/>
-
-                            <TextBlock Text="Detalles de Transacción:" 
-                                      Foreground="#94a3b8" 
-                                      FontSize="12"
-                                      Margin="0,15,0,8"/>
-                            <TextBox x:Name="OutboxDetailsTextBox" 
-                                    Background="#1e293b" 
-                                    BorderBrush="#334155" 
-                                    Foreground="#e2e8f0"
-                                    IsReadOnly="True"
-                                    AcceptsReturn="True"
-                                    VerticalScrollBarVisibility="Auto"
-                                    Height="250"
-                                    Padding="10,8"
-                                    FontFamily="Consolas"
-                                    FontSize="10"
-                                    Margin="0,0,0,15"/>
-
-                            <Separator Foreground="#334155" Margin="0,10"/>
-
-                            <TextBlock Text="Acciones:" Foreground="#94a3b8" FontSize="12" Margin="0,15,0,8"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
-                                <Button Content="✅ Aprobar" 
-                                       Click="ApproveTransactionButton_Click"
-                                       Background="#10b981"
-                                       Foreground="White"
-                                       Padding="15,8"
-                                       FontSize="12"
-                                       Cursor="Hand"
-                                       Margin="0,0,10,0"/>
-                                <Button Content="❌ Rechazar" 
-                                       Click="RejectTransactionButton_Click"
-                                       Background="#ef4444"
-                                       Foreground="White"
-                                       Padding="15,8"
-                                       FontSize="12"
-                                       Cursor="Hand"
-                                       Margin="0,0,10,0"/>
-                                <Button Content="📁 Archivar" 
-                                       Click="ArchiveTransactionButton_Click"
-                                       Background="#8b5cf6"
-                                       Foreground="White"
-                                       Padding="15,8"
-                                       FontSize="12"
-                                       Cursor="Hand"/>
-                            </StackPanel>
-
-                            <Separator Foreground="#334155" Margin="0,10"/>
-
-                            <TextBlock Text="Limpieza:" Foreground="#94a3b8" FontSize="12" Margin="0,15,0,8"/>
-                            <Button Content="🗑️ Limpiar INBOX" 
-                                   Click="CleanupInboxButton_Click"
-                                   Background="#8b5cf6"
-                                   Foreground="White"
-                                   Padding="10,8"
-                                   FontSize="12"
-                                   Cursor="Hand"
-                                   Margin="0,0,0,8"/>
-                            <TextBlock Text="Elimina archivos procesados del INBOX" 
-                                      Foreground="#64748b" 
-                                      FontSize="10"/>
                         </StackPanel>
                     </Border>
                 </ScrollViewer>

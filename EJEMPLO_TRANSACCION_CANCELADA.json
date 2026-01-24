@@ -1,0 +1,63 @@
+{
+  "transactionId": "550e8400-e29b-41d4-a716-446655440003",
+  "externalId": "INV-2026-003",
+  "timestamp": "2026-01-18T16:15:00.123Z",
+  "status": "Cancelled",
+  "type": "SALE",
+  "invoiceNumber": "INV-2026-003",
+  "amount": 75.50,
+  "tax": 7.55,
+  "customerName": "Pedro Martínez",
+  "notes": "Cliente cambió de opinión",
+  "processStartTime": "2026-01-18T16:15:00.500Z",
+  "sentToTerminalTime": "2026-01-18T16:15:02.100Z",
+  "processEndTime": "2026-01-18T16:15:15.200Z",
+  "inboxFilePath": "D:\\INBOX\\INV-2026-003.json",
+  "errorMessage": "Transacción cancelada por el usuario",
+  "errorCode": "USER_CANCELLED",
+  "paymentInfo": null,
+  "transactionLog": [
+    {
+      "timestamp": "2026-01-18T16:15:00.123Z",
+      "eventType": "RECEIVED",
+      "description": "Transacción recibida en INBOX",
+      "details": "Archivo: INV-2026-003.json"
+    },
+    {
+      "timestamp": "2026-01-18T16:15:00.500Z",
+      "eventType": "PROCESSING",
+      "description": "Iniciando proceso de pago",
+      "details": "Monto: $75.50"
+    },
+    {
+      "timestamp": "2026-01-18T16:15:02.100Z",
+      "eventType": "SENT_TO_TERMINAL",
+      "description": "Solicitud enviada a terminal Clover",
+      "details": "Monto en centavos: 7550"
+    },
+    {
+      "timestamp": "2026-01-18T16:15:14.800Z",
+      "eventType": "RESPONSE_RECEIVED",
+      "description": "Respuesta recibida de terminal",
+      "details": "Método: TX_STATE"
+    },
+    {
+      "timestamp": "2026-01-18T16:15:14.900Z",
+      "eventType": "RESULT_PROCESSED",
+      "description": "Resultado procesado",
+      "details": "Estado: Cancelled"
+    },
+    {
+      "timestamp": "2026-01-18T16:15:15.000Z",
+      "eventType": "CANCELLED",
+      "description": "Transacción cancelada",
+      "details": "user_cancelled"
+    },
+    {
+      "timestamp": "2026-01-18T16:15:15.200Z",
+      "eventType": "FINALIZED",
+      "description": "Transacción finalizada con estado: Cancelled",
+      "details": "Duración: 14.70s"
+    }
+  ]
+}
