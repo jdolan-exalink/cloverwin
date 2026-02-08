@@ -9,7 +9,7 @@
     <ApplicationIcon>cloverwin.ico</ApplicationIcon>
     <AssemblyName>CloverBridge</AssemblyName>
     <RootNamespace>CloverBridge</RootNamespace>
-    <Version>1.2.0</Version>
+    <Version>1.5.0</Version>
     <Authors>Clover Bridge Team</Authors>
     <Company>Clover Bridge</Company>
     <Product>Clover Bridge</Product>
