@@ -29,13 +29,10 @@ logs/
 [Ll]og/
 
 # Distribution/Build artifacts  
-dist/*.exe
-dist/*.pdb
-dist/*.zip
-dist/*.rar
-dist/ARCHIVE/
-dist/transaction-history.json
-dist/transaction-log/
+dist/
+!dist/config/
+!dist/config/*.yml
+!dist/config/*.yaml
 CloverBridge_v*/
 CloverBridge_v*.zip
 
