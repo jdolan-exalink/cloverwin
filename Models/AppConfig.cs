@@ -137,20 +137,66 @@ public class FoldersConfig
 {
     private static string GetExecutableDirectory()
     {
-        return AppContext.BaseDirectory ?? System.Environment.CurrentDirectory;
+        var exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+        var appPath = !string.IsNullOrEmpty(exePath) 
+            ? System.IO.Path.GetDirectoryName(exePath) 
+            : AppContext.BaseDirectory ?? System.Environment.CurrentDirectory;
+        return appPath ?? System.Environment.CurrentDirectory;
     }
+
+    [JsonPropertyName("useCustomPaths")]
+    [YamlDotNet.Serialization.YamlMember(Alias = "USE_CUSTOM_PATHS")]
+    public bool UseCustomPaths { get; set; } = false;
+
+    [JsonPropertyName("defaultBasePath")]
+    [YamlDotNet.Serialization.YamlMember(Alias = "DEFAULT_BASE_PATH")]
+    public string? DefaultBasePath { get; set; } = null;
 
     [JsonPropertyName("inbox")]
     [YamlDotNet.Serialization.YamlMember(Alias = "INBOX_DIR")]
-    public string Inbox { get; set; } = System.IO.Path.Combine(GetExecutableDirectory(), "INBOX");
+    private string? _inbox = null;
+    public string Inbox 
+    { 
+        get => ResolvePath(_inbox, "INBOX");
+        set => _inbox = value;
+    }
 
     [JsonPropertyName("outbox")]
     [YamlDotNet.Serialization.YamlMember(Alias = "OUTBOX_DIR")]
-    public string Outbox { get; set; } = System.IO.Path.Combine(GetExecutableDirectory(), "OUTBOX");
+    private string? _outbox = null;
+    public string Outbox 
+    { 
+        get => ResolvePath(_outbox, "OUTBOX");
+        set => _outbox = value;
+    }
 
     [JsonPropertyName("archive")]
     [YamlDotNet.Serialization.YamlMember(Alias = "ARCHIVE_DIR")]
-    public string Archive { get; set; } = System.IO.Path.Combine(GetExecutableDirectory(), "ARCHIVE");
+    private string? _archive = null;
+    public string Archive 
+    { 
+        get => ResolvePath(_archive, "ARCHIVE");
+        set => _archive = value;
+    }
+
+    private string ResolvePath(string? customPath, string defaultFolderName)
+    {
+        // Si hay una ruta personalizada, usarla
+        if (!string.IsNullOrEmpty(customPath))
+        {
+            // Si es ruta relativa, resolver desde DefaultBasePath o carpeta de ejecución
+            if (!System.IO.Path.IsPathRooted(customPath))
+            {
+                var basePath = DefaultBasePath ?? GetExecutableDirectory();
+                return System.IO.Path.Combine(basePath, customPath);
+            }
+            return customPath;
+        }
+
+        // Si no hay ruta personalizada, usar relativa por defecto
+        var baseDir = DefaultBasePath ?? GetExecutableDirectory();
+        return System.IO.Path.Combine(baseDir, defaultFolderName);
+    }
 }
 
 public class TransactionConfig

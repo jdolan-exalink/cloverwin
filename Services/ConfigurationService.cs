@@ -72,14 +72,48 @@ public class ConfigurationService
     {
         AppConfig config = new AppConfig();
         
-        // 1. Cargar Clover config
+        // 0. Intentar cargar appsettings.json si existe
+        var appSettingsPath = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+        if (File.Exists(appSettingsPath))
+        {
+            try
+            {
+                var json = File.ReadAllText(appSettingsPath, System.Text.Encoding.UTF8);
+                var appSettings = System.Text.Json.JsonSerializer.Deserialize<AppConfig>(json);
+                if (appSettings != null)
+                {
+                    config = appSettings;
+                    Log.Information("📋 Configuración de appsettings.json cargada");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning(ex, "⚠️ Advertencia cargando appsettings.json (continuando con defaults)");
+            }
+        }
+        
+        // 1. Cargar Clover config (puede sobrescribir appsettings)
         try
         {
             if (File.Exists(_cloverYamlPath))
             {
                 var yaml = File.ReadAllText(_cloverYamlPath);
                 var loaded = _deserializer.Deserialize<AppConfig>(yaml);
-                if (loaded != null) config = loaded;
+                if (loaded != null) 
+                {
+                    // Mantener configuración de carpetas de appsettings si están definidas
+                    if (config.Folders?.UseCustomPaths == true || !string.IsNullOrEmpty(config.Folders?.DefaultBasePath))
+                    {
+                        // Preservar configuración de carpetas personalizadas
+                        var customFolders = config.Folders;
+                        config = loaded;
+                        config.Folders = customFolders;
+                    }
+                    else
+                    {
+                        config = loaded;
+                    }
+                }
                 Log.Information("✅ Configuración Clover cargada");
             }
             else
@@ -111,6 +145,12 @@ public class ConfigurationService
         {
             Log.Error(ex, "❌ Error cargando qrmp.yml");
         }
+        
+        // 3. Registrar las rutas cargadas
+        Log.Information("📁 Carpetas configuradas:");
+        Log.Information("   📥 INBOX: {Inbox}", config.Folders.Inbox);
+        Log.Information("   📤 OUTBOX: {Outbox}", config.Folders.Outbox);
+        Log.Information("   📦 ARCHIVE: {Archive}", config.Folders.Archive);
 
         return config;
     }

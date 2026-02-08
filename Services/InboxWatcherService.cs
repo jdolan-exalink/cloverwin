@@ -128,6 +128,7 @@ public class InboxWatcherService : BackgroundService
     private async Task ProcessFileAsync(string filePath)
     {
         CancellationTokenSource? timeoutCts = null;
+        var fileName = Path.GetFileName(filePath);
         
         try
         {
@@ -187,6 +188,11 @@ public class InboxWatcherService : BackgroundService
                 await FinalizeTransactionAndCleanup(null, filePath, TransactionStatus.Failed, "Archivo de transacción inválido (deserialización nula)");
                 return;
             }
+            
+            Log.Information("✓ [PARSED] Transacción parseada: Invoice={Invoice}, Monto=${Amount}, Cliente={Customer}",
+                transaction.InvoiceNumber ?? "N/A", 
+                transaction.Amount,
+                transaction.CustomerName ?? "N/A");
 
             Log.Information("Transaction parsed: InvoiceNumber={Invoice}, Amount={Amount}, Type={Type}", 
                 transaction.InvoiceNumber, transaction.Amount, transaction.Type);
@@ -194,8 +200,8 @@ public class InboxWatcherService : BackgroundService
             // Validar datos mínimos requeridos
             if (string.IsNullOrEmpty(transaction.InvoiceNumber) || transaction.Amount <= 0)
             {
-                Log.Warning("Invalid transaction data: InvoiceNumber={Invoice} Amount={Amount}", 
-                    transaction.InvoiceNumber, transaction.Amount);
+                Log.Warning("❌ [VALIDACION] Datos inválidos: Invoice={Invoice}, Monto={Amount}", 
+                    transaction.InvoiceNumber ?? "VACIO", transaction.Amount);
                 
                 transaction.Status = TransactionStatus.Failed;
                 transaction.ErrorMessage = $"Datos de transacción inválidos: Invoice='{transaction.InvoiceNumber}', Amount={transaction.Amount}";
@@ -358,7 +364,8 @@ public class InboxWatcherService : BackgroundService
         }
         catch (Exception ex)
         {
-            Log.Error(ex, "Error processing file: {Path}", filePath);
+            Log.Error(ex, "❌ [ERROR] Error procesando archivo: {FileName}", fileName);
+            Log.Error("   ↳ Mensaje: {Message}", ex.Message);
             
             // Cancelar timeout si existe
             if (timeoutCts != null)
