@@ -1318,14 +1318,39 @@ public partial class ProductionMainWindow : Window
         if (configWin.ShowDialog() == true)
         {
             LogSystem("✅ Configuración actualizada");
-            // Refrescar los campos ocultos de la UI principal para que estén sincronizados
+            
+            // Refrescar configuración y UI
             LoadConfiguration();
             
-            // Reiniciar conexión si es necesario
+            // Verificar nueva configuración
+            var newConfig = _configService.GetConfig();
+            LogSystem($"📡 Nueva IP Clover: {newConfig.Clover.Host}:{newConfig.Clover.Port}");
+            LogSystem($"🔄 Reiniciando conexión con nueva configuración...");
+            
+            // Reiniciar conexión de forma síncrona con feedback
             Task.Run(async () => {
-                await _cloverService.DisconnectAsync();
-                await Task.Delay(500);
-                await _cloverService.ConnectAsync();
+                try
+                {
+                    // Desconectar
+                    await _cloverService.DisconnectAsync();
+                    await Dispatcher.InvokeAsync(() => LogSystem("⏸️ Desconectado del terminal anterior"));
+                    
+                    await Task.Delay(1000);
+                    
+                    // Reconectar con nueva IP
+                    await Dispatcher.InvokeAsync(() => LogSystem($"🔌 Conectando a {newConfig.Clover.Host}:{newConfig.Clover.Port}..."));
+                    await _cloverService.ConnectAsync();
+                    
+                    await Dispatcher.InvokeAsync(() => LogSystem("✅ Conexión restablecida con nueva configuración"));
+                }
+                catch (Exception ex)
+                {
+                    await Dispatcher.InvokeAsync(() => 
+                    {
+                        LogSystem($"❌ Error al reconectar: {ex.Message}");
+                        Log.Error(ex, "Error reconectando después de cambio de configuración");
+                    });
+                }
             });
         }
     }

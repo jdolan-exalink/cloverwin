@@ -133,7 +133,6 @@ public class InboxWatcherService : BackgroundService
         try
         {
             // Prevenir procesamiento duplicado (debounce de 2 segundos)
-            var fileName = Path.GetFileName(filePath);
             if (_processingFiles.TryGetValue(fileName, out var lastProcessed))
             {
                 if ((DateTime.Now - lastProcessed).TotalSeconds < 2)

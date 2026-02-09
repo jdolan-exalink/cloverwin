@@ -52,7 +52,10 @@ public partial class ConfigWindow : Window
 
         // Clover
         config.Clover.Enabled = CloverEnabledCheckBox.IsChecked ?? true;
-        config.Clover.Host = HostTextBox.Text.Trim();
+        var newHost = HostTextBox.Text.Trim();
+        var oldHost = config.Clover.Host;
+        config.Clover.Host = newHost;
+        
         if (int.TryParse(PortTextBox.Text, out var port))
             config.Clover.Port = port;
         config.Clover.RemoteAppId = MerchantIdTextBox.Text.Trim();
@@ -70,8 +73,16 @@ public partial class ConfigWindow : Window
         config.Qrmp.WebhookUrl = MpWebhookUrlTextBox.Text.Trim();
         config.Qrmp.WebhookSecret = MpWebhookSecretTextBox.Text.Trim();
 
+        // Guardar configuración
         _configService.UpdateConfig(config);
+        
+        // Log detallado de cambios
         Log.Information("💾 Configuración guardada. Proveedor default: {Provider}", config.PaymentProvider);
+        if (oldHost != newHost)
+        {
+            Log.Information("🔄 IP Clover cambiada: {OldHost} → {NewHost}", oldHost, newHost);
+        }
+        Log.Information("📡 Nueva configuración Clover: {Host}:{Port} (Secure: {Secure})", config.Clover.Host, config.Clover.Port, config.Clover.Secure);
         
         DialogResult = true;
         Close();
