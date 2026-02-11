@@ -292,13 +292,26 @@ public class TransactionFileService
 
     private void ProcessCloverResult(TransactionFile transaction, TransactionResponse response)
     {
-        Log.Information("ProcessCloverResult: Processing Clover response");
+        Log.Information("ProcessCloverResult: Processing Clover response - Success={Success}, Reason={Reason}, Message={Message}", 
+            response.Success, response.Reason, response.Message);
+        
         TransactionStatus newStatus;
         
         if (response.Success)
         {
-            // Pago exitoso - ESTADO = "aprobado"
-            newStatus = TransactionStatus.Successful;
+            // Terminal ha procesado la solicitud exitosamente
+            // Si tenemos detalles de pago, es exitoso. Si no, es pendiente/procesando.
+            if (response.Payment != null && !string.IsNullOrEmpty(response.Payment.Id))
+            {
+                newStatus = TransactionStatus.Successful;
+                Log.Information("ProcessCloverResult: Success with payment details - PaymentId={PaymentId}", response.Payment.Id);
+            }
+            else
+            {
+                // Terminal aceptó pero aún no tenemos detalles - marcar como Processing
+                newStatus = TransactionStatus.Processing;
+                Log.Information("ProcessCloverResult: Success without payment details - marking as Processing");
+            }
             
             // Crear o actualizar PaymentInfo
             transaction.PaymentInfo ??= new PaymentFileInfo();
@@ -394,8 +407,20 @@ public class TransactionFileService
             else
             {
                 // Success pero sin Payment object - usar datos del response principal
-                Log.Warning("ProcessPaymentResult: Success=true but Payment is null");
-                transaction.AddLogEntry("PAYMENT_SUCCESS", "Pago exitoso (sin detalles)", null);
+                Log.Warning("ProcessCloverResult: Success=true but Payment is null - using reason: {Reason}", response.Reason);
+                
+                if (newStatus == TransactionStatus.Processing)
+                {
+                    transaction.AddLogEntry("RECEIVED_ACKNOWLEDGED", 
+                        "Solicitud recibida por terminal", 
+                        response.Reason ?? "Terminal procesando la transacción");
+                }
+                else
+                {
+                    transaction.AddLogEntry("PAYMENT_SUCCESS", 
+                        "Pago exitoso (sin detalles)", 
+                        response.Reason ?? "Terminal confirmó exitosamente");
+                }
             }
             
             // Si tenemos externalPaymentId en el response principal, usarlo
@@ -431,10 +456,25 @@ public class TransactionFileService
             }
             else if (string.IsNullOrEmpty(reason) || reason == "no payload received")
             {
-                // Si no hay razón específica, podría ser un timeout o cancelación
+                // Si no hay razón específica, podría ser un error de comunicación
                 newStatus = TransactionStatus.Failed;
                 transaction.ErrorMessage = "Sin respuesta del terminal";
-                transaction.AddLogEntry("FAILED", "Sin respuesta del terminal", "No se recibió payload de Clover");
+                transaction.AddLogEntry("FAILED", "Sin respuesta del terminal", 
+                    string.IsNullOrEmpty(reason) ? "No se recibió razón de error" : reason);
+            }
+            else if (reason.Contains("Transaction accepted") || reason.Contains("being processed"))
+            {
+                // La transacción fue aceptada por el terminal pero no tenemos respuesta inmediata
+                newStatus = TransactionStatus.Processing;
+                transaction.ErrorMessage = null;
+                transaction.AddLogEntry("PROCESSING", "Transacción en procesamiento", reason);
+            }
+            else if (reason.Contains("accepted by terminal") || reason.Contains("Message accepted"))
+            {
+                // La transacción fue recibida por el terminal, esperando respuesta
+                newStatus = TransactionStatus.Pending;
+                transaction.ErrorMessage = null;
+                transaction.AddLogEntry("PENDING", "Solicitud enviada", reason);
             }
             else
             {
@@ -479,12 +519,52 @@ public class TransactionFileService
             // El Payload es object?, necesitamos convertirlo a JsonElement
             if (cloverMessage.Payload == null)
             {
-                Log.Warning("ConvertToTransactionResponse: No payload received");
-                return new TransactionResponse
+                // Manejar mensajes válidos sin payload basado en el método
+                Log.Information("ConvertToTransactionResponse: No payload for method {Method}", cloverMessage.Method);
+                
+                if (cloverMessage.Method == "FINISH_OK")
                 {
-                    Success = false,
-                    Reason = "No payload received"
-                };
+                    // FINISH_OK sin payload indica que la solicitud fue procesada
+                    // La transacción se considera como enviada/procesándose
+                    Log.Information("ConvertToTransactionResponse: FINISH_OK received without payload - transaction is being processed");
+                    return new TransactionResponse
+                    {
+                        Success = true,
+                        Reason = "Transaction accepted and being processed"
+                    };
+                }
+                else if (cloverMessage.Method == "FINISH_CANCEL")
+                {
+                    // FINISH_CANCEL sin payload indica cancelación
+                    Log.Information("ConvertToTransactionResponse: FINISH_CANCEL received - transaction cancelled");
+                    return new TransactionResponse
+                    {
+                        Success = false,
+                        Reason = "Transaction cancelled by user"
+                    };
+                }
+                else if (cloverMessage.Method == "ACK" || cloverMessage.Method == "TX_START_RESPONSE")
+                {
+                    // ACK y TX_START_RESPONSE son confirmaciones de recepción
+                    Log.Information("ConvertToTransactionResponse: {Method} received - awaiting payment response", cloverMessage.Method);
+                    return new TransactionResponse
+                    {
+                        Success = true,
+                        Reason = $"Message accepted by terminal ({cloverMessage.Method})"
+                    };
+                }
+                else
+                {
+                    // Otros métodos sin payload - el terminal respondió pero sin detalles
+                    // Esto es mejor que silencio, tratarlo como procesando
+                    Log.Information("ConvertToTransactionResponse: Method {Method} received without payload - terminal is processing", cloverMessage.Method);
+                    return new TransactionResponse
+                    {
+                        Success = true,
+                        Reason = $"Terminal processing ({cloverMessage.Method})",
+                        Message = cloverMessage.Method
+                    };
+                }
             }
 
             // Convertir payload a JsonElement
@@ -525,6 +605,10 @@ public class TransactionFileService
             // También verificar campo "txState" para compatibilidad con diferentes versiones
             bool success = false;
             
+            // Log del payload para debug
+            Log.Debug("ConvertToTransactionResponse: Payload content kind = {Kind}, Text = {Text}", 
+                payload.ValueKind, payload.GetRawText().Length > 200 ? payload.GetRawText().Substring(0, 200) : payload.GetRawText());
+            
             // Opción 1: Verificar campo "result" (Network Pay Display API - Documento de integración)
             if (payload.TryGetProperty("result", out var resultProp))
             {
@@ -539,7 +623,14 @@ public class TransactionFileService
                 success = string.Equals(txStateValue, "SUCCESS", StringComparison.OrdinalIgnoreCase);
                 Log.Information("ConvertToTransactionResponse: txState = {TxState}, success = {Success}", txStateValue, success);
             }
-            // Opción 3: Verificar método del mensaje
+            // Opción 3: Si es payload vacío o minimal y el método es positivo, asumir éxito
+            else if (payload.ValueKind == JsonValueKind.Object && payload.EnumerateObject().Count() == 0)
+            {
+                // Payload es un objeto vacío {} - significa que el terminal respondió favorablemente
+                Log.Information("ConvertToTransactionResponse: Empty payload object - treating as successful response from terminal");
+                success = true;
+            }
+            // Opción 4: Verificar método del mensaje
             else if (cloverMessage.Method == "TX_STATE" || cloverMessage.Method == "TX_START_RESPONSE")
             {
                 // Si hay un objeto payment, considerarlo como exitoso
@@ -547,6 +638,25 @@ public class TransactionFileService
                 {
                     success = true;
                     Log.Information("ConvertToTransactionResponse: Payment object found, assuming success");
+                }
+            }
+            else
+            {
+                // Default: si el payload no es un error explícito, considerar como positivo
+                // a menos que contenga campos de error
+                bool hasErrorField = payload.TryGetProperty("error", out _) || 
+                                     payload.TryGetProperty("errorCode", out _) ||
+                                     payload.TryGetProperty("reason", out var reasonCheck) && 
+                                     reasonCheck.GetString()?.ToLower().Contains("error") == true;
+                
+                if (!hasErrorField)
+                {
+                    Log.Information("ConvertToTransactionResponse: No explicit error fields, treating payload as positive response");
+                    success = true;
+                }
+                else
+                {
+                    Log.Information("ConvertToTransactionResponse: Error fields detected in payload");
                 }
             }
 

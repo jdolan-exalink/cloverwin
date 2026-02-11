@@ -536,7 +536,11 @@ public partial class ProductionMainWindow : Window
 
     private string GenerateExternalId()
     {
-        return $"TXN-{DateTime.Now:yyyyMMddHHmmss}";
+        // Clover externalPaymentId limit is 12-13 characters
+        // Using 8 chars from date/time + 4 random chars
+        var random = new Random();
+        var suffix = random.Next(1000, 9999);
+        return $"T{DateTime.Now:MMddHHmm}{suffix}";
     }
 
     // Event Handlers

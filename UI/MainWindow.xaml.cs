@@ -620,7 +620,7 @@ public partial class MainWindow : Window
 
     private string GenerateExternalId()
     {
-        return $"EXT-{DateTime.Now:yyyyMMdd}-{Guid.NewGuid():N}".Substring(0, 32);
+        return $"EXT-{DateTime.Now:yyyyMMddHHmmss}";
     }
 
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

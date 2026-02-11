@@ -1,3 +1,0 @@
-D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x86\publish\appsettings.json
-D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x86\publish\cloverwin.png
-D:\DEVs\Cloverwin\bin\Release\net8.0-windows\win-x86\publish\CloverBridge.exe

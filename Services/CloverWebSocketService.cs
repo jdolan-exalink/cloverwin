@@ -423,19 +423,26 @@ public class CloverWebSocketService : BackgroundService
     {
         try
         {
+            Log.Information("═══════════════════════════════════════════════════════════════════");
+            Log.Information("  📋 RECIBIDA RESPUESTA DEL TERMINAL - {Method}", message.Method);
+            Log.Information("───────────────────────────────────────────────────────────────────");
+            Log.Information("  Message ID: {Id}", message.Id ?? "N/A");
+            Log.Information("  Method: {Method}", message.Method);
+            Log.Information("  Payload null: {IsNull}", message.Payload == null);
+            
             if (message.Payload == null)
             {
-                Log.Warning("  ⚠️ No hay payload en el mensaje");
+                Log.Warning("  ⚠️ No payload en el mensaje {Method}", message.Method);
+                Log.Information("═══════════════════════════════════════════════════════════════════");
                 return;
             }
 
             // Serializar payload para parsearlo
             var payloadJson = JsonSerializer.Serialize(message.Payload);
-            var payload = JsonDocument.Parse(payloadJson).RootElement;
+            Log.Information("  Payload JSON ({Size} bytes): {Payload}", payloadJson.Length, 
+                payloadJson.Length > 500 ? payloadJson.Substring(0, 500) + "..." : payloadJson);
             
-            Log.Information("═══════════════════════════════════════════════════════════════════");
-            Log.Information("  📋 DETALLES DEL PAGO - {Method}", message.Method);
-            Log.Information("───────────────────────────────────────────────────────────────────");
+            var payload = JsonDocument.Parse(payloadJson).RootElement;
             
             // El objeto payment puede estar stringificado
             if (payload.TryGetProperty("payment", out var paymentProp))

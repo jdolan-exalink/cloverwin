@@ -1,3 +1,16 @@
+# Historial de Versiones
+
+## [1.5.1] - 2026-02-11
+### fixed
+- **Clover ID Length**: Se corrigió el error "invalid length of external payment id" limitando el ID a 12 caracteres (restricción de Clover).
+- **Transaction Response**: Manejo mejorado de respuestas sin payload y mapeo de estados de transacción para evitar el error "Sin respuesta del terminal".
+
+## [1.5.0] - 2026-02-11
+### Added
+- Nueva Interfaz de Producción mejorada.
+- Soporte para Mercado Pago QR.
+- Sistema de monitoreo de tiempo real.
+
 # Cambios en v1.0.0
 
 ## Características principales

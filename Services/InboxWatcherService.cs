@@ -214,23 +214,29 @@ public class InboxWatcherService : BackgroundService
             if (string.IsNullOrEmpty(transaction.TransactionId))
                 transaction.TransactionId = Guid.NewGuid().ToString();
             
-            // El ExternalId/ExternalPaymentId DEBE ser único para cada transacción en Clover
-            // Si no viene o parece un valor genérico (como "visa", "mastercard", etc.), generamos uno único
-            var timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
-            var uniqueSuffix = Guid.NewGuid().ToString("N").Substring(0, 8);
+            // Clover tiene una restricción estricta de 12-13 caracteres para ExternalPaymentId
+            // recortar para asegurar compatibilidad (Clover API limita a 13 chars max para externalPaymentId en muchas versiones)
+            var timestampShort = DateTime.Now.ToString("HHmmss");
+            var uniqueId = Guid.NewGuid().ToString("N").Substring(0, 4);
             
             if (string.IsNullOrEmpty(transaction.ExternalId) || 
                 IsGenericPaymentMethod(transaction.ExternalId))
             {
-                // Generar ID único basado en InvoiceNumber + timestamp + guid parcial
-                transaction.ExternalId = $"{transaction.InvoiceNumber}-{timestamp}-{uniqueSuffix}";
-                Log.Information("Generated unique ExternalId: {ExternalId}", transaction.ExternalId);
+                // Priorizar los últimos caracteres del invoice number que es lo que identifica la venta
+                var invNum = transaction.InvoiceNumber ?? "TX";
+                if (invNum.Length > 7) invNum = invNum.Substring(invNum.Length - 7);
+                
+                // Formato: INV + 4 hex chars = ~11-12 chars
+                transaction.ExternalId = $"{invNum}-{uniqueId}";
+                Log.Information("Generated Clover-compliant ExternalId: {ExternalId}", transaction.ExternalId);
             }
             else
             {
-                // Incluso si viene un externalId, agregamos sufijo para garantizar unicidad
-                transaction.ExternalId = $"{transaction.ExternalId}-{timestamp}-{uniqueSuffix}";
-                Log.Information("Made ExternalId unique: {ExternalId}", transaction.ExternalId);
+                // Si ya trae uno, tratar de mantenerlo pero limitarlo
+                var extId = transaction.ExternalId;
+                if (extId.Length > 7) extId = extId.Substring(extId.Length - 7);
+                transaction.ExternalId = $"{extId}-{uniqueId}";
+                Log.Information("Shortened ExternalId to comply with Clover: {ExternalId}", transaction.ExternalId);
             }
 
             // Guardar referencia al archivo INBOX
